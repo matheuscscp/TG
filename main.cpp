@@ -20,7 +20,7 @@ struct Vertex {
   char type;
   int literal;
   int up;
-  vector<int> N;
+  vector<int> down;
   int p;
   Vertex() : p(1) {}
 } G[MAXN];
@@ -62,14 +62,14 @@ pair<vector<Vertex>,int> parse(string phi) {
       int u = S.top();
       S.pop();
       ret[u].up = S.top();
-      ret[S.top()].N.push_back(u);
+      ret[S.top()].down.push_back(u);
     }
     else { // literal
       string tmp = {phi[i]};
       while (i+1 < phi.size() && isvarsym(phi[i+1])) tmp += phi[++i];
       int& lit = id[tmp];
       if (!lit) lit = nextlit++;
-      ret[S.top()].N.push_back(ret.size());
+      ret[S.top()].down.push_back(ret.size());
       ret.emplace_back();
       ret.back().type = ATOM;
       ret.back().literal = lit;
@@ -86,10 +86,10 @@ void nnf(vector<Vertex>& T) {
     int nu = T.size(); T.emplace_back();
     T[nu].type = T[u].type;
     T[nu].literal = T[u].literal;
-    for (int v : T[u].N) {
+    for (int v : T[u].down) {
       int tmp = copy(v);
       T[tmp].up = nu;
-      T[nu].N.push_back(tmp);
+      T[nu].down.push_back(tmp);
     }
     return nu;
   };
@@ -98,31 +98,31 @@ void nnf(vector<Vertex>& T) {
   function<void(int)> dfs1 = [&](int u) {
     if (T[u].type == IMPL) {
       T[u].type = DISJ;
-      int v = T[u].N.front();
+      int v = T[u].down.front();
       int negi = T.size(); T.emplace_back();
       T[negi].type = NEGA;
-      T[u].N.front() = negi;
+      T[u].down.front() = negi;
       T[negi].up = u;
-      T[negi].N.push_back(v);
+      T[negi].down.push_back(v);
       T[v].up = negi;
     }
     else if (T[u].type == EQUI) {
       auto f = [&](int a, int b) {
         int impi = T.size(); T.emplace_back();
         T[impi].type = IMPL;
-        T[u].N.push_back(impi);
+        T[u].down.push_back(impi);
         T[impi].up = u;
-        T[impi].N.push_back(a), T[impi].N.push_back(b);
+        T[impi].down.push_back(a), T[impi].down.push_back(b);
         T[a].up = impi, T[b].up = impi;
       };
       T[u].type = CONJ;
-      int a = T[u].N.front(), b = T[u].N.back();
+      int a = T[u].down.front(), b = T[u].down.back();
       int c = copy(b),        d = copy(a);
-      T[u].N.clear();
+      T[u].down.clear();
       f(a,b);
       f(c,d);
     }
-    for (int v : T[u].N) dfs1(v);
+    for (int v : T[u].down) dfs1(v);
   };
   dfs1(0);
   
@@ -130,19 +130,19 @@ void nnf(vector<Vertex>& T) {
   function<void(int,bool)> dfs2 = [&](int u, bool neg) {
     if (!neg) {
       if (T[u].type == NEGA) {
-        auto& phi1 = T[T[u].N.front()];
+        auto& phi1 = T[T[u].down.front()];
         if (phi1.type == NEGA) {
-          auto& phi2 = T[phi1.N.front()];
+          auto& phi2 = T[phi1.down.front()];
           T[u].type = phi2.type;
           T[u].literal = phi2.literal;
-          T[u].N = phi2.N;
-          for (int v : T[u].N) T[v].up = u;
+          T[u].down = phi2.down;
+          for (int v : T[u].down) T[v].up = u;
           phi1.type = CONJ, phi2.type = CONJ; // removing phi1 and phi2
         }
         else if (phi1.type != ATOM) { // CONJ or DISJ
           T[u].type = (phi1.type == CONJ ? DISJ : CONJ);
-          T[u].N = phi1.N;
-          for (int v : T[u].N) T[v].up = u;
+          T[u].down = phi1.down;
+          for (int v : T[u].down) T[v].up = u;
           phi1.type = CONJ; // removing phi1
           neg = true;
         }
@@ -150,11 +150,11 @@ void nnf(vector<Vertex>& T) {
     }
     else {
       if (T[u].type == NEGA) {
-        auto& phi1 = T[T[u].N.front()];
+        auto& phi1 = T[T[u].down.front()];
         T[u].type = phi1.type;
         T[u].literal = phi1.literal;
-        T[u].N = phi1.N;
-        for (int v : T[u].N) T[v].up = u;
+        T[u].down = phi1.down;
+        for (int v : T[u].down) T[v].up = u;
         phi1.type = CONJ; // removing phi1
         neg = false;
       }
@@ -164,12 +164,12 @@ void nnf(vector<Vertex>& T) {
       else { // ATOM
         int atmi = copy(u);
         T[u].type = NEGA;
-        T[u].N.push_back(atmi);
+        T[u].down.push_back(atmi);
         T[atmi].up = u;
         neg = false;
       }
     }
-    for (int v : T[u].N) dfs2(v,neg);
+    for (int v : T[u].down) dfs2(v,neg);
   };
   dfs2(0,false);
 }
@@ -197,12 +197,12 @@ void build(const vector<Vertex>& T) {
     list<pair<int,int>> tmp;
     for (auto kv = oldp_newc.begin(); kv != oldp_newc.end();) {
       auto& phi = T[kv->first];
-      if (kv->second.size() < phi.N.size()) { kv++; continue; }
+      if (kv->second.size() < phi.down.size()) { kv++; continue; }
       int& u = newc_newp[kv->second];
       if (!u) {
         u = (phi.up != kv->first) ? ++V : 1;
         G[u].type = phi.type;
-        for (int v : kv->second) G[u].N.push_back(v);
+        for (int v : kv->second) G[u].down.push_back(v);
       }
       if (phi.up != kv->first) tmp.emplace_back(phi.up,u);
       oldp_newc.erase(kv++);
@@ -216,7 +216,7 @@ int pos(int u) {
   static int next = 1, dp[MAXN] = {};
   int& ans = dp[u];
   if (ans) return ans;
-  for (int v : G[u].N) pos(v);
+  for (int v : G[u].down) pos(v);
   return ans = next++;
 }
 
@@ -226,8 +226,8 @@ int p(int u) {
   int& ans = dp[u];
   if (ans) return ans;
   switch (G[u].type) {
-    case CONJ: ans = 0; for (int v : G[u].N) ans = clip(ans+p(v)); break;
-    case DISJ: ans = 1; for (int v : G[u].N) ans = clip(ans*p(v)); break;
+    case CONJ: ans = 0; for (int v : G[u].down) ans = clip(ans+p(v)); break;
+    case DISJ: ans = 1; for (int v : G[u].down) ans = clip(ans*p(v)); break;
     default:   ans = 1; break;
   }
   return ans;
@@ -249,21 +249,21 @@ void R_rec(int u, int a) {
   
   // search children
   if (phi.type == CONJ) {
-    for (int v : phi.N) R_rec(v,a);
-    phi.p = 0; for (int v : phi.N) phi.p = clip(phi.p+G[v].p);
+    for (int v : phi.down) R_rec(v,a);
+    phi.p = 0; for (int v : phi.down) phi.p = clip(phi.p+G[v].p);
   }
   else { // phi.type == DISJ
-    int n = phi.N.size();
+    int n = phi.down.size();
     
     vector<int> dp(n,1); // dp[i] = prod(phi_j.p), i < j < n
-    for (int i = n-2; 0 <= i; i--) dp[i] = clip(G[phi.N[i+1]].p*dp[i+1]);
+    for (int i = n-2; 0 <= i; i--) dp[i] = clip(G[phi.down[i+1]].p*dp[i+1]);
     
     int ai = a; // ai = a*prod(phi_j.p), 0 <= j < i
     for (int i = 0; i < n; i++) {
-      R_rec(phi.N[i],clip(ai*dp[i]));
-      ai = clip(ai*G[phi.N[i]].p);
+      R_rec(phi.down[i],clip(ai*dp[i]));
+      ai = clip(ai*G[phi.down[i]].p);
     }
-    phi.p = 1; for (int v : phi.N) phi.p = clip(phi.p*G[v].p);
+    phi.p = 1; for (int v : phi.down) phi.p = clip(phi.p*G[v].p);
   }
   
   if (renamed) {
@@ -287,7 +287,7 @@ void print(int u, bool enclose = true) {
   // negation
   if (phi.type == NEGA) {
     cout << '~';
-    print(phi.N.front());
+    print(phi.down.front());
     return;
   }
   
@@ -295,7 +295,7 @@ void print(int u, bool enclose = true) {
   if (enclose) cout << '(';
   char op = phi.type == CONJ ? '&' : '|';
   bool printed = false;
-  for (int v : phi.N) {
+  for (int v : phi.down) {
     if (printed) cout << " " << op << " ";
     printed = true;
     print(v);
@@ -316,7 +316,7 @@ int main() {
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 1; u <= V; u++) {
     auto& phi = G[u];
-    sort(phi.N.begin(),phi.N.end(),toposort);
+    sort(phi.down.begin(),phi.down.end(),toposort);
     phi.p = p(u);
   }
   print(1,false);
