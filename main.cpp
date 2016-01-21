@@ -116,8 +116,8 @@ void nnf(vector<Vertex>& T) {
         T[a].up = impi, T[b].up = impi;
       };
       T[u].type = CONJ;
-      int a = T[u].down.front(), b = T[u].down.back();
-      int c = copy(b),        d = copy(a);
+      int a = T[u].down.front(),  b = T[u].down.back();
+      int c = copy(b),            d = copy(a);
       T[u].down.clear();
       f(a,b);
       f(c,d);
