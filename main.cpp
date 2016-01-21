@@ -29,7 +29,7 @@ int V = 0;
 // create tree parsing formula from string
 // first: tree
 // second: number of literals
-pair<vector<Vertex>,int> parse(const string& phi) {
+pair<vector<Vertex>,int> parse(string phi) {
   // check
   auto isvarsym = [](char c) {
     return
@@ -40,6 +40,7 @@ pair<vector<Vertex>,int> parse(const string& phi) {
   };
   
   vector<Vertex> ret(1);
+  ret.back().type = CONJ;
   ret.back().up = 0;
   stack<int> S;
   S.push(0);
@@ -50,9 +51,10 @@ pair<vector<Vertex>,int> parse(const string& phi) {
     if (c == ' ' || c == '\t') continue;
     else if (c == '&') ret[S.top()].type = CONJ;
     else if (c == '|') ret[S.top()].type = DISJ;
-    else if (c == '(') {
+    else if (c == '(' || c == '~') {
       S.push(ret.size());
       ret.emplace_back();
+      ret.back().type = (c == '(' ? CONJ : NEGA);
     }
     else if (c == ')') {
       int u = S.top();
@@ -61,7 +63,6 @@ pair<vector<Vertex>,int> parse(const string& phi) {
       ret[S.top()].N.push_back(u);
     }
     else { // literal
-      int sign = 1; if (c == '~') { sign = -1; i++; }
       string tmp = {phi[i]};
       while (i+1 < phi.size() && isvarsym(phi[i+1])) tmp += phi[++i];
       int& lit = id[tmp];
@@ -69,8 +70,9 @@ pair<vector<Vertex>,int> parse(const string& phi) {
       ret[S.top()].N.push_back(ret.size());
       ret.emplace_back();
       ret.back().type = ATOM;
-      ret.back().literal = sign*lit;
+      ret.back().literal = lit;
       ret.back().up = S.top();
+      if (ret[S.top()].type == NEGA) { phi[i] = ')'; i--; }
     }
   }
   return make_pair(ret,id.size());
@@ -170,7 +172,7 @@ void nnf(vector<Vertex>& T) {
         neg = false;
       }
     }
-    for (int v : phi.N) dfs2(u,neg);
+    for (int v : phi.N) dfs2(v,neg);
   };
   dfs2(0,false);
 }
@@ -229,7 +231,7 @@ int p(int u) {
   switch (G[u].type) {
     case CONJ: ans = 0; for (int v : G[u].N) ans = clip(ans+p(v)); break;
     case DISJ: ans = 1; for (int v : G[u].N) ans = clip(ans*p(v)); break;
-    case ATOM: ans = 1; break;
+    default:   ans = 1; break;
   }
   return ans;
 }
@@ -281,8 +283,14 @@ void print(int u, bool enclose = true) {
   
   // literal
   if (phi.type == ATOM || phi.type&(1<<7)) {
-    if (phi.literal < 0) cout << '~';
-    cout << 'p' << abs(phi.literal);
+    cout << 'p' << phi.literal;
+    return;
+  }
+  
+  // negation
+  if (phi.type == NEGA) {
+    cout << '~';
+    print(phi.N.front());
     return;
   }
   
@@ -306,7 +314,7 @@ int main() {
   
   // preprocess
   auto tree = parse(phi);
-  //nnf(tree.first);
+  nnf(tree.first);
   build(tree.first);
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 1; u <= V; u++) {
