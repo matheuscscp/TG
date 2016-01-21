@@ -51,6 +51,8 @@ pair<vector<Vertex>,int> parse(string phi) {
     if (c == ' ' || c == '\t') continue;
     else if (c == '&') ret[S.top()].type = CONJ;
     else if (c == '|') ret[S.top()].type = DISJ;
+    else if (c == '=') { ret[S.top()].type = IMPL; i++; }
+    else if (c == '<') { ret[S.top()].type = EQUI; i += 2; }
     else if (c == '(' || c == '~') {
       S.push(ret.size());
       ret.emplace_back();
@@ -81,98 +83,93 @@ pair<vector<Vertex>,int> parse(string phi) {
 void nnf(vector<Vertex>& T) {
   // copy tree rooted at u
   function<int(int)> copy = [&](int u) {
-    auto& phi = T[u];
     int nu = T.size(); T.emplace_back();
-    auto& nphi = T[nu];
-    nphi.type = phi.type;
-    nphi.literal = phi.literal;
-    for (int v : phi.N) {
+    T[nu].type = T[u].type;
+    T[nu].literal = T[u].literal;
+    for (int v : T[u].N) {
       int tmp = copy(v);
       T[tmp].up = nu;
-      nphi.N.push_back(tmp);
+      T[nu].N.push_back(tmp);
     }
     return nu;
   };
   
   // remove implications and equivalences
   function<void(int)> dfs1 = [&](int u) {
-    auto& phi = T[u];
-    if (phi.type == IMPL) {
-      phi.type = DISJ;
-      int v = phi.N.front();
-      auto& phi1 = T[v];
+    if (T[u].type == IMPL) {
+      T[u].type = DISJ;
+      int v = T[u].N.front();
       int negi = T.size(); T.emplace_back();
-      auto& neg = T[negi]; neg.type = NEGA;
-      phi.N.front() = negi;
-      neg.up = u;
-      neg.N.push_back(v);
-      phi1.up = negi;
+      T[negi].type = NEGA;
+      T[u].N.front() = negi;
+      T[negi].up = u;
+      T[negi].N.push_back(v);
+      T[v].up = negi;
     }
-    else if (phi.type == EQUI) {
+    else if (T[u].type == EQUI) {
       auto f = [&](int a, int b) {
         int impi = T.size(); T.emplace_back();
-        auto& imp = T[impi]; imp.type = IMPL;
-        phi.N.push_back(impi);
-        imp.up = u;
-        imp.N.push_back(a), imp.N.push_back(b);
+        T[impi].type = IMPL;
+        T[u].N.push_back(impi);
+        T[impi].up = u;
+        T[impi].N.push_back(a), T[impi].N.push_back(b);
         T[a].up = impi, T[b].up = impi;
       };
-      phi.type = CONJ;
-      int a = phi.N.front(),  b = phi.N.back();
+      T[u].type = CONJ;
+      int a = T[u].N.front(), b = T[u].N.back();
       int c = copy(b),        d = copy(a);
-      phi.N.clear();
+      T[u].N.clear();
       f(a,b);
       f(c,d);
     }
-    for (int v : phi.N) dfs1(v);
+    for (int v : T[u].N) dfs1(v);
   };
   dfs1(0);
   
   // remove negations
   function<void(int,bool)> dfs2 = [&](int u, bool neg) {
-    auto& phi = T[u];
     if (!neg) {
-      if (phi.type == NEGA) {
-        auto& phi1 = T[phi.N.front()];
+      if (T[u].type == NEGA) {
+        auto& phi1 = T[T[u].N.front()];
         if (phi1.type == NEGA) {
           auto& phi2 = T[phi1.N.front()];
-          phi.type = phi2.type;
-          phi.literal = phi2.literal;
-          phi.N = phi2.N;
-          for (int v : phi.N) T[v].up = u;
+          T[u].type = phi2.type;
+          T[u].literal = phi2.literal;
+          T[u].N = phi2.N;
+          for (int v : T[u].N) T[v].up = u;
           phi1.type = CONJ, phi2.type = CONJ; // removing phi1 and phi2
         }
         else if (phi1.type != ATOM) { // CONJ or DISJ
-          phi.type = (phi1.type == CONJ ? DISJ : CONJ);
-          phi.N = phi1.N;
-          for (int v : phi.N) T[v].up = u;
+          T[u].type = (phi1.type == CONJ ? DISJ : CONJ);
+          T[u].N = phi1.N;
+          for (int v : T[u].N) T[v].up = u;
           phi1.type = CONJ; // removing phi1
           neg = true;
         }
       }
     }
     else {
-      if (phi.type == NEGA) {
-        auto& phi1 = T[phi.N.front()];
-        phi.type = phi1.type;
-        phi.literal = phi1.literal;
-        phi.N = phi1.N;
-        for (int v : phi.N) T[v].up = u;
+      if (T[u].type == NEGA) {
+        auto& phi1 = T[T[u].N.front()];
+        T[u].type = phi1.type;
+        T[u].literal = phi1.literal;
+        T[u].N = phi1.N;
+        for (int v : T[u].N) T[v].up = u;
         phi1.type = CONJ; // removing phi1
         neg = false;
       }
-      else if (phi.type != ATOM) { // CONJ or DISJ
-        phi.type = (phi.type == CONJ ? DISJ : CONJ);
+      else if (T[u].type != ATOM) { // CONJ or DISJ
+        T[u].type = (T[u].type == CONJ ? DISJ : CONJ);
       }
       else { // ATOM
         int atmi = copy(u);
-        phi.type = NEGA;
-        phi.N.push_back(atmi);
+        T[u].type = NEGA;
+        T[u].N.push_back(atmi);
         T[atmi].up = u;
         neg = false;
       }
     }
-    for (int v : phi.N) dfs2(v,neg);
+    for (int v : T[u].N) dfs2(v,neg);
   };
   dfs2(0,false);
 }
