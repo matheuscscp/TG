@@ -5,11 +5,10 @@ using namespace std;
 #define clip(X) min(X,10000)
 
 // IMPLEMENTACAO/TESTES
-// antes, procurar formulas menores nas maiores, mais ou menos R² * d(phi)
-// dp para otimizar o renaming restringindo o nro maximo de literais
-// procurar um benchmark
-// adaptar entrada para o benchmark
-// adaptar saida para algum provador, colocando em CNF
+// procurar formulas menores nas maiores, mais ou menos R² * d(phi) (melhoria1)
+// dp para otimizar o renaming limitando o nro maximo de literais   (melhoria2)
+// procurar um benchmark e adaptar a entrada para ele
+// adaptar a saida para algum provador, colocando em CNF
 
 // MONOGRAFIA
 // colocar exemplo 3.2
@@ -30,7 +29,7 @@ int V = 0;
 // first: tree
 // second: number of literals
 pair<vector<Vertex>,int> parse(string phi) {
-  // check
+  // tells if a character is valid for a variable name
   auto isvarsym = [](char c) {
     return
       ('0' <= c && c <= '9') ||
@@ -53,16 +52,17 @@ pair<vector<Vertex>,int> parse(string phi) {
     else if (c == '|') ret[S.top()].type = DISJ;
     else if (c == '=') { ret[S.top()].type = IMPL; i++; }
     else if (c == '<') { ret[S.top()].type = EQUI; i += 2; }
-    else if (c == '(' || c == '~') {
+    else if (c == '(' || c == '~') { // push
       S.push(ret.size());
       ret.emplace_back();
       ret.back().type = (c == '(' ? CONJ : NEGA);
     }
-    else if (c == ')') {
+    else if (c == ')') { // pop
       int u = S.top();
       S.pop();
       ret[u].up = S.top();
       ret[S.top()].down.push_back(u);
+      // removing multiple parentheses
       if (ret[u].type != NEGA && ret[u].down.size() == 1) {
         int u1 = ret[u].down.front();
         ret[u].type = ret[u1].type;
@@ -83,6 +83,7 @@ pair<vector<Vertex>,int> parse(string phi) {
       if (ret[S.top()].type == NEGA) { phi[i] = ')'; i--; }
     }
   }
+  // removing multiple parentheses
   if (ret[0].down.size() == 1) {
     int u = ret[0].down.front();
     ret[0].type = ret[u].type;
@@ -286,7 +287,7 @@ void R_rec(int u, int a) {
   }
 }
 
-// pretty print formula root at u
+// pretty print formula rooted at u
 void print(int u, bool enclose = true) {
   auto& phi = G[u];
   
