@@ -63,6 +63,12 @@ pair<vector<Vertex>,int> parse(string phi) {
       S.pop();
       ret[u].up = S.top();
       ret[S.top()].down.push_back(u);
+      if (ret[u].type != NEGA && ret[u].down.size() == 1) {
+        int u1 = ret[u].down.front();
+        ret[u].type = ret[u1].type;
+        ret[u].down = ret[u1].down;
+        for (int v : ret[u].down) ret[v].up = u;
+      }
     }
     else { // literal
       string tmp = {phi[i]};
@@ -76,6 +82,12 @@ pair<vector<Vertex>,int> parse(string phi) {
       ret.back().up = S.top();
       if (ret[S.top()].type == NEGA) { phi[i] = ')'; i--; }
     }
+  }
+  if (ret[0].down.size() == 1) {
+    int u = ret[0].down.front();
+    ret[0].type = ret[u].type;
+    ret[0].down = ret[u].down;
+    for (int v : ret[0].down) ret[v].up = 0;
   }
   return make_pair(ret,id.size());
 }
