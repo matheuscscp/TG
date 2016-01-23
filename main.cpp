@@ -287,33 +287,39 @@ void R_rec(int u, int a) {
   }
 }
 
-// pretty print formula rooted at u
-void print(int u, bool enclose = true) {
-  auto& phi = G[u];
-  
-  // literal
-  if (phi.type == ATOM || phi.type&(1<<7)) {
-    cout << 'p' << phi.literal;
-    return;
-  }
-  
-  // negation
-  if (phi.type == NEGA) {
-    cout << '~';
-    print(phi.down.front());
-    return;
-  }
-  
-  // subformulas
-  if (enclose) cout << '(';
+// pretty print a formula
+string array2str(Vertex formula[], int root) {
+  stringstream ss;
+  function<void(int)> dfs = [&](int u) {
+    auto& phi = formula[u];
+    if (phi.type == ATOM || phi.type&(1<<7)) {
+      ss << "p" << phi.literal;
+      return;
+    }
+    if (phi.type == NEGA) {
+      ss << "~";
+      dfs(phi.down.front());
+      return;
+    }
+    ss << "(";
+    char op = phi.type == CONJ ? '&' : '|';
+    bool printed = false;
+    for (int u : phi.down) {
+      if (printed) ss << " " << op << " ";
+      printed = true;
+      dfs(u);
+    }
+    ss << ")";
+  };
+  auto& phi = formula[root];
   char op = phi.type == CONJ ? '&' : '|';
   bool printed = false;
-  for (int v : phi.down) {
-    if (printed) cout << " " << op << " ";
+  for (int u : phi.down) {
+    if (printed) ss << " " << op << " ";
     printed = true;
-    print(v);
+    dfs(u);
   }
-  if (enclose) cout << ')';
+  return ss.str();
 }
 
 int main() {
@@ -332,22 +338,19 @@ int main() {
     sort(phi.down.begin(),phi.down.end(),toposort);
     phi.p = p(u);
   }
-  print(1,false);
-  cout << endl;
+  cout << array2str(G,1) << endl;
   
   // renaming
   nextR = tree.second+1;
   R_rec(1,1);
   
   // output
-  print(1);
+  cout << "(" << array2str(G,1) << ")";
   for (int u : R) {
     auto& phi = G[u];
-    printf(" & (~p%d | ",phi.literal);
     phi.type &= ~(1<<7);
-    print(u);
+    cout << " & (~p" << phi.literal << " | (" << array2str(G,u) << "))";
     phi.type |=  (1<<7);
-    printf(")");
   }
   cout << endl;
   
