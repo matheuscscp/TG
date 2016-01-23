@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAXN    100005
-#define clip(X) min(X,10000)
+#define SHOW(X) (cout << ">>>>> " << #X << ": " << (X) << endl), fflush(stdout)
 
 // IMPLEMENTACAO/TESTES
 // procurar formulas menores nas maiores, mais ou menos R² * d(phi) (melhoria1)
@@ -12,6 +11,9 @@ using namespace std;
 
 // MONOGRAFIA
 // colocar exemplo 3.2
+
+#define MAXN    100005
+#define clip(X) min(X,10000)
 
 // formula
 enum {CONJ=0,DISJ,IMPL,EQUI,NEGA,ATOM};
@@ -62,6 +64,7 @@ pair<vector<Vertex>,int> parse(string phi) {
       S.pop();
       ret[u].up = S.top();
       ret[S.top()].down.push_back(u);
+      if (ret[S.top()].type == NEGA) i--;
       // removing multiple parentheses
       if (ret[u].type != NEGA && ret[u].down.size() == 1) {
         int u1 = ret[u].down.front();
@@ -107,41 +110,46 @@ void nnf(vector<Vertex>& T) {
     return nu;
   };
   
+  // create negation vertex as parent of u
+  function<int(int)> neg = [&](int u) {
+    int nu = T.size(); T.emplace_back();
+    T[nu].type = NEGA;
+    T[nu].down.push_back(u);
+    T[u].up = nu;
+    return nu;
+  };
+  
   // remove implications and equivalences
-  function<void(int)> dfs1 = [&](int u) {
-    if (T[u].type == IMPL) {
+  function<void(int,bool)> dfs1 = [&](int u, bool pol) {
+    if (T[u].type == NEGA) pol = !pol;
+    else if (T[u].type == IMPL) {
       T[u].type = DISJ;
-      int v = T[u].down.front();
-      int negi = T.size(); T.emplace_back();
-      T[negi].type = NEGA;
-      T[u].down.front() = negi;
-      T[negi].up = u;
-      T[negi].down.push_back(v);
-      T[v].up = negi;
+      int v = neg(T[u].down.front());
+      T[u].down.front() = v;
+      T[v].up = u;
     }
     else if (T[u].type == EQUI) {
-      auto f = [&](int a, int b) {
+      auto f = [&](int a, char op, int b) {
         int impi = T.size(); T.emplace_back();
-        T[impi].type = IMPL;
+        T[impi].type = op;
         T[u].down.push_back(impi);
         T[impi].up = u;
         T[impi].down.push_back(a), T[impi].down.push_back(b);
         T[a].up = impi, T[b].up = impi;
       };
-      T[u].type = CONJ;
-      int a = T[u].down.front(),  b = T[u].down.back();
-      int c = copy(b),            d = copy(a);
+      int a  = T[u].down.front(), b  = T[u].down.back();
+      int ac = copy(a),           bc = copy(b);
       T[u].down.clear();
-      f(a,b);
-      f(c,d);
+      if (!pol) f(a,IMPL,b), T[u].type = CONJ, f(bc,IMPL,ac);
+      else      f(a,CONJ,b), T[u].type = DISJ, f(neg(ac),CONJ,neg(bc));
     }
-    for (int v : T[u].down) dfs1(v);
+    for (int v : T[u].down) dfs1(v,pol);
   };
-  dfs1(0);
+  dfs1(0,false);
   
   // remove negations
-  function<void(int,bool)> dfs2 = [&](int u, bool neg) {
-    if (!neg) {
+  function<void(int,bool)> dfs2 = [&](int u, bool pol) {
+    if (!pol) {
       if (T[u].type == NEGA) {
         auto& phi1 = T[T[u].down.front()];
         if (phi1.type == NEGA) {
@@ -157,7 +165,7 @@ void nnf(vector<Vertex>& T) {
           T[u].down = phi1.down;
           for (int v : T[u].down) T[v].up = u;
           phi1.type = CONJ; // removing phi1
-          neg = true;
+          pol = true;
         }
       }
     }
@@ -169,7 +177,7 @@ void nnf(vector<Vertex>& T) {
         T[u].down = phi1.down;
         for (int v : T[u].down) T[v].up = u;
         phi1.type = CONJ; // removing phi1
-        neg = false;
+        pol = false;
       }
       else if (T[u].type != ATOM) { // CONJ or DISJ
         T[u].type = (T[u].type == CONJ ? DISJ : CONJ);
@@ -179,10 +187,10 @@ void nnf(vector<Vertex>& T) {
         T[u].type = NEGA;
         T[u].down.push_back(atmi);
         T[atmi].up = u;
-        neg = false;
+        pol = false;
       }
     }
-    for (int v : T[u].down) dfs2(v,neg);
+    for (int v : T[u].down) dfs2(v,pol);
   };
   dfs2(0,false);
 }
@@ -321,6 +329,15 @@ string arr2str(Vertex formula[], int root) {
     ss << ")";
   };
   auto& phi = formula[root];
+  if (phi.type == ATOM || phi.type&(1<<7)) {
+    ss << "p" << phi.literal;
+    return ss.str();
+  }
+  if (phi.type == NEGA) {
+    ss << "~";
+    dfs(phi.down.front());
+    return ss.str();
+  }
   string op = logicop(phi.type);
   bool printed = false;
   for (int u : phi.down) {
@@ -334,12 +351,12 @@ string arr2str(Vertex formula[], int root) {
 int main() {
   
   // input
-  string phi;
-  getline(cin,phi);
-  cout << "raw:        " << phi << endl;
+  string raw;
+  getline(cin,raw);
+  cout << "raw:        " << raw << endl;
   
   // preprocess
-  auto tree = parse(phi);
+  auto tree = parse(raw);
   cout << "parsed:     " << arr2str(&tree.first[0],0) << endl;
   nnf(tree.first);
   cout << "NNF:        " << arr2str(&tree.first[0],0) << endl;
