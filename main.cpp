@@ -25,7 +25,7 @@ struct Vertex {
 } G[MAXN];
 int V = 0;
 
-// create tree parsing formula from string
+// parse string to create tree
 // first: tree
 // second: number of literals
 pair<vector<Vertex>,int> parse(string phi) {
