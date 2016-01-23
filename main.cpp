@@ -287,8 +287,17 @@ void R_rec(int u, int a) {
   }
 }
 
-// pretty print a formula
-string array2str(Vertex formula[], int root) {
+// convert formula to human readable string
+string arr2str(Vertex formula[], int root) {
+  auto logicop = [](char type) {
+    switch (type) {
+      case CONJ: return "&";
+      case DISJ: return "|";
+      case IMPL: return "=>";
+      case EQUI: return "<=>";
+    }
+    return "";
+  };
   stringstream ss;
   function<void(int)> dfs = [&](int u) {
     auto& phi = formula[u];
@@ -302,7 +311,7 @@ string array2str(Vertex formula[], int root) {
       return;
     }
     ss << "(";
-    char op = phi.type == CONJ ? '&' : '|';
+    string op = logicop(phi.type);
     bool printed = false;
     for (int u : phi.down) {
       if (printed) ss << " " << op << " ";
@@ -312,7 +321,7 @@ string array2str(Vertex formula[], int root) {
     ss << ")";
   };
   auto& phi = formula[root];
-  char op = phi.type == CONJ ? '&' : '|';
+  string op = logicop(phi.type);
   bool printed = false;
   for (int u : phi.down) {
     if (printed) ss << " " << op << " ";
@@ -327,29 +336,36 @@ int main() {
   // input
   string phi;
   getline(cin,phi);
+  cout << "raw:        " << phi << endl;
   
   // preprocess
   auto tree = parse(phi);
+  cout << "parsed:     " << arr2str(&tree.first[0],0) << endl;
   nnf(tree.first);
+  cout << "NNF:        " << arr2str(&tree.first[0],0) << endl;
   build(tree.first);
+  cout << "DAG:        " << arr2str(G,1) << endl;
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 1; u <= V; u++) {
     auto& phi = G[u];
     sort(phi.down.begin(),phi.down.end(),toposort);
     phi.p = p(u);
   }
-  cout << array2str(G,1) << endl;
+  cout << "toposorted: " << arr2str(G,1) << endl;
   
   // renaming
   nextR = tree.second+1;
   R_rec(1,1);
   
   // output
-  cout << "(" << array2str(G,1) << ")";
+  cout << "renamed:    ";
+  if (R.size() > 0) cout << "(";
+  cout << arr2str(G,1);
+  if (R.size() > 0) cout << ")";
   for (int u : R) {
     auto& phi = G[u];
     phi.type &= ~(1<<7);
-    cout << " & (~p" << phi.literal << " | (" << array2str(G,u) << "))";
+    cout << " & (~p" << phi.literal << " | (" << arr2str(G,u) << "))";
     phi.type |=  (1<<7);
   }
   cout << endl;
