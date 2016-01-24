@@ -5,9 +5,10 @@ using namespace std;
 
 // IMPLEMENTACAO/TESTES
 // procurar formulas menores nas maiores, mais ou menos R² * d(phi) (melhoria1)
-// dp para otimizar o renaming limitando o nro maximo de literais   (melhoria2)
+// colocar em CNF
+// dp para otimizar o renaming limitando o nro maximo de variaveis  (melhoria2)
 // procurar um benchmark e adaptar a entrada para ele
-// adaptar a saida para algum provador, colocando em CNF
+// adaptar a saida para algum provador
 
 // MONOGRAFIA
 // colocar exemplo 3.2
@@ -19,18 +20,19 @@ using namespace std;
 enum {CONJ=0,DISJ,IMPL,EQUI,NEGA,ATOM};
 struct Vertex {
   char type;
-  int literal;
+  int variable;
   int up;
   vector<int> down;
   int p;
   Vertex() : p(1) {}
 };
-vector<Vertex> G;
+string raw; // input
+vector<Vertex> T,G; // tree and DAG
+int nextvar; // next variable id
+vector<int> R; // renamed formulas
 
-// parse string to create tree
-// first: tree
-// second: number of literals
-pair<vector<Vertex>,int> parse(string phi) {
+// parse string raw to build tree T
+void parse() {
   // tells if a character is valid for a variable name
   auto isvarsym = [](char c) {
     return
@@ -40,68 +42,68 @@ pair<vector<Vertex>,int> parse(string phi) {
     ;
   };
   
-  vector<Vertex> ret(1);
-  ret.back().type = CONJ;
-  ret.back().up = 0;
+  T.emplace_back();
+  T.back().type = CONJ;
+  T.back().up = 0;
   stack<int> S;
   S.push(0);
   map<string,int> id;
-  int nextlit = 1;
-  for (int i = 0; i < phi.size(); i++) {
-    char c = phi[i];
+  int nextvar = 1;
+  for (int i = 0; i < raw.size(); i++) {
+    char c = raw[i];
     if (c == ' ' || c == '\t') continue;
-    else if (c == '&') ret[S.top()].type = CONJ;
-    else if (c == '|') ret[S.top()].type = DISJ;
-    else if (c == '=') { ret[S.top()].type = IMPL; i++; }
-    else if (c == '<') { ret[S.top()].type = EQUI; i += 2; }
+    else if (c == '&') T[S.top()].type = CONJ;
+    else if (c == '|') T[S.top()].type = DISJ;
+    else if (c == '=') { T[S.top()].type = IMPL; i++; }
+    else if (c == '<') { T[S.top()].type = EQUI; i += 2; }
     else if (c == '(' || c == '~') { // push
-      S.push(ret.size());
-      ret.emplace_back();
-      ret.back().type = (c == '(' ? CONJ : NEGA);
+      S.push(T.size());
+      T.emplace_back();
+      T.back().type = (c == '(' ? CONJ : NEGA);
     }
     else if (c == ')') { // pop
       int u = S.top();
       S.pop();
-      ret[u].up = S.top();
-      ret[S.top()].down.push_back(u);
-      if (ret[S.top()].type == NEGA) i--;
+      T[u].up = S.top();
+      T[S.top()].down.push_back(u);
+      if (T[S.top()].type == NEGA) i--;
       // removing multiple parentheses
-      if (ret[u].type != NEGA && ret[u].down.size() == 1) {
-        int u1 = ret[u].down.front();
-        ret[u].type = ret[u1].type;
-        ret[u].down = ret[u1].down;
-        for (int v : ret[u].down) ret[v].up = u;
+      if (T[u].type != NEGA && T[u].down.size() == 1) {
+        int u1 = T[u].down.front();
+        T[u].type = T[u1].type;
+        T[u].down = T[u1].down;
+        for (int v : T[u].down) T[v].up = u;
       }
     }
-    else { // literal
-      string tmp = {phi[i]};
-      while (i+1 < phi.size() && isvarsym(phi[i+1])) tmp += phi[++i];
-      int& lit = id[tmp];
-      if (!lit) lit = nextlit++;
-      ret[S.top()].down.push_back(ret.size());
-      ret.emplace_back();
-      ret.back().type = ATOM;
-      ret.back().literal = lit;
-      ret.back().up = S.top();
-      if (ret[S.top()].type == NEGA) { phi[i] = ')'; i--; }
+    else { // variable
+      string tmp = {raw[i]};
+      while (i+1 < raw.size() && isvarsym(raw[i+1])) tmp += raw[++i];
+      int& var = id[tmp];
+      if (!var) var = nextvar++;
+      T[S.top()].down.push_back(T.size());
+      T.emplace_back();
+      T.back().type = ATOM;
+      T.back().variable = var;
+      T.back().up = S.top();
+      if (T[S.top()].type == NEGA) { raw[i] = ')'; i--; }
     }
   }
   // removing multiple parentheses
-  if (ret[0].down.size() == 1) {
-    int u = ret[0].down.front();
-    ret[0].type = ret[u].type;
-    ret[0].down = ret[u].down;
-    for (int v : ret[0].down) ret[v].up = 0;
+  if (T[0].down.size() == 1) {
+    int u = T[0].down.front();
+    T[0].type = T[u].type;
+    T[0].down = T[u].down;
+    for (int v : T[0].down) T[v].up = 0;
   }
-  return make_pair(ret,id.size());
 }
 
-void nnf(vector<Vertex>& T) {
+// puts tree T in NNF
+void nnf() {
   // copy tree rooted at u
   function<int(int)> copy = [&](int u) {
     int nu = T.size(); T.emplace_back();
     T[nu].type = T[u].type;
-    T[nu].literal = T[u].literal;
+    T[nu].variable = T[u].variable;
     for (int v : T[u].down) {
       int tmp = copy(v);
       T[tmp].up = nu;
@@ -111,7 +113,7 @@ void nnf(vector<Vertex>& T) {
   };
   
   // create negation vertex as parent of u
-  function<int(int)> neg = [&](int u) {
+  function<int(int)> neg = [](int u) {
     int nu = T.size(); T.emplace_back();
     T[nu].type = NEGA;
     T[nu].down.push_back(u);
@@ -155,7 +157,7 @@ void nnf(vector<Vertex>& T) {
         if (phi1.type == NEGA) {
           auto& phi2 = T[phi1.down.front()];
           T[u].type = phi2.type;
-          T[u].literal = phi2.literal;
+          T[u].variable = phi2.variable;
           T[u].down = phi2.down;
           for (int v : T[u].down) T[v].up = u;
           phi1.type = CONJ, phi2.type = CONJ; // removing phi1 and phi2
@@ -173,7 +175,7 @@ void nnf(vector<Vertex>& T) {
       if (T[u].type == NEGA) {
         auto& phi1 = T[T[u].down.front()];
         T[u].type = phi1.type;
-        T[u].literal = phi1.literal;
+        T[u].variable = phi1.variable;
         T[u].down = phi1.down;
         for (int v : T[u].down) T[v].up = u;
         phi1.type = CONJ; // removing phi1
@@ -195,19 +197,19 @@ void nnf(vector<Vertex>& T) {
   dfs2(0,false);
 }
 
-// build DAG from tree T
-void build(const vector<Vertex>& T) {
-  map<int,int> lit_newu;
+// convert tree T to DAG G
+void dag() {
+  map<int,int> var_newu;
   map<int,multiset<int>> oldp_newc;
-  G.emplace_back();
+  G.emplace_back(); // root is always u=0
   
-  // create vertices for literals
+  // create vertices for variables
   for (auto& phi : T) if (phi.type == ATOM) {
-    int& u = lit_newu[phi.literal];
+    int& u = var_newu[phi.variable];
     if (!u) {
       u = G.size(); G.emplace_back();
       G[u].type = ATOM;
-      G[u].literal = phi.literal;
+      G[u].variable = phi.variable;
     }
     oldp_newc[phi.up].insert(u);
   }
@@ -255,8 +257,6 @@ int p(int u) {
 }
 
 // Boy de la Tour's top-down renaming
-vector<int> R;
-int nextR;
 void R_rec(int u, int a) {
   auto& phi = G[u];
   if (phi.p == 1) return;
@@ -290,7 +290,7 @@ void R_rec(int u, int a) {
   if (renamed) {
     R.push_back(u);
     phi.type |= (1<<7);
-    phi.literal = nextR++;
+    phi.variable = nextvar++;
     phi.p = 1;
   }
 }
@@ -310,7 +310,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   function<void(int)> dfs = [&](int u) {
     auto& phi = formula[u];
     if (phi.type == ATOM || phi.type&(1<<7)) {
-      ss << "p" << phi.literal;
+      ss << "p" << phi.variable;
       return;
     }
     if (phi.type == NEGA) {
@@ -330,7 +330,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   };
   auto& phi = formula[root];
   if (phi.type == ATOM || phi.type&(1<<7)) {
-    ss << "p" << phi.literal;
+    ss << "p" << phi.variable;
     return ss.str();
   }
   if (phi.type == NEGA) {
@@ -351,16 +351,15 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
 int main() {
   
   // input
-  string raw;
   getline(cin,raw);
   cout << "raw:        " << raw << endl;
   
   // preprocess
-  auto tree = parse(raw);
-  cout << "parsed:     " << arr2str(tree.first) << endl;
-  nnf(tree.first);
-  cout << "NNF:        " << arr2str(tree.first) << endl;
-  build(tree.first);
+  parse();
+  cout << "parsed:     " << arr2str(T) << endl;
+  nnf();
+  cout << "NNF:        " << arr2str(T) << endl;
+  dag();
   cout << "DAG:        " << arr2str(G) << endl;
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 0; u < G.size(); u++) {
@@ -371,7 +370,6 @@ int main() {
   cout << "toposorted: " << arr2str(G) << endl;
   
   // renaming
-  nextR = tree.second+1;
   R_rec(0,1);
   
   // output
@@ -382,7 +380,7 @@ int main() {
   for (int u : R) {
     auto& phi = G[u];
     phi.type &= ~(1<<7);
-    cout << " & (~p" << phi.literal << " | (" << arr2str(G,u) << "))";
+    cout << " & (~p" << phi.variable << " | (" << arr2str(G,u) << "))";
     phi.type |=  (1<<7);
   }
   cout << endl;
