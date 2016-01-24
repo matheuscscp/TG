@@ -24,8 +24,8 @@ struct Vertex {
   vector<int> down;
   int p;
   Vertex() : p(1) {}
-} G[MAXN];
-int V = 0;
+};
+vector<Vertex> G;
 
 // parse string to create tree
 // first: tree
@@ -199,14 +199,13 @@ void nnf(vector<Vertex>& T) {
 void build(const vector<Vertex>& T) {
   map<int,int> lit_newu;
   map<int,multiset<int>> oldp_newc;
-  V = 1;
+  G.emplace_back();
   
   // create vertices for literals
-  for (int i = 0; i < T.size(); i++) if (T[i].type == ATOM) {
-    auto& phi = T[i];
+  for (auto& phi : T) if (phi.type == ATOM) {
     int& u = lit_newu[phi.literal];
     if (!u) {
-      u = ++V;
+      u = G.size(); G.emplace_back();
       G[u].type = ATOM;
       G[u].literal = phi.literal;
     }
@@ -221,7 +220,8 @@ void build(const vector<Vertex>& T) {
       if (kv->second.size() < phi.down.size()) { kv++; continue; }
       int& u = newc_newp[kv->second];
       if (!u) {
-        u = (phi.up != kv->first) ? ++V : 1;
+        u = 0;
+        if (phi.up != kv->first) u = G.size(), G.emplace_back();
         G[u].type = phi.type;
         for (int v : kv->second) G[u].down.push_back(v);
       }
@@ -296,7 +296,7 @@ void R_rec(int u, int a) {
 }
 
 // convert formula to human readable string
-string arr2str(Vertex formula[], int root) {
+string arr2str(const vector<Vertex>& formula, int root = 0) {
   auto logicop = [](char type) {
     switch (type) {
       case CONJ: return "&";
@@ -357,27 +357,27 @@ int main() {
   
   // preprocess
   auto tree = parse(raw);
-  cout << "parsed:     " << arr2str(&tree.first[0],0) << endl;
+  cout << "parsed:     " << arr2str(tree.first) << endl;
   nnf(tree.first);
-  cout << "NNF:        " << arr2str(&tree.first[0],0) << endl;
+  cout << "NNF:        " << arr2str(tree.first) << endl;
   build(tree.first);
-  cout << "DAG:        " << arr2str(G,1) << endl;
+  cout << "DAG:        " << arr2str(G) << endl;
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
-  for (int u = 1; u <= V; u++) {
+  for (int u = 0; u < G.size(); u++) {
     auto& phi = G[u];
     sort(phi.down.begin(),phi.down.end(),toposort);
     phi.p = p(u);
   }
-  cout << "toposorted: " << arr2str(G,1) << endl;
+  cout << "toposorted: " << arr2str(G) << endl;
   
   // renaming
   nextR = tree.second+1;
-  R_rec(1,1);
+  R_rec(0,1);
   
   // output
   cout << "renamed:    ";
   if (R.size() > 0) cout << "(";
-  cout << arr2str(G,1);
+  cout << arr2str(G);
   if (R.size() > 0) cout << ")";
   for (int u : R) {
     auto& phi = G[u];
