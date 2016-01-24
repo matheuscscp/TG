@@ -4,7 +4,6 @@ using namespace std;
 #define SHOW(X) (cout << ">>>>> " << #X << ": " << (X) << endl), fflush(stdout)
 
 // IMPLEMENTACAO/TESTES
-// procurar formulas menores nas maiores, mais ou menos R² * d(phi) (melhoria1)
 // colocar em CNF
 // dp para otimizar o renaming limitando o nro maximo de variaveis  (melhoria2)
 // procurar um benchmark e adaptar a entrada para ele
