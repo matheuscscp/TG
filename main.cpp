@@ -48,7 +48,7 @@ void parse() {
   stack<int> S;
   S.push(0);
   map<string,int> id;
-  int nextvar = 1;
+  nextvar = 1;
   for (int i = 0; i < raw.size(); i++) {
     char c = raw[i];
     if (c == ' ' || c == '\t') continue;
@@ -200,7 +200,7 @@ void nnf() {
 // convert tree T to DAG G
 void dag() {
   map<int,int> var_newu;
-  map<int,multiset<int>> oldp_newc;
+  map<int,pair<set<int>,int>> oldp_newc;
   G.emplace_back(); // root is always u=0
   
   // create vertices for variables
@@ -211,26 +211,61 @@ void dag() {
       G[u].type = ATOM;
       G[u].variable = phi.variable;
     }
-    oldp_newc[phi.up].insert(u);
+    oldp_newc[phi.up].first.insert(u);
+    oldp_newc[phi.up].second++;
   }
   
   // search tree bottom-up to create vertices for subformulas
-  for (map<multiset<int>,int> newc_newp; !oldp_newc.empty();) {
+  for (map<set<int>,int> newc_newp; !oldp_newc.empty();) {
     list<pair<int,int>> tmp;
     for (auto kv = oldp_newc.begin(); kv != oldp_newc.end();) {
       auto& phi = T[kv->first];
-      if (kv->second.size() < phi.down.size()) { kv++; continue; }
-      int& u = newc_newp[kv->second];
+      if (kv->second.second < phi.down.size()) { kv++; continue; }
+      int& u = newc_newp[kv->second.first];
       if (!u) {
         u = 0;
         if (phi.up != kv->first) u = G.size(), G.emplace_back();
         G[u].type = phi.type;
-        for (int v : kv->second) G[u].down.push_back(v);
+        for (int v : kv->second.first) G[u].down.push_back(v);
       }
       if (phi.up != kv->first) tmp.emplace_back(phi.up,u);
       oldp_newc.erase(kv++);
     }
-    for (auto& kv : tmp) oldp_newc[kv.first].insert(kv.second);
+    for (auto& kv : tmp) {
+      oldp_newc[kv.first].first.insert(kv.second);
+      oldp_newc[kv.first].second++;
+    }
+  }
+}
+
+// simplify formulas inside other formulas, like (p & q) inside (p & ~r & q)
+void mindag() {
+  for (bool changed = true; changed;) {
+    changed = false;
+    for (int u = 0; u < G.size(); u++) {
+      if (G[u].type != CONJ && G[u].type != DISJ) continue;
+      auto& e1 = G[u].down;
+      sort(e1.begin(),e1.end());
+      for (int v = 0; v < G.size(); v++) {
+        if (v == u || G[v].type != G[u].type) continue;
+        auto& e2 = G[v].down;
+        sort(e2.begin(),e2.end());
+        vector<int> newc;
+        bool uchildofv = false;
+        bool issubset = true;
+        int i = 0;
+        for (int j = 0; j < e2.size() && issubset; j++) {
+          if (e2[j] == u) uchildofv = true;
+          if (i == e1.size() || e1[i] > e2[j]) newc.push_back(e2[j]);
+          else if (e1[i] < e2[j]) issubset = false;
+          else i++;
+        }
+        if (i < e1.size() || !issubset) continue;
+        changed = true;
+        if (!uchildofv) newc.push_back(u);
+        e2 = newc;
+      }
+    }
   }
 }
 
@@ -361,6 +396,8 @@ int main() {
   cout << "NNF:        " << arr2str(T) << endl;
   dag();
   cout << "DAG:        " << arr2str(G) << endl;
+  mindag();
+  cout << "min DAG:    " << arr2str(G) << endl;
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 0; u < G.size(); u++) {
     auto& phi = G[u];
