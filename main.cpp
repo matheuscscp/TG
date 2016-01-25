@@ -10,7 +10,6 @@ using namespace std;
 #endif
 
 // IMPLEMENTACAO/TESTES
-// colocar em CNF
 // dp para otimizar o renaming limitando o nro maximo de variaveis
 // procurar um benchmark e adaptar a entrada para ele
 // adaptar a saida para algum provador
@@ -34,7 +33,7 @@ struct Vertex {
 string raw; // input
 vector<Vertex> T,G; // tree and DAG
 int nextvar = 1; // next variable id
-map<int,string> varname; // variables' names
+unordered_map<int,string> varname; // variables' names
 vector<int> R; // renamed formulas
 
 // parse string raw to build tree T
@@ -54,7 +53,7 @@ void parse() {
   T.back().up = 0;
   stack<int> S;
   S.push(0);
-  map<string,int> id;
+  unordered_map<string,int> id;
   for (int i = 0; i < raw.size(); i++) {
     char c = raw[i];
     if (c == ' ' || c == '\t') continue;
@@ -210,7 +209,7 @@ void flat(vector<Vertex>& formula) {
     if (phi.type == NEGA || phi.type == ATOM) return;
     for (bool changed = true; changed;) {
       changed = false;
-      set<int> newc;
+      unordered_set<int> newc;
       for (int v : phi.down) {
         auto& psi = formula[v];
         if (psi.type == NEGA || psi.type == ATOM || psi.type != phi.type) {
@@ -235,8 +234,8 @@ void flat(vector<Vertex>& formula) {
 
 // convert tree T to DAG G
 void dag() {
-  map<int,int> var_newu;
-  map<int,pair<set<int>,int>> oldp_newc;
+  unordered_map<int,int> var_newu;
+  unordered_map<int,pair<set<int>,int>> oldp_newc;
   G.emplace_back(); // root is always u=0
   
   // create vertices for variables
@@ -417,7 +416,7 @@ void rename() {
 
 // put NNF-flattened DAG G in CNF
 void cnf() {
-  //TODO
+  
 }
 
 // convert formula to human readable string
