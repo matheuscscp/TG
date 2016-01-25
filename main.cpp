@@ -1,11 +1,17 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SHOW(X) (cout << ">>>>> " << #X << ": " << (X) << endl), fflush(stdout)
+#ifdef DEBUG
+  #define SHW(X) (cout << ">>>>> " << #X << ": " << (X) << endl), fflush(stdout)
+  #define DBG(X) X
+#else
+  #define SHW(X)
+  #define DBG(X)
+#endif
 
 // IMPLEMENTACAO/TESTES
 // colocar em CNF
-// dp para otimizar o renaming limitando o nro maximo de variaveis  (melhoria2)
+// dp para otimizar o renaming limitando o nro maximo de variaveis
 // procurar um benchmark e adaptar a entrada para ele
 // adaptar a saida para algum provador
 
@@ -415,25 +421,26 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
 int main() {
   
   getline(cin,raw);
-  cout << "raw:        " << raw << endl;
+  DBG(cout << "raw:        " << raw << endl);
   parse();
-  cout << "parsed:     " << arr2str(T) << endl;
+  DBG(cout << "parsed:     " << arr2str(T) << endl);
   nnf();
-  cout << "NNF:        " << arr2str(T) << endl;
+  DBG(cout << "NNF:        " << arr2str(T) << endl);
   flat(T);
-  cout << "flat:       " << arr2str(T) << endl;
+  DBG(cout << "flat:       " << arr2str(T) << endl);
   dag();
-  cout << "DAG:        " << arr2str(G) << endl;
+  DBG(cout << "DAG:        " << arr2str(G) << endl);
   mindag();
-  cout << "min DAG:    " << arr2str(G) << endl;
+  DBG(cout << "min DAG:    " << arr2str(G) << endl);
   auto toposort = [](int u, int v){ return pos(u) < pos(v); };
   for (int u = 0; u < G.size(); u++) {
     auto& phi = G[u];
     sort(phi.down.begin(),phi.down.end(),toposort);
     phi.p = p(u);
   }
-  cout << "toposorted: " << arr2str(G) << endl;
+  DBG(cout << "toposorted: " << arr2str(G) << endl);
   R_rec(0,1);
+#ifdef DEBUG
   cout << "renamed:    ";
   if (R.size() > 0) cout << "(";
   cout << arr2str(G);
@@ -445,6 +452,7 @@ int main() {
     phi.type |=  (1<<7);
   }
   cout << endl;
+#endif
   
   return 0;
 }
