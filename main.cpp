@@ -2,7 +2,7 @@
 using namespace std;
 
 #ifdef DEBUG
-  #define SHW(X) (cout << ">>>>> " << #X << ": " << (X) << endl), fflush(stdout)
+  #define SHW(X) (cout << ">>> " << #X << ": " << (X) << endl), fflush(stdout)
   #define DBG(X) X
 #else
   #define SHW(X)
