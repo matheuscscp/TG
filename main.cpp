@@ -35,6 +35,7 @@ vector<Vertex> T,G; // tree and DAG
 int nextvar = 1; // next variable id
 unordered_map<int,string> varname; // variables' names
 vector<int> R; // renamed formulas
+set<set<int>> finalcnf;
 
 // parse string raw to build tree T
 void parse() {
@@ -203,31 +204,35 @@ void nnf() {
 }
 
 // apply "flattening", as (p & (q & r) & s) should become (p & q & r & s)
-void flat(vector<Vertex>& formula) {
-  function<void(int)> dfs = [&](int u) {
-    auto& phi = formula[u];
-    if (phi.type == NEGA || phi.type == ATOM) return;
-    for (bool changed = true; changed;) {
-      changed = false;
-      unordered_set<int> newc;
-      for (int v : phi.down) {
-        auto& psi = formula[v];
-        if (psi.type == NEGA || psi.type == ATOM || psi.type != phi.type) {
-          newc.insert(v);
-          continue;
-        }
-        changed = true;
-        for (int w : psi.down) {
-          newc.insert(w);
-          formula[w].up = u;
-        }
+void flat(vector<Vertex>& formula, int u) {
+  auto& phi = formula[u];
+  for (bool changed = true; changed;) {
+    changed = false;
+    unordered_set<int> newc;
+    for (int v : phi.down) {
+      auto& psi = formula[v];
+      if (psi.type == NEGA || psi.type == ATOM || psi.type != phi.type) {
+        newc.insert(v);
+        continue;
       }
-      if (changed) {
-        phi.down.clear();
-        for (int v : newc) phi.down.push_back(v);
+      changed = true;
+      for (int w : psi.down) {
+        newc.insert(w);
+        formula[w].up = u;
       }
     }
-    for (int v : phi.down) dfs(v);
+    if (changed) {
+      phi.down.clear();
+      for (int v : newc) phi.down.push_back(v);
+    }
+  }
+}
+
+// flat tree T
+void flat() {
+  function<void(int)> dfs = [&](int u) {
+    flat(T,u);
+    for (int v : T[u].down) dfs(v);
   };
   dfs(0);
 }
@@ -379,7 +384,7 @@ void R_rec(int u, int a) {
 
 // apply renaming
 void rename() {
-  R_rec(0,1);
+  R_rec(0,1); // renaming search. fills vector R with the selected vertices
   if (R.size() == 0) return;
   
   // move old root to new vertex
@@ -414,9 +419,78 @@ void rename() {
   }
 }
 
-// put NNF-flattened DAG G in CNF
+// put DAG G in CNF, assuming it's already in NNF
 void cnf() {
-  
+  vector<bool> visited(G.size(),false);
+  function<void(int)> dfs = [&](int u) {
+    visited[u] = true;
+    flat(G,u);
+    if (G[u].type == DISJ) {
+      int con = -1;
+      for (auto it = G[u].down.begin(); it != G[u].down.end(); it++) {
+        if (G[*it].type == CONJ) {
+          con = *it;
+          G[u].down.erase(it);
+          break;
+        }
+      }
+      if (con < 0) return;
+      int rem = G.size(); G.emplace_back();
+      G[rem] = G[u];
+      G[u].type = CONJ;
+      G[u].down.clear();
+      for (int v : G[con].down) {
+        int dis = G.size(); G.emplace_back();
+        G[dis].type = DISJ;
+        G[dis].down.push_back(rem);
+        G[dis].down.push_back(v);
+        G[u].down.push_back(dis);
+      }
+    }
+    for (int v : G[u].down) if (!visited[v]) dfs(v);
+    flat(G,u);
+  };
+  dfs(0);
+}
+
+// compute final CNF removing satisfied, super and repeated clauses from DAG G
+void simplifycnf() {
+  // remove repetions and satisfied clauses
+  for (int u : G[0].down) {
+    set<int> tmp2;
+    bool satisfied = false;
+    for (int v : G[u].down) {
+      int lit;
+      if (G[v].type == ATOM)  lit = G[v].variable;
+      else                    lit = -G[G[v].down.front()].variable;
+      if (tmp2.find(-lit) == tmp2.end()) tmp2.insert(lit);
+      else {
+        satisfied = true;
+        break;
+      }
+    }
+    if (!satisfied) finalcnf.insert(tmp2);
+  }
+  // remove super clauses
+  for (auto it = finalcnf.begin(); it != finalcnf.end();) {
+    bool found = false;
+    for (auto it2 = finalcnf.begin(); it2 != finalcnf.end(); it2++) {
+      if (it2 == it || it2->size() > it->size()) continue;
+      auto i = it->begin();
+      auto i2 = it2->begin();
+      while (i2 != it2->end() && i != it->end()) {
+        if (*i2 > *i) i++;
+        else if (*i2 == *i) i2++, i++;
+        else break;
+      }
+      if (i2 == it2->end()) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) it++;
+    else        finalcnf.erase(it++);
+  }
 }
 
 // convert formula to human readable string
@@ -472,6 +546,28 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   return ss.str();
 }
 
+// print final CNF
+void print() {
+  auto printl = [](int l) {
+    if (l < 0) cout << "~";
+    cout << varname[abs(l)];
+  };
+  bool p1 = false;
+  for (auto& C : finalcnf) {
+    if (p1) cout << " & ";
+    p1 = true;
+    if (C.size() > 1) cout << "(";
+    bool p2 = false;
+    for (int l : C) {
+      if (p2) cout << " | ";
+      p2 = true;
+      printl(l);
+    }
+    if (C.size() > 1) cout << ")";
+  }
+  cout << endl;
+}
+
 int main() {
   
   getline(cin,raw);
@@ -480,7 +576,7 @@ int main() {
   DBG(cout << "parsed:     " << arr2str(T) << endl);
   nnf();
   DBG(cout << "NNF:        " << arr2str(T) << endl);
-  flat(T);
+  flat();
   DBG(cout << "flat:       " << arr2str(T) << endl);
   dag();
   DBG(cout << "DAG:        " << arr2str(G) << endl);
@@ -490,11 +586,11 @@ int main() {
   DBG(cout << "toposorted: " << arr2str(G) << endl);
   rename();
   DBG(cout << "renamed:    " << arr2str(G) << endl);
-  flat(G);
-  DBG(cout << "flat again: " << arr2str(G) << endl);
   cnf();
-  DBG(cout << "CNF:        ");
-  cout << arr2str(G) << endl;
+  DBG(cout << "CNF:        " << arr2str(G) << endl);
+  simplifycnf();
+  DBG(cout << "simple CNF: ");
+  print();
   
   return 0;
 }
