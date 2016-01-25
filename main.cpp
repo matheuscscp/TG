@@ -380,6 +380,7 @@ void R_rec(int u, int a) {
 
 // apply renaming
 void rename() {
+  R_rec(0,1);
   if (R.size() == 0) return;
   
   // move old root to new vertex
@@ -488,12 +489,13 @@ int main() {
   DBG(cout << "min DAG:    " << arr2str(G) << endl);
   preprocess();
   DBG(cout << "toposorted: " << arr2str(G) << endl);
-  R_rec(0,1); rename();
+  rename();
   DBG(cout << "renamed:    " << arr2str(G) << endl);
   flat(G);
   DBG(cout << "flat again: " << arr2str(G) << endl);
   cnf();
-  DBG(cout << "CNF:        " << arr2str(G) << endl);
+  DBG(cout << "CNF:        ");
+  cout << arr2str(G) << endl;
   
   return 0;
 }
