@@ -42,6 +42,7 @@ void parse() {
   // tells if a character is valid for a variable name
   auto isvarsym = [](char c) {
     return
+      c == '_' ||
       ('0' <= c && c <= '9') ||
       ('a' <= c && c <= 'z') ||
       ('A' <= c && c <= 'Z')
@@ -202,7 +203,7 @@ void nnf() {
   dfs2(0,false);
 }
 
-// "flat" formulas, as (p & (q & r) & s) should become (p & q & r & s)
+// apply "flattening", as (p & (q & r) & s) should become (p & q & r & s)
 void flat(vector<Vertex>& formula) {
   function<void(int)> dfs = [&](int u) {
     auto& phi = formula[u];
@@ -273,7 +274,7 @@ void dag() {
   }
 }
 
-// simplify formulas inside other formulas, like (p & q) inside (p & ~r & q)
+// find formulas inside other formulas, like (p & q) inside (p & ~r & q)
 void mindag() {
   for (bool changed = true; changed;) {
     changed = false;
@@ -372,7 +373,7 @@ void R_rec(int u, int a) {
     phi.variable = nextvar++;
     phi.p = 1;
     stringstream ss;
-    ss << "rnm" << phi.variable;
+    ss << "$" << phi.variable;
     varname[phi.variable] = ss.str();
   }
 }
@@ -411,6 +412,11 @@ void rename() {
     // change renamed formula to variable
     G[u].type = ATOM;
   }
+}
+
+// put NNF-flattened DAG G in CNF
+void cnf() {
+  //TODO
 }
 
 // convert formula to human readable string
@@ -484,6 +490,10 @@ int main() {
   DBG(cout << "toposorted: " << arr2str(G) << endl);
   R_rec(0,1); rename();
   DBG(cout << "renamed:    " << arr2str(G) << endl);
+  flat(G);
+  DBG(cout << "flat again: " << arr2str(G) << endl);
+  cnf();
+  DBG(cout << "CNF:        " << arr2str(G) << endl);
   
   return 0;
 }
