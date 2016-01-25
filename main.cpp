@@ -33,7 +33,8 @@ struct Vertex {
 };
 string raw; // input
 vector<Vertex> T,G; // tree and DAG
-int nextvar; // next variable id
+int nextvar = 1; // next variable id
+map<int,string> varname; // variables' names
 vector<int> R; // renamed formulas
 
 // parse string raw to build tree T
@@ -53,7 +54,6 @@ void parse() {
   stack<int> S;
   S.push(0);
   map<string,int> id;
-  nextvar = 1;
   for (int i = 0; i < raw.size(); i++) {
     char c = raw[i];
     if (c == ' ' || c == '\t') continue;
@@ -84,7 +84,7 @@ void parse() {
       string tmp = {raw[i]};
       while (i+1 < raw.size() && isvarsym(raw[i+1])) tmp += raw[++i];
       int& var = id[tmp];
-      if (!var) var = nextvar++;
+      if (!var) { var = nextvar++; varname[var] = tmp; }
       T[S.top()].down.push_back(T.size());
       T.emplace_back();
       T.back().type = ATOM;
@@ -372,6 +372,9 @@ void R_rec(int u, int a) {
     phi.type |= (1<<7);
     phi.variable = nextvar++;
     phi.p = 1;
+    stringstream ss;
+    ss << "rnm" << phi.variable;
+    varname[phi.variable] = ss.str();
   }
 }
 
@@ -390,7 +393,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   function<void(int)> dfs = [&](int u) {
     auto& phi = formula[u];
     if (phi.type == ATOM || phi.type&(1<<7)) {
-      ss << "p" << phi.variable;
+      ss << varname[phi.variable];
       return;
     }
     if (phi.type == NEGA) {
@@ -410,7 +413,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   };
   auto& phi = formula[root];
   if (phi.type == ATOM || phi.type&(1<<7)) {
-    ss << "p" << phi.variable;
+    ss << varname[phi.variable];
     return ss.str();
   }
   if (phi.type == NEGA) {
@@ -453,7 +456,7 @@ int main() {
   for (int u : R) {
     auto& phi = G[u];
     phi.type &= ~(1<<7);
-    cout << " & (~p" << phi.variable << " | (" << arr2str(G,u) << "))";
+    cout << " & (~rnm" << phi.variable << " | (" << arr2str(G,u) << "))";
     phi.type |=  (1<<7);
   }
   cout << endl;
