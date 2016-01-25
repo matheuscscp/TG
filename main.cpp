@@ -96,7 +96,7 @@ void parse() {
   }
 }
 
-// puts tree T in NNF
+// put tree T in NNF
 void nnf() {
   // copy tree rooted at u
   function<int(int)> copy = [&](int u) {
@@ -194,6 +194,36 @@ void nnf() {
     for (int v : T[u].down) dfs2(v,pol);
   };
   dfs2(0,false);
+}
+
+// "flat" formulas, as (p & (q & r) & s) should become (p & q & r & s)
+void flat(vector<Vertex>& formula) {
+  function<void(int)> dfs = [&](int u) {
+    auto& phi = formula[u];
+    if (phi.type == NEGA || phi.type == ATOM) return;
+    for (bool changed = true; changed;) {
+      changed = false;
+      set<int> newc;
+      for (int v : phi.down) {
+        auto& psi = formula[v];
+        if (psi.type == NEGA || psi.type == ATOM || psi.type != phi.type) {
+          newc.insert(v);
+          continue;
+        }
+        changed = true;
+        for (int w : psi.down) {
+          newc.insert(w);
+          formula[w].up = u;
+        }
+      }
+      if (changed) {
+        phi.down.clear();
+        for (int v : newc) phi.down.push_back(v);
+      }
+    }
+    for (int v : phi.down) dfs(v);
+  };
+  dfs(0);
 }
 
 // convert tree T to DAG G
@@ -384,15 +414,14 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
 
 int main() {
   
-  // input
   getline(cin,raw);
   cout << "raw:        " << raw << endl;
-  
-  // preprocess
   parse();
   cout << "parsed:     " << arr2str(T) << endl;
   nnf();
   cout << "NNF:        " << arr2str(T) << endl;
+  flat(T);
+  cout << "flat:       " << arr2str(T) << endl;
   dag();
   cout << "DAG:        " << arr2str(G) << endl;
   mindag();
@@ -404,11 +433,7 @@ int main() {
     phi.p = p(u);
   }
   cout << "toposorted: " << arr2str(G) << endl;
-  
-  // renaming
   R_rec(0,1);
-  
-  // output
   cout << "renamed:    ";
   if (R.size() > 0) cout << "(";
   cout << arr2str(G);
