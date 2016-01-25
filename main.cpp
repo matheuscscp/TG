@@ -326,6 +326,16 @@ int p(int u) {
   return ans;
 }
 
+// necessary preprocessing for Boy de la Tour's algorithm
+void preprocess() {
+  auto toposort = [](int u, int v){ return pos(u) < pos(v); };
+  for (int u = 0; u < G.size(); u++) {
+    auto& phi = G[u];
+    sort(phi.down.begin(),phi.down.end(),toposort);
+    phi.p = p(u);
+  }
+}
+
 // Boy de la Tour's top-down renaming
 void R_rec(int u, int a) {
   auto& phi = G[u];
@@ -432,12 +442,7 @@ int main() {
   DBG(cout << "DAG:        " << arr2str(G) << endl);
   mindag();
   DBG(cout << "min DAG:    " << arr2str(G) << endl);
-  auto toposort = [](int u, int v){ return pos(u) < pos(v); };
-  for (int u = 0; u < G.size(); u++) {
-    auto& phi = G[u];
-    sort(phi.down.begin(),phi.down.end(),toposort);
-    phi.p = p(u);
-  }
+  preprocess();
   DBG(cout << "toposorted: " << arr2str(G) << endl);
   R_rec(0,1);
 #ifdef DEBUG
