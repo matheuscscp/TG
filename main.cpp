@@ -328,10 +328,10 @@ int p(int u) {
 
 // necessary preprocessing for Boy de la Tour's algorithm
 void preprocess() {
-  auto toposort = [](int u, int v){ return pos(u) < pos(v); };
+  auto toposortless = [](int u, int v) { return pos(u) < pos(v); };
   for (int u = 0; u < G.size(); u++) {
     auto& phi = G[u];
-    sort(phi.down.begin(),phi.down.end(),toposort);
+    sort(phi.down.begin(),phi.down.end(),toposortless);
     phi.p = p(u);
   }
 }
@@ -369,12 +369,47 @@ void R_rec(int u, int a) {
   
   if (renamed) {
     R.push_back(u);
-    phi.type |= (1<<7);
     phi.variable = nextvar++;
     phi.p = 1;
     stringstream ss;
     ss << "rnm" << phi.variable;
     varname[phi.variable] = ss.str();
+  }
+}
+
+// apply renaming
+void rename() {
+  if (R.size() == 0) return;
+  
+  // move old root to new vertex
+  int oldroot = G.size(); G.emplace_back();
+  G[oldroot] = G[0];
+  
+  // init new root
+  G[0].type = CONJ;
+  G[0].down.clear();
+  G[0].down.push_back(oldroot);
+  
+  // add new definitions
+  for (int u : R) {
+    // create disjunction
+    int dis = G.size(); G.emplace_back();
+    G[dis].type = DISJ;
+    G[0].down.push_back(dis);
+    
+    // create negation
+    int neg = G.size(); G.emplace_back();
+    G[neg].type = NEGA;
+    G[dis].down.push_back(neg);
+    G[neg].down.push_back(u);
+    
+    // move renamed formula
+    int v = G.size(); G.emplace_back();
+    G[v] = G[u];
+    G[dis].down.push_back(v);
+    
+    // change renamed formula to variable
+    G[u].type = ATOM;
   }
 }
 
@@ -392,7 +427,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
   stringstream ss;
   function<void(int)> dfs = [&](int u) {
     auto& phi = formula[u];
-    if (phi.type == ATOM || phi.type&(1<<7)) {
+    if (phi.type == ATOM) {
       ss << varname[phi.variable];
       return;
     }
@@ -412,7 +447,7 @@ string arr2str(const vector<Vertex>& formula, int root = 0) {
     ss << ")";
   };
   auto& phi = formula[root];
-  if (phi.type == ATOM || phi.type&(1<<7)) {
+  if (phi.type == ATOM) {
     ss << varname[phi.variable];
     return ss.str();
   }
@@ -447,20 +482,8 @@ int main() {
   DBG(cout << "min DAG:    " << arr2str(G) << endl);
   preprocess();
   DBG(cout << "toposorted: " << arr2str(G) << endl);
-  R_rec(0,1);
-#ifdef DEBUG
-  cout << "renamed:    ";
-  if (R.size() > 0) cout << "(";
-  cout << arr2str(G);
-  if (R.size() > 0) cout << ")";
-  for (int u : R) {
-    auto& phi = G[u];
-    phi.type &= ~(1<<7);
-    cout << " & (~rnm" << phi.variable << " | (" << arr2str(G,u) << "))";
-    phi.type |=  (1<<7);
-  }
-  cout << endl;
-#endif
+  R_rec(0,1); rename();
+  DBG(cout << "renamed:    " << arr2str(G) << endl);
   
   return 0;
 }
