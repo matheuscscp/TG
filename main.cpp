@@ -435,12 +435,12 @@ void cnf() {
         }
       }
       if (con < 0) return;
-      int rem = G.size(); G.emplace_back();
+      int rem = G.size(); G.emplace_back(); visited.push_back(false);
       G[rem] = G[u];
       G[u].type = CONJ;
       G[u].down.clear();
       for (int v : G[con].down) {
-        int dis = G.size(); G.emplace_back();
+        int dis = G.size(); G.emplace_back(); visited.push_back(false);
         G[dis].type = DISJ;
         G[dis].down.push_back(rem);
         G[dis].down.push_back(v);
