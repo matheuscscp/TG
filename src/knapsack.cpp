@@ -8,12 +8,10 @@ static int64_t p(vector<int>& Rnm) {
     if (ans) return ans;
     switch (char(G[u].type&~(1<<7))) {
       case CONJ:
-        ans = 0;
-        for (int v : G[u].down) ans += (G[v].type&(1<<7) ? 1 : f(v));
+        ans = 0; for (int v : G[u].down) ans += (G[v].type&(1<<7) ? 1 : f(v));
         break;
       case DISJ:
-        ans = 1;
-        for (int v : G[u].down) ans *= (G[v].type&(1<<7) ? 1 : f(v));
+        ans = 1; for (int v : G[u].down) ans *= (G[v].type&(1<<7) ? 1 : f(v));
         break;
       default:
         ans = 1;
@@ -29,15 +27,15 @@ static int64_t p(vector<int>& Rnm) {
   return ret;
 }
 
-// f(i,j) = "optimal solution, with at most j subformulas, considering
+// f(i,j) = "optimal renaming, with at most j subformulas, considering
 //           subformulas labeled from 1 to i"
 // then...
 // f(0,j) = f(i,0) = {}
 // f(i,j) = { f(i-1,j-1) U {i}          if p(f(i-1,j-1) U {i}) < p(f(i-1,j))
 //          { f(i-1,j)                  otherwise
 void knapsack() {
-  vector<int> nodes(1);
-  { // find nodes with BFS
+  vector<int> subformulas;
+  { // find subformulas with BFS
     vector<bool> found(G.size(),false);
     found[0] = true;
     queue<int> Q;
@@ -47,16 +45,16 @@ void knapsack() {
       for (int v : G[u].down) if (!found[v]) {
         found[v] = true;
         Q.push(v);
-        nodes.push_back(v);
+        subformulas.push_back(v);
       }
     }
   }
   
   // knapsack 0-1
-  int n = nodes.size()-1;
+  int n = subformulas.size()-1;
   vector<vector<int>> dp(n+1);
-  for (int i = 1; i <= n; i++) for (int j = n; 1 <= j; j--) {
-    vector<int> alt = dp[j-1]; alt.push_back(nodes[i]);
+  for (int i = 0; i < n; i++) for (int j = n; 1 <= j; j--) {
+    vector<int> alt = dp[j-1]; alt.push_back(subformulas[i]);
     if (p(alt) < p(dp[j])) dp[j] = alt;
   }
   // as dp[j] is now f(n,j), we have that R = dp[n] = f(n,n).

@@ -22,16 +22,6 @@ static int p(int u) {
   return ans;
 }
 
-// necessary preprocessing for Boy de la Tour's algorithm
-static void preprocess() {
-  auto toposortless = [](int u, int v) { return pos(u) < pos(v); };
-  for (int u = 0; u < G.size(); u++) {
-    auto& phi = G[u];
-    sort(phi.down.begin(),phi.down.end(),toposortless);
-    phi.p = p(u);
-  }
-}
-
 // Boy de la Tour's top-down renaming
 static void R_rec(int u, int a) {
   auto& phi = G[u];
@@ -70,6 +60,13 @@ static void R_rec(int u, int a) {
 }
 
 void boydelatour() {
-  preprocess();
-  R_rec(0,1);
+  // necessary preprocessing for Boy de la Tour's algorithm
+  auto toposortless = [](int u, int v) { return pos(u) < pos(v); };
+  for (int u = 0; u < G.size(); u++) {
+    auto& phi = G[u];
+    sort(phi.down.begin(),phi.down.end(),toposortless);
+    phi.p = p(u);
+  }
+  
+  R_rec(0,1); // recursive algorithm
 }
