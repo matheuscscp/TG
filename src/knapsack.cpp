@@ -1,7 +1,7 @@
 #include "definitions.hpp"
 
 // p(Rnm) = number of clauses if we rename the subformulas in Rnm
-static int64_t p(vector<int>& Rnm) {
+static int64_t p(const vector<int>& Rnm) {
   vector<int64_t> dp(G.size(),0);
   function<int64_t(int)> f = [&](int u) {
     int64_t& ans = dp[u];
@@ -51,12 +51,13 @@ void knapsack() {
   }
   
   // knapsack 0-1
-  int n = subformulas.size()-1;
+  int n = subformulas.size();
   vector<vector<int>> dp(n+1);
   for (int i = 0; i < n; i++) for (int j = n; 1 <= j; j--) {
     vector<int> alt = dp[j-1]; alt.push_back(subformulas[i]);
     if (p(alt) < p(dp[j])) dp[j] = alt;
   }
+  
   // as dp[j] is now f(n,j), we have that R = dp[n] = f(n,n).
   // alternatively, R may be f(n,K), for some K <= n.
   R = dp[n];
