@@ -1,41 +1,4 @@
-#include <bits/stdc++.h>
-using namespace std;
-
-#ifdef DEBUG
-  #define SHW(X) (cout << ">>> " << #X << ": " << (X) << endl), fflush(stdout)
-  #define DBG(X) X
-#else
-  #define SHW(X)
-  #define DBG(X)
-#endif
-
-// IMPLEMENTACAO/TESTES
-// dp para otimizar o renaming limitando o nro maximo de variaveis
-// procurar um benchmark e adaptar a entrada para ele
-// adaptar a saida para algum provador
-
-// MONOGRAFIA
-// colocar exemplo 3.2
-
-#define MAXN    100005
-#define clip(X) min(X,10000)
-
-// formula
-enum {CONJ=0,DISJ,IMPL,EQUI,NEGA,ATOM};
-struct Vertex {
-  char type;
-  int variable;
-  int up;
-  vector<int> down;
-  int p;
-  Vertex() : p(1) {}
-};
-string raw; // input
-vector<Vertex> T,G; // tree and DAG
-int nextvar = 1; // next variable id
-unordered_map<int,string> varname; // variables' names
-vector<int> R; // renamed formulas
-set<set<int>> finalcnf;
+#include "definitions.hpp"
 
 // parse string raw to build tree T
 void parse() {
@@ -309,83 +272,29 @@ void mindag() {
   }
 }
 
-// position of u in a reverse toposort
-int pos(int u) {
-  static int next = 1, dp[MAXN] = {};
-  int& ans = dp[u];
-  if (ans) return ans;
-  for (int v : G[u].down) pos(v);
-  return ans = next++;
-}
-
-// p(phi(u))
-int p(int u) {
-  static int dp[MAXN] = {};
-  int& ans = dp[u];
-  if (ans) return ans;
-  switch (G[u].type) {
-    case CONJ: ans = 0; for (int v : G[u].down) ans = clip(ans+p(v)); break;
-    case DISJ: ans = 1; for (int v : G[u].down) ans = clip(ans*p(v)); break;
-    default:   ans = 1; break;
-  }
-  return ans;
-}
-
-// necessary preprocessing for Boy de la Tour's algorithm
-void preprocess() {
-  auto toposortless = [](int u, int v) { return pos(u) < pos(v); };
-  for (int u = 0; u < G.size(); u++) {
+// apply renaming
+void boydelatour();
+void knapsack();
+static function<void()> renalgos[] = {
+  boydelatour,
+  knapsack
+};
+enum {
+  BOYDELATOUR = 0,
+  KNAPSACK
+};
+void rename(int algo) {
+  renalgos[algo](); // use selected algorithm to fill vector R
+  if (R.size() == 0) return;
+  
+  // create new variables
+  for (int u : R) {
     auto& phi = G[u];
-    sort(phi.down.begin(),phi.down.end(),toposortless);
-    phi.p = p(u);
-  }
-}
-
-// Boy de la Tour's top-down renaming
-void R_rec(int u, int a) {
-  auto& phi = G[u];
-  if (phi.p == 1) return;
-  
-  // check renaming condition
-  bool renamed = false;
-  if (a > 1) {
-    a = 1;
-    renamed = true;
-  }
-  
-  // search children
-  if (phi.type == CONJ) {
-    for (int v : phi.down) R_rec(v,a);
-    phi.p = 0; for (int v : phi.down) phi.p = clip(phi.p+G[v].p);
-  }
-  else { // phi.type == DISJ
-    int n = phi.down.size();
-    
-    vector<int> dp(n,1); // dp[i] = prod(phi_j.p), i < j < n
-    for (int i = n-2; 0 <= i; i--) dp[i] = clip(G[phi.down[i+1]].p*dp[i+1]);
-    
-    int ai = a; // ai = a*prod(phi_j.p), 0 <= j < i
-    for (int i = 0; i < n; i++) {
-      R_rec(phi.down[i],clip(ai*dp[i]));
-      ai = clip(ai*G[phi.down[i]].p);
-    }
-    phi.p = 1; for (int v : phi.down) phi.p = clip(phi.p*G[v].p);
-  }
-  
-  if (renamed) {
-    R.push_back(u);
     phi.variable = nextvar++;
-    phi.p = 1;
     stringstream ss;
     ss << "$" << phi.variable;
     varname[phi.variable] = ss.str();
   }
-}
-
-// apply renaming
-void rename() {
-  R_rec(0,1); // renaming search. fills vector R with the selected vertices
-  if (R.size() == 0) return;
   
   // move old root to new vertex
   int oldroot = G.size(); G.emplace_back();
@@ -457,19 +366,21 @@ void cnf() {
 void simplifycnf() {
   // remove repetions and satisfied clauses
   for (int u : G[0].down) {
-    set<int> tmp2;
+    set<int> tmp;
     bool satisfied = false;
-    for (int v : G[u].down) {
+    if (G[u].type == ATOM)      tmp.insert(G[u].variable);
+    else if (G[u].type == NEGA) tmp.insert(G[G[u].down.front()].variable);
+    else for (int v : G[u].down) {
       int lit;
       if (G[v].type == ATOM)  lit = G[v].variable;
       else                    lit = -G[G[v].down.front()].variable;
-      if (tmp2.find(-lit) == tmp2.end()) tmp2.insert(lit);
+      if (tmp.find(-lit) == tmp.end()) tmp.insert(lit);
       else {
         satisfied = true;
         break;
       }
     }
-    if (!satisfied) finalcnf.insert(tmp2);
+    if (!satisfied) finalcnf.insert(tmp);
   }
   // remove super clauses
   for (auto it = finalcnf.begin(); it != finalcnf.end();) {
@@ -582,9 +493,7 @@ int main() {
   DBG(cout << "DAG:        " << arr2str(G) << endl);
   mindag();
   DBG(cout << "min DAG:    " << arr2str(G) << endl);
-  preprocess();
-  DBG(cout << "toposorted: " << arr2str(G) << endl);
-  rename();
+  rename(KNAPSACK);
   DBG(cout << "renamed:    " << arr2str(G) << endl);
   cnf();
   DBG(cout << "CNF:        " << arr2str(G) << endl);
