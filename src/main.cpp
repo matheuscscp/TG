@@ -273,14 +273,17 @@ void mindag() {
 }
 
 // apply renaming
+void norenaming() {}
 void boydelatour();
 void knapsack();
 static function<void()> renalgos[] = {
+  norenaming,
   boydelatour,
   knapsack
 };
 enum {
-  BOYDELATOUR = 0,
+  NORENAMING = 0,
+  BOYDELATOUR,
   KNAPSACK
 };
 void rename(int algo) {
@@ -292,7 +295,7 @@ void rename(int algo) {
     auto& phi = G[u];
     phi.variable = nextvar++;
     stringstream ss;
-    ss << "$" << phi.variable;
+    ss << "pimenta" << phi.variable;
     varname[phi.variable] = ss.str();
   }
   
@@ -362,9 +365,8 @@ void cnf() {
   dfs(0);
 }
 
-// compute final CNF removing tautologies, super and repeated clauses from DAG G
+// simplify final CNF removing tautologies and repeated clauses from DAG G
 void simplifycnf() {
-  // remove repetions and tautologies
   for (int u : G[0].down) {
     set<int> tmp;
     bool tautology = false;
@@ -381,26 +383,6 @@ void simplifycnf() {
       }
     }
     if (!tautology) finalcnf.insert(tmp);
-  }
-  // remove super clauses
-  for (auto it = finalcnf.begin(); it != finalcnf.end();) {
-    bool found = false;
-    for (auto it2 = finalcnf.begin(); it2 != finalcnf.end(); it2++) {
-      if (it2 == it || it2->size() > it->size()) continue;
-      auto i = it->begin();
-      auto i2 = it2->begin();
-      while (i2 != it2->end() && i != it->end()) {
-        if (*i2 > *i) i++;
-        else if (*i2 == *i) i2++, i++;
-        else break;
-      }
-      if (i2 == it2->end()) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) it++;
-    else        finalcnf.erase(it++);
   }
 }
 
