@@ -362,12 +362,12 @@ void cnf() {
   dfs(0);
 }
 
-// compute final CNF removing satisfied, super and repeated clauses from DAG G
+// compute final CNF removing tautologies, super and repeated clauses from DAG G
 void simplifycnf() {
-  // remove repetions and satisfied clauses
+  // remove repetions and tautologies
   for (int u : G[0].down) {
     set<int> tmp;
-    bool satisfied = false;
+    bool tautology = false;
     if (G[u].type == ATOM)      tmp.insert(G[u].variable);
     else if (G[u].type == NEGA) tmp.insert(G[G[u].down.front()].variable);
     else for (int v : G[u].down) {
@@ -376,11 +376,11 @@ void simplifycnf() {
       else                    lit = -G[G[v].down.front()].variable;
       if (tmp.find(-lit) == tmp.end()) tmp.insert(lit);
       else {
-        satisfied = true;
+        tautology = true;
         break;
       }
     }
-    if (!satisfied) finalcnf.insert(tmp);
+    if (!tautology) finalcnf.insert(tmp);
   }
   // remove super clauses
   for (auto it = finalcnf.begin(); it != finalcnf.end();) {
