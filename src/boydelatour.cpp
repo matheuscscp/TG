@@ -29,7 +29,7 @@ static void R_rec(int u, int a) {
   
   // check renaming condition
   bool renamed = false;
-  if (a > 1) { // ap >= a+p. to check if ap > a+p, add && (a!=2 || p!=2)
+  if (a >= 2 && (a != 2 || phi.p != 2)) { // ap > a+p
     a = 1;
     renamed = true;
   }
