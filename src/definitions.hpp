@@ -16,14 +16,14 @@ using namespace std;
 #define clip(X) min(X,10000)
 
 // formula
-enum {CONJ=0,DISJ,IMPL,EQUI,NEGA,ATOM};
+enum {CONJ=1,DISJ,IMPL,EQUI,NEGA,ATOM};
 struct Vertex {
   char type;
   int variable;
   int up;
   vector<int> down;
   int p;
-  Vertex() : p(1) {}
+  Vertex() : type(0), p(1) {}
 };
 extern string raw; // input
 extern vector<Vertex> T,G; // tree and DAG

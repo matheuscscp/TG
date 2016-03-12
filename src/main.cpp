@@ -12,58 +12,61 @@ void parse() {
     ;
   };
   
+  // remove redundant parentheses
+  auto compress = [](int u) {
+    int up = T[u].up;
+    while (T[u].type != NEGA && T[u].down.size() == 1) {
+      auto& v = T[T[u].down[0]];
+      T[u] = v;
+      v.down = vector<int>();
+    }
+    T[u].up = up;
+    for (int v : T[u].down) T[v].up = u;
+  };
+  
   T.emplace_back();
-  T.back().type = CONJ;
-  T.back().up = 0;
+  T[0].up = 0;
   stack<int> S;
   S.push(0);
   unordered_map<string,int> id;
   for (int i = 0; i < raw.size(); i++) {
     char c = raw[i];
-    if (c == ' ' || c == '\t') continue;
-    else if (c == '&') T[S.top()].type = CONJ;
+         if (c == '&') T[S.top()].type = CONJ;
     else if (c == '|') T[S.top()].type = DISJ;
-    else if (c == '=') { T[S.top()].type = IMPL; i++; }
-    else if (c == '<') { T[S.top()].type = EQUI; i += 2; }
+    else if (c == '=') {
+      T[S.top()].type = IMPL;
+      while (raw[i] != '>') i++;
+    }
+    else if (c == '<') {
+      T[S.top()].type = EQUI;
+      while (raw[i] != '=') i++;
+      while (raw[i] != '>') i++;
+    }
     else if (c == '(' || c == '~') { // push
-      S.push(T.size());
-      T.emplace_back();
-      T.back().type = (c == '(' ? CONJ : NEGA);
+      int u = S.top(), v = T.size(); T.emplace_back();
+      T[u].down.push_back(v);
+      if (c == '~') T[v].type = NEGA;
+      T[v].up = u;
+      S.push(v);
     }
     else if (c == ')') { // pop
-      int u = S.top();
-      S.pop();
-      T[u].up = S.top();
-      T[S.top()].down.push_back(u);
-      if (T[S.top()].type == NEGA) i--;
-      // removing multiple parentheses
-      if (T[u].type != NEGA && T[u].down.size() == 1) {
-        int u1 = T[u].down.front();
-        T[u].type = T[u1].type;
-        T[u].down = T[u1].down;
-        for (int v : T[u].down) T[v].up = u;
-      }
+      compress(S.top()); S.pop();
+      while (T[S.top()].type == NEGA) S.pop();
     }
-    else { // variable
+    else if (isvarsym(c)) { // variable
       string tmp = {raw[i]};
       while (i+1 < raw.size() && isvarsym(raw[i+1])) tmp += raw[++i];
       int& var = id[tmp];
       if (!var) { var = nextvar++; varname[var] = tmp; }
-      T[S.top()].down.push_back(T.size());
-      T.emplace_back();
-      T.back().type = ATOM;
-      T.back().variable = var;
-      T.back().up = S.top();
-      if (T[S.top()].type == NEGA) { raw[i] = ')'; i--; }
+      int u = S.top(), v = T.size(); T.emplace_back();
+      T[u].down.push_back(v);
+      T[v].type = ATOM;
+      T[v].variable = var;
+      T[v].up = u;
+      while (T[S.top()].type == NEGA) S.pop();
     }
   }
-  // removing multiple parentheses
-  if (T[0].down.size() == 1) {
-    int u = T[0].down.front();
-    T[0].type = T[u].type;
-    T[0].down = T[u].down;
-    for (int v : T[0].down) T[v].up = 0;
-  }
+  compress(0);
 }
 
 // put tree T in NNF
@@ -295,7 +298,7 @@ void rename(int algo) {
     auto& phi = G[u];
     phi.variable = nextvar++;
     stringstream ss;
-    ss << "pimenta" << phi.variable;
+    ss << "rnm" << phi.variable;
     varname[phi.variable] = ss.str();
   }
   
