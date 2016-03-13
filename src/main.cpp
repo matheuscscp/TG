@@ -1,5 +1,7 @@
 #include "definitions.hpp"
 
+using namespace std;
+
 // parse string raw to build tree T
 void parse() {
   // tells if a character is valid for a variable name

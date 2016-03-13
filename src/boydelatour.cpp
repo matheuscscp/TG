@@ -1,18 +1,23 @@
 #include "definitions.hpp"
 
+#define clip(X) min(X,10000)
+
+using namespace std;
+
 // position of u in a reverse toposort
+static vector<int> posdp;
 static int pos(int u) {
-  static int next = 1, dp[MAXN] = {};
-  int& ans = dp[u];
+  static int next = 1;
+  int& ans = posdp[u];
   if (ans) return ans;
   for (int v : G[u].down) pos(v);
   return ans = next++;
 }
 
 // p(phi(u))
+static vector<int> pdp;
 static int p(int u) {
-  static int dp[MAXN] = {};
-  int& ans = dp[u];
+  int& ans = pdp[u];
   if (ans) return ans;
   switch (G[u].type) {
     case CONJ: ans = 0; for (int v : G[u].down) ans = clip(ans+p(v)); break;
@@ -60,7 +65,12 @@ static void R_rec(int u, int a) {
 }
 
 void boydelatour() {
+  // dp tables
+  posdp = vector<int>(G.size(),0);
+  pdp = vector<int>(G.size(),0);
+  
   // necessary preprocessing for Boy de la Tour's algorithm
+  // compute p field and reverse toposort edges
   auto toposortless = [](int u, int v) { return pos(u) < pos(v); };
   for (int u = 0; u < G.size(); u++) {
     auto& phi = G[u];

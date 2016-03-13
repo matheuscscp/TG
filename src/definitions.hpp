@@ -2,7 +2,6 @@
 #define DEFINITIONS_HPP
 
 #include <bits/stdc++.h>
-using namespace std;
 
 #ifdef DEBUG
   #define SHW(X) (cout << ">>> " << #X << ": " << (X) << endl), fflush(stdout)
@@ -12,24 +11,27 @@ using namespace std;
   #define DBG(X)
 #endif
 
-#define MAXN    100005
-#define clip(X) min(X,10000)
-
-// formula
+// =============================================================================
+// Formula
+// =============================================================================
 enum {CONJ=1,DISJ,IMPL,EQUI,NEGA,ATOM};
 struct Vertex {
   char type;
   int variable;
   int up;
-  vector<int> down;
+  std::vector<int> down;
   int p;
-  Vertex() : type(0), p(1) {}
+  Vertex();
 };
-extern string raw; // input
-extern vector<Vertex> T,G; // tree and DAG
+
+// =============================================================================
+// Globals
+// =============================================================================
+extern std::string raw; // input
+extern std::vector<Vertex> T,G; // tree and DAG
 extern int nextvar; // next variable id
-extern unordered_map<int,string> varname; // variables' names
-extern vector<int> R; // renamed formulas
-extern set<set<int>> finalcnf;
+extern std::unordered_map<int,std::string> varname; // variables' names
+extern std::vector<int> R; // renamed formulas
+extern std::set<std::set<int>> finalcnf;
 
 #endif
