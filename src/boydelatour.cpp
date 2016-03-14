@@ -1,4 +1,4 @@
-#include "definitions.hpp"
+#include "libtg.hpp"
 
 #define clip(X) min(X,10000)
 
