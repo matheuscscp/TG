@@ -1,4 +1,7 @@
 
+IMPLEMENTACAO:
+  implementar a simplificacao da CNF direto na distribuicao, mas deixar toggle
+
 MONOGRAFIA:
   colocar exemplo 3.2
 
