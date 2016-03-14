@@ -1,4 +1,8 @@
 
-MONOGRAFIA
-- colocar exemplo 3.2
+MONOGRAFIA:
+  colocar exemplo 3.2
+
+DUVIDAS:
+  é verdade que ninguem fez o nosso experimento ainda? "formulas menores dao resposta mais rapidamente em provadores"
+  o knapsack? é novo mesmo?
 
