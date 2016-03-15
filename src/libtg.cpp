@@ -358,7 +358,8 @@ void cnf() {
 void simplecnf() {
   CNF.simple = true;
   
-  auto insert = [](set<int>& clause, int lit) {
+  auto insert = [](set<int>& clause, int u) {
+    int lit = (G[u].type == ATOM ? G[u].variable : -G[G[u].down[0]].variable);
     if (clause.find(-lit) != clause.end()) return false; // tautology
     clause.insert(lit);
     return true;
@@ -373,11 +374,9 @@ void simplecnf() {
       int con = -1;
       for (auto it = G[u].down.begin(); it != G[u].down.end(); it++) {
         if (G[*it].type == ATOM || G[*it].type == NEGA) {
-          int lit = G[*it].variable;
-          if (G[*it].type == NEGA) lit = -G[G[*it].down[0]].variable;
-          if (!insert(clause,lit)) { G[u].remove(); return; }
+          if (!insert(clause,*it)) { G[u].remove(); return; }
         }
-        else if (G[*it].type == CONJ) {
+        else {
           con = *it;
           G[u].down.erase(it);
           break;
@@ -395,6 +394,12 @@ void simplecnf() {
         G[dis].down.push_back(v);
         G[u].down.push_back(dis);
       }
+    }
+    else if (G[u].type != CONJ) {
+      set<int> clause;
+      insert(clause,u);
+      simplified.insert(clause);
+      return;
     }
     for (int v : G[u].down) if (!visited[v]) dfs(v);
     flat(G,u);
