@@ -25,6 +25,10 @@ struct Vertex {
   Vertex();
   void remove();
 };
+struct CNF_t {
+  bool simple;
+  CNF_t();
+};
 
 // =============================================================================
 // Globals
@@ -35,7 +39,8 @@ extern std::vector<Vertex> T,G;                     // tree and DAG
 extern int nextvar;                                 // next variable id
 extern std::unordered_map<int,std::string> varname; // variables' names
 extern std::vector<int> R;                          // renaming
-extern std::set<std::set<int>> finalcnf;            // final CNF
+extern std::set<std::set<int>> simplified;          // simplified CNF
+extern CNF_t CNF;                                   // final CNF
 
 // =============================================================================
 // Functions
@@ -50,10 +55,10 @@ void boydelatour(); // Boy de la Tour's algorithm to choose a renaming
 void knapsack();    // Knapsack 0-1 based algorithm to choose a renaming
 void rename();      // apply renaming R to DAG G
 void cnf();         // put DAG G in CNF (G must be in NNF)
-void simplifycnf(); // simplify CNF in DAG G to set of clauses finalcnf
-                    // removing tautologies and repeated clauses
+void simplecnf();   // put DAG G in CNF (G must be in NNF), removing
+                    // tautologies, repeated literals and repeated clauses
 
 std::ostream& operator<<(std::ostream&, const std::vector<Vertex>&);
-std::ostream& operator<<(std::ostream&, const std::set<std::set<int>>&);
+std::ostream& operator<<(std::ostream&, const CNF_t&);
 
 #endif

@@ -12,7 +12,6 @@ int main() {
   knapsack();
   rename();
   cnf();
-  simplifycnf();
-  cout << "(" << raw << ") <=> (" << finalcnf << ")\n";
+  cout << "(" << raw << ") <=> (" << CNF << ")\n";
   return 0;
 }

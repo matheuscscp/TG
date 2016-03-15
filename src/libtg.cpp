@@ -11,7 +11,8 @@ vector<Vertex> T,G;
 int nextvar = 1;
 unordered_map<int,string> varname;
 vector<int> R;
-set<set<int>> finalcnf;
+set<set<int>> simplified;
+CNF_t CNF;
 
 // =============================================================================
 // Implementation
@@ -23,6 +24,8 @@ void Vertex::remove() {
   type = 0;
   vector<int>().swap(down);
 }
+
+CNF_t::CNF_t() : simple(false) {}
 
 void parse() {
   // advance index i (in string raw) until next c character
@@ -352,7 +355,8 @@ void cnf() {
   dfs(0);
 }
 
-void simplifycnf() {
+void simplecnf() {
+  CNF.simple = true;
   for (int u : G[0].down) {
     set<int> tmp;
     bool tautology = false;
@@ -368,7 +372,7 @@ void simplifycnf() {
         break;
       }
     }
-    if (!tautology) finalcnf.insert(tmp);
+    if (!tautology) simplified.insert(tmp);
   }
 }
 
@@ -407,9 +411,10 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
   return os;
 }
 
-ostream& operator<<(ostream& os, const set<set<int>>& formula) {
+ostream& operator<<(ostream& os, const CNF_t& formula) {
+  if (!formula.simple) return os << G;
   bool pr1 = false;
-  for (auto& clause : formula) {
+  for (auto& clause : simplified) {
     if (pr1) os << " & ";
     pr1 = true;
     bool pr2 = false;
