@@ -1,11 +1,11 @@
 
 IMPLEMENTACAO:
-  implementar a simplificacao da CNF direto na distribuicao, mas deixar toggle
+  arrumar o seguinte bug na conversao para DAG: (p & q) = (p | q)
 
 MONOGRAFIA:
   colocar exemplo 3.2
 
 DUVIDAS:
-  é verdade que ninguem fez o nosso experimento ainda? "formulas menores dao resposta mais rapidamente em provadores"
-  o knapsack? é novo mesmo?
+  é verdade que ninguem fez o nosso experimento ainda? "formulas menores dao resposta mais rapidamente"
+  o knapsack é novo mesmo?
 

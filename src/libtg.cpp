@@ -357,23 +357,49 @@ void cnf() {
 
 void simplecnf() {
   CNF.simple = true;
-  for (int u : G[0].down) {
-    set<int> tmp;
-    bool tautology = false;
-    if (G[u].type == ATOM)      tmp.insert(G[u].variable);
-    else if (G[u].type == NEGA) tmp.insert(G[G[u].down[0]].variable);
-    else for (int v : G[u].down) {
-      int lit;
-      if (G[v].type == ATOM)  lit = G[v].variable;
-      else                    lit = -G[G[v].down[0]].variable;
-      if (tmp.find(-lit) == tmp.end()) tmp.insert(lit);
-      else {
-        tautology = true;
-        break;
+  
+  auto insert = [](set<int>& clause, int lit) {
+    if (clause.find(-lit) != clause.end()) return false; // tautology
+    clause.insert(lit);
+    return true;
+  };
+  
+  vector<bool> visited(G.size(),false);
+  function<void(int)> dfs = [&](int u) {
+    visited[u] = true;
+    flat(G,u);
+    if (G[u].type == DISJ) {
+      set<int> clause;
+      int con = -1;
+      for (auto it = G[u].down.begin(); it != G[u].down.end(); it++) {
+        if (G[*it].type == ATOM || G[*it].type == NEGA) {
+          int lit = G[*it].variable;
+          if (G[*it].type == NEGA) lit = -G[G[*it].down[0]].variable;
+          if (!insert(clause,lit)) { G[u].remove(); return; }
+        }
+        else if (G[*it].type == CONJ) {
+          con = *it;
+          G[u].down.erase(it);
+          break;
+        }
+      }
+      if (con < 0) { simplified.insert(clause); return; }
+      int rem = G.size(); G.emplace_back(); visited.push_back(false);
+      G[rem] = G[u];
+      G[u].type = CONJ;
+      G[u].down.clear();
+      for (int v : G[con].down) {
+        int dis = G.size(); G.emplace_back(); visited.push_back(false);
+        G[dis].type = DISJ;
+        G[dis].down.push_back(rem);
+        G[dis].down.push_back(v);
+        G[u].down.push_back(dis);
       }
     }
-    if (!tautology) simplified.insert(tmp);
-  }
+    for (int v : G[u].down) if (!visited[v]) dfs(v);
+    flat(G,u);
+  };
+  dfs(0);
 }
 
 // char vertex type to string operator

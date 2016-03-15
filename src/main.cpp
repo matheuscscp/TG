@@ -11,7 +11,7 @@ int main() {
   mindag();
   knapsack();
   rename();
-  cnf();
+  simplecnf();
   cout << "(" << raw << ") <=> (" << CNF << ")\n";
   return 0;
 }
