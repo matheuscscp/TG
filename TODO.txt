@@ -1,7 +1,4 @@
 
-IMPLEMENTACAO:
-  arrumar o seguinte bug na conversao para DAG: (p & q) = (p | q)
-
 MONOGRAFIA:
   colocar exemplo 3.2
 

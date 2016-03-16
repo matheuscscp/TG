@@ -6,7 +6,7 @@ int main() {
   getline(cin,raw);
   parse();
   nnf();
-  //flat();
+  flat();
   dag();
   mindag();
   knapsack();

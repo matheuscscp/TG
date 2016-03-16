@@ -233,12 +233,12 @@ void dag() {
   }
   
   // search tree bottom-up to create vertices for subformulas
-  for (map<set<int>,int> newc_newp; !oldp_newc.empty();) {
+  for (map<pair<char,set<int>>,int> newc_newp; !oldp_newc.empty();) {
     list<pair<int,int>> tmp;
     for (auto kv = oldp_newc.begin(); kv != oldp_newc.end();) {
       auto& phi = T[kv->first];
       if (kv->second.second < phi.down.size()) { kv++; continue; }
-      int& u = newc_newp[kv->second.first];
+      int& u = newc_newp[make_pair(phi.type,kv->second.first)];
       if (!u) {
         if (kv->first) u = G.size(), G.emplace_back();
         G[u].type = phi.type;
