@@ -2,14 +2,12 @@ CC   = g++ -std=c++1y
 SRCS = $(shell find src -name '*.cpp')
 OBJS = $(addprefix obj/,$(notdir $(SRCS:%.cpp=%.o)))
 
-.PRECIOUS: $(OBJS)
+bin/tg: $(OBJS) bin
+	$(CC) $(OBJS) -o $@
 
 obj/%.o: src/%.cpp
 	mkdir -p obj
 	$(CC) -c $< -o $@
-
-bin/tg: $(OBJS) bin
-	$(CC) $(OBJS) -o $@
 
 bin:
 	mkdir -p bin
