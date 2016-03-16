@@ -1,6 +1,6 @@
 
 IMPLEMENTACAO:
-  implementar dados do benchmark
+  implementar main
 
 MONOGRAFIA:
   colocar exemplo 3.2

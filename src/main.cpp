@@ -13,5 +13,6 @@ int main() {
   rename();
   simplecnf();
   cout << "(" << raw << ") <=> (" << CNF << ")\n";
+  cout << CNF.size() << " " << CNF.clauses() << " " << CNF.symbols() << endl;
   return 0;
 }

@@ -27,6 +27,39 @@ void Vertex::remove() {
 
 CNF_t::CNF_t() : simple(false) {}
 
+int CNF_t::size() const {
+  if (!simple) return ::size(G);
+  if (simplified.size() == 0) return 1;
+  int ret = simplified.size()-1;
+  for (auto& clause : simplified) {
+    if (clause.size() == 0) ret++;
+    else if (clause.size() == 1) {
+      ret++;
+      if (*clause.begin() < 0) ret++;
+    }
+    else {
+      ret += (clause.size()-1);
+      for (int l : clause) {
+        ret++;
+        if (l < 0) ret++;
+      }
+    }
+  }
+  return ret;
+}
+
+uint_t CNF_t::clauses() const {
+  if (!simple) return ::clauses(G);
+  return simplified.size();
+}
+
+int CNF_t::symbols() const {
+  if (!simple) return ::symbols(G);
+  unordered_set<int> symbols;
+  for (auto& clause : simplified) for (int l : clause) symbols.insert(abs(l));
+  return symbols.size();
+}
+
 void parse() {
   // advance index i (in string raw) until next c character
   auto find = [](char c, int& i) {
@@ -413,6 +446,46 @@ void simplecnf() {
     flat(G,u);
   };
   dfs(0);
+}
+
+int size(const vector<Vertex>& formula) {
+  vector<int> dp(formula.size(),0);
+  function<int(int)> dfs = [&](int u) {
+    int& ret = dp[u];
+    if (ret) return ret;
+    if (formula[u].type == ATOM) return ret = 1;
+    ret = (formula[u].type == NEGA ? 1 : 0);
+    for (int v : formula[u].down) ret += (1+dfs(v));
+    ret--;
+    return ret;
+  };
+  return dfs(0);
+}
+
+uint_t clauses(const vector<Vertex>& formula) {
+  vector<uint_t> dp(formula.size(),0);
+  function<uint_t(int)> dfs = [&](int u) {
+    uint_t& ret = dp[u];
+    if (ret) return ret;
+    if (formula[u].type == ATOM || formula[u].type == NEGA) return ret = 1;
+    ret = (formula[u].type == CONJ ? 0 : 1);
+    if (formula[u].type == CONJ)  for (int v : formula[u].down) ret += dfs(v);
+    else                          for (int v : formula[u].down) ret *= dfs(v);
+    return ret;
+  };
+  return dfs(0);
+}
+
+int symbols(const vector<Vertex>& formula) {
+  unordered_set<int> symbols;
+  vector<bool> visited(formula.size(),false);
+  function<void(int)> dfs = [&](int u) {
+    visited[u] = true;
+    if (formula[u].type == ATOM) symbols.insert(formula[u].variable);
+    else for (int v : formula[u].down) if (!visited[v]) dfs(v);
+  };
+  dfs(0);
+  return symbols.size();
 }
 
 // char vertex type to string operator

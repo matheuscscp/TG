@@ -24,7 +24,7 @@ struct CNF_t {
   CNF_t();
   // statistics
      int    size() const; // compute CNF size
-  uint_t clauses() const; // compute number of clauses
+  uint_t clauses() const; // compute number of clauses (formula must be in NNF)
      int symbols() const; // compute number of symbols
 };
 
@@ -60,6 +60,7 @@ void simplecnf();   // put DAG G in CNF (G must be in NNF), removing
 // statistics
    int    size(const std::vector<Vertex>&); // compute formula size
 uint_t clauses(const std::vector<Vertex>&); // compute number of clauses
+                                            // (formula must be in NNF)
    int symbols(const std::vector<Vertex>&); // compute number of symbols
 
 // formatted output
