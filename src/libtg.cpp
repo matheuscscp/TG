@@ -214,6 +214,12 @@ void dag() {
   unordered_map<int,pair<set<int>,int>> oldp_newc;
   G.emplace_back(); // root is always u == 0
   
+  // formula is a single propositional symbol
+  if (T[0].type == ATOM) {
+    G[0] = T[0];
+    return;
+  }
+  
   // create vertices for variables
   for (auto& phi : T) if (phi.type == ATOM) {
     int& u = var_newu[phi.variable];
@@ -449,14 +455,14 @@ ostream& operator<<(ostream& os, const CNF_t& formula) {
     if (pr1) os << " & ";
     pr1 = true;
     bool pr2 = false;
-    os << "(";
+    if (simplified.size() > 1 && clause.size() > 1) os << "(";
     for (int l : clause) {
       if (pr2) os << " | ";
       pr2 = true;
       if (l < 0) os << "~";
       os << varname[abs(l)];
     }
-    os << ")";
+    if (simplified.size() > 1 && clause.size() > 1) os << ")";
   }
   return os;
 }
