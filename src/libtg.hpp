@@ -3,13 +3,7 @@
 
 #include <bits/stdc++.h>
 
-#ifdef DEBUG
-  #define SHW(X) (cout << ">>> " << #X << ": " << (X) << endl), fflush(stdout)
-  #define DBG(X) X
-#else
-  #define SHW(X)
-  #define DBG(X)
-#endif
+#include "uint_t.hpp"
 
 // =============================================================================
 // Types
@@ -28,6 +22,10 @@ struct Vertex {
 struct CNF_t {
   bool simple;
   CNF_t();
+  // statistics
+     int    size() const; // compute CNF size
+  uint_t clauses() const; // compute number of clauses
+     int symbols() const; // compute number of symbols
 };
 
 // =============================================================================
@@ -46,6 +44,7 @@ extern CNF_t CNF;                                   // final CNF
 // Functions
 // =============================================================================
 
+// transformation pipeline
 void parse();       // parse string raw to build tree T
 void nnf();         // put tree T in NNF
 void flat();        // flat tree T. (p|(q|r)|s) becomes (p|q|r|s)
@@ -58,6 +57,12 @@ void cnf();         // put DAG G in CNF (G must be in NNF)
 void simplecnf();   // put DAG G in CNF (G must be in NNF), removing
                     // tautologies, repeated literals and repeated clauses
 
+// statistics
+   int    size(const std::vector<Vertex>&); // compute formula size
+uint_t clauses(const std::vector<Vertex>&); // compute number of clauses
+   int symbols(const std::vector<Vertex>&); // compute number of symbols
+
+// formatted output
 std::ostream& operator<<(std::ostream&, const std::vector<Vertex>&);
 std::ostream& operator<<(std::ostream&, const CNF_t&);
 
