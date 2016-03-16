@@ -1,18 +1,17 @@
-CC   = g++ -std=c++1y
-SRCS = $(shell find src -name '*.cpp')
-OBJS = $(addprefix obj/,$(notdir $(SRCS:%.cpp=%.o)))
+CC      = g++-5 -std=c++1y
+SRCS    = $(shell find src -name '*.cpp')
+HEADERS = $(shell find src -name '*.hpp')
+OBJS    = $(addprefix obj/,$(notdir $(SRCS:%.cpp=%.o)))
+EXE     = knapsack_cnf
 
-bin/tg: $(OBJS) bin
+$(EXE): $(OBJS)
 	$(CC) $(OBJS) -o $@
 
-obj/%.o: src/%.cpp
+obj/%.o: src/%.cpp $(HEADERS)
 	mkdir -p obj
 	$(CC) -c $< -o $@
-
-bin:
-	mkdir -p bin
 
 .PHONY: clean
 
 clean:
-	rm -rf obj bin
+	rm -rf $(EXE) obj
