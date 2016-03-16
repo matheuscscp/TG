@@ -180,6 +180,7 @@ void nnf() {
 
 // (p|(q|r)|s) becomes (p|q|r|s)
 static void flat(vector<Vertex>& formula, int u) {
+  bool is_tree = (&formula == &T);
   auto& phi = formula[u];
   for (bool changed = true; changed;) {
     changed = false;
@@ -192,6 +193,7 @@ static void flat(vector<Vertex>& formula, int u) {
       }
       changed = true;
       for (int w : psi.down) newc.insert(w);
+      if (is_tree) psi.remove();
     }
     if (changed) {
       phi.down.clear();
