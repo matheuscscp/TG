@@ -1,4 +1,4 @@
-CC      = g++-5 -std=c++1y
+CC      = g++ -std=c++0x
 SRCS    = $(shell find src -name '*.cpp')
 HEADERS = $(shell find src -name '*.hpp')
 OBJS    = $(addprefix obj/,$(notdir $(SRCS:%.cpp=%.o)))
