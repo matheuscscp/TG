@@ -147,6 +147,10 @@ int main(int argc, char** argv) {
       cerr << exe << ": `" << in_fn << "' not found.\n";
       return -1;
     }
+    reverse(in_fn.begin(),in_fn.end());
+    auto pos = in_fn.find("/");
+    if (pos != string::npos) in_fn = in_fn.substr(0,pos);
+    reverse(in_fn.begin(),in_fn.end());
   }
   
   // init output streams
