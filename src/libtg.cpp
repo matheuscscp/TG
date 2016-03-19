@@ -463,17 +463,49 @@ int size(const vector<Vertex>& formula) {
 }
 
 uint_t clauses(const vector<Vertex>& formula) {
-  vector<uint_t> dp(formula.size(),0);
-  function<uint_t(int)> dfs = [&](int u) {
-    uint_t& ret = dp[u];
-    if (ret) return ret;
-    if (formula[u].type == ATOM || formula[u].type == NEGA) return ret = 1;
-    ret = (formula[u].type == CONJ ? 0 : 1);
-    if (formula[u].type == CONJ)  for (int v : formula[u].down) ret += dfs(v);
-    else                          for (int v : formula[u].down) ret *= dfs(v);
+  vector<pair<uint_t,uint_t>> dp(formula.size(),make_pair(uint_t(0),uint_t(0)));
+  function<pair<uint_t,uint_t>(int)> dfs = [&](int u) {
+    // memoization
+    pair<uint_t,uint_t>& ret = dp[u];
+    if (ret.first) return ret;
+    
+    // base
+    if (formula[u].type == ATOM) return ret = make_pair(uint_t(1),uint_t(1));
+    
+    // compute children
+    for (int v : formula[u].down) dfs(v);
+    auto& p1 = dp[formula[u].down[0]];
+    auto& p2 = (formula[u].down.size() > 1 ? dp[formula[u].down[1]] : dp[0]);
+    
+    // compute vertex
+    switch (formula[u].type) {
+      case NEGA: ret = make_pair(p1.second,p1.first); break;
+      case IMPL: ret = make_pair(p1.second*p2.first,p1.first+p2.second); break;
+      case EQUI:
+        ret = make_pair(
+          p1.first*p2.second+p1.second*p2.first,
+          p1.first*p2.first+p1.second*p2.second
+        );
+        break;
+      case CONJ:
+        ret = make_pair(uint_t(0),uint_t(1));
+        for (int v : formula[u].down) {
+          ret.first += dp[v].first;
+          ret.second *= dp[v].second;
+        }
+        break;
+      case DISJ:
+        ret = make_pair(uint_t(1),uint_t(0));
+        for (int v : formula[u].down) {
+          ret.first *= dp[v].first;
+          ret.second += dp[v].second;
+        }
+        break;
+    }
+    
     return ret;
   };
-  return dfs(0);
+  return dfs(0).first;
 }
 
 int symbols(const vector<Vertex>& formula) {

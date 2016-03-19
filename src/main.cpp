@@ -157,10 +157,9 @@ int main(int argc, char** argv) {
   // additional argument checks
   args.checkopt<int>("-a");
   
-  // fixed pipeline stages
+  // input
   getline(cin,raw);
   parse();
-  nnf();
   
   // info only
   if (args.find("-ionly")) {
@@ -172,7 +171,8 @@ int main(int argc, char** argv) {
     return 0;
   }
   
-  // flexible pipeline stages
+  // pipeline
+  nnf();
   if (args.find("-f")) flat();
   dag();
   if (args.find("-m")) mindag();
