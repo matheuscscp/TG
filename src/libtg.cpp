@@ -18,7 +18,7 @@ CNF_t CNF;
 // Implementation
 // =============================================================================
 
-Vertex::Vertex() : type(0), p(1) {}
+Vertex::Vertex() : type(0) {}
 
 void Vertex::remove() {
   type = 0;

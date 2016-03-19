@@ -15,7 +15,6 @@ struct Vertex {
   int variable;
   int up;
   std::vector<int> down;
-  int p;
   Vertex();
   void remove();
 };
