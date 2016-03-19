@@ -35,7 +35,7 @@ void usage() {
   cerr << "\t2) If option -a is not set or an invalid algorithm is passed,\n";
   cerr << "\tthen no renaming will happen at all.\n";
   cerr << "\t3) Formula information format:\n";
-  cerr << "\t<file path>,<size>,<number of clauses>,<number of symbols>,\\n\n";
+  cerr << "\t<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;
   exit(-1);
 }
