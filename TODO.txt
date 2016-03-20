@@ -1,7 +1,4 @@
 
-BENCHMARK:
-  implementar scripts
-
 MONOGRAFIA:
   colocar exemplo 3.2
 
