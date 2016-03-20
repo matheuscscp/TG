@@ -1,0 +1,233 @@
+\begin{definition}
+    Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
+\end{definition}
+
+\begin{definition}
+    Se $\phi \in \mathcal{P}$, então $\phi$ é uma \emph{fórmula bem-formada}, ou, simplesmente, uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{Z}^*$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula.
+    \begin{enumerate}
+        \item \emph{Negação}: $\neg \phi_1$
+        \item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
+        \item \emph{Disjunção}: $\phi_1 \vee ... \vee \phi_n$
+        \item \emph{Implicação}: $\phi_1 \rightarrow \phi_2$
+        \item \emph{Equivalência}: $\phi_1 \leftrightarrow \phi_2$
+    \end{enumerate}
+    Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
+    
+    Em particular, se $\phi$ é uma conjunção com $n=0$, escrevemos $\phi=\top$. Analogamente, se $\phi$ é uma disjunção com $n=0$, escrevemos $\phi=\bot$.
+    
+    Dizemos ainda que $\phi$ é \emph{subfórmula} de $\psi$, escrito $\phi \sqsubseteq \psi$, se, e somente se, $\phi = \psi$; ou $\phi$ é subfórmula imediata de $\psi$; ou existe uma sequência finita de fórmulas $\phi_1,...,\phi_n$ tal que $\phi$ é subfórmula imediata de $\phi_1$, $\phi_n$ é subfórmula imediata de $\psi$ e $\phi_i$ é subfórmula imediata de $\phi_{i+1}$, para todo $i$.
+    
+    Por fim, se $\phi \sqsubseteq \psi$, mas $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
+\end{definition}
+
+\begin{example}
+    Considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Note que:
+    \begin{itemize}
+        \item A única subfórmula imediata de $\phi$ é $\phi_1 = (p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)$.
+        \item São subfórmulas de $\phi$: $p$, $q$, $r$, $s$, $\neg s$, $q \wedge r \wedge s$, $q \rightarrow \neg s$, $p \vee (q \wedge r \wedge s)$, $\phi_1$ e $\phi$.
+        \item Somente $\phi$ não é subfórmula própria de $\phi$.
+    \end{itemize}
+\end{example}
+
+\begin{definition}
+    Uma \emph{valoração booleana} é uma função $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$. Estendemos esta definição para fórmulas da seguinte maneira. Sejam $\phi_1,...,\phi_n$ fórmulas quaisquer. Então:
+    \begin{enumerate}
+        \item Se $\phi_1 \in \mathcal{P}$, então $\mathbb{v}(\phi_1) = \mathbb{v}_0(\phi_1)$.
+        \item $\mathbb{v}(\neg \phi_1) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$.
+        \item $\mathbb{v}(\phi_1 \wedge ... \wedge \phi_n) = V$ se, e somente se, $\mathbb{v}(\phi_i) = V$, para todo $i$.
+        \item $\mathbb{v}(\phi_1 \vee ... \vee \phi_n) = V$ se, e somente se, $\mathbb{v}(\phi_i) = V$, para algum $i$.
+        \item $\mathbb{v}(\phi_1 \rightarrow \phi_2) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$ ou $\mathbb{v}(\phi_2) = V$.
+        \item $\mathbb{v}(\phi_1 \leftrightarrow \phi_2) = V$ se, e somente se, $\mathbb{v}(\phi_1) = \mathbb{v}(\phi_2)$.
+        \item $\mathbb{v}(\top) = V$.
+        \item $\mathbb{v}(\bot) = F$.
+    \end{enumerate}
+    
+    Dizemos que a extensão $\mathbb{v}$ de uma valoração booleana $\mathbb{v}_0$ é uma \emph{interpretação}. Além disso, deizse $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\mathbb{v}$ é um \emph{modelo} para $\phi$.
+\end{definition}
+
+\begin{example}
+    Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 : (p,q,r,s) \longmapsto (V,F,V,V)$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
+    \begin{itemize}
+        \item $\mathbb{v}(q \wedge r \wedge s) = F$
+        \item $\mathbb{v}(p \vee (q \wedge r \wedge s)) = V$
+        \item $\mathbb{v}(\neg s) = F$
+        \item $\mathbb{v}(q \rightarrow \neg s) = V$
+        \item $\mathbb{v}((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)) = V$
+        \item $\mathbb{v}(\phi) = F$
+    \end{itemize}
+\end{example}
+
+\begin{definition}
+    Uma fórmula $\phi$ tal que $\mathbb{v}(\phi) = V$, para todo modelo $\mathbb{v}$, é chamada de \emph{tautologia}. De maneira análoga, se $\mathbb{v}(\phi) = F$ para todo modelo $\mathbb{v}$, $\phi$ é dita uma \emph{falsidade}.
+\end{definition}
+
+\begin{example}
+    São tautologias:
+    \begin{itemize}
+        \item $\phi \vee \neg \phi$
+        \item $\phi \rightarrow \phi$
+        \item $\phi \leftrightarrow \phi$
+    \end{itemize}
+    São falsidades:
+    \begin{itemize}
+        \item $\phi \wedge \neg \phi$
+        \item $\phi \leftrightarrow \neg \phi$
+    \end{itemize}
+\end{example}
+
+\begin{definition}
+    Definimos o \emph{conjunto de posições} de uma fórmula $\phi$, $pos(\phi)$, da seguinte maneira:
+    \begin{enumerate}
+        \item Se $\phi \in \mathcal{P}$, então $pos(\phi) = \{\varepsilon\}$.
+        \item Se $\phi = \neg \phi_1$, $(\phi_1 \wedge ... \wedge \phi_n)$, $(\phi_1 \vee ... \vee \phi_n)$, $(\phi_1 \rightarrow \phi_2)$, $(\phi_1 \leftrightarrow \phi_2)$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_i \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$ onde $\varepsilon.\pi = \pi$, $\pi.\varepsilon.\pi' = \pi.\pi'$ e $\pi.\varepsilon = \pi$, ou seja, omitimos $\varepsilon$ sempre que possível.
+    \end{enumerate}
+    Agora, definimos a fórmula $\phi$ \emph{na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
+    \begin{enumerate}
+        \item Se $\pi = \varepsilon$, então $\phi|_\pi = \phi$.
+        \item Se $\phi = \neg \phi_1$, $(\phi_1 \wedge ... \wedge \phi_n)$, $(\phi_1 \vee ... \vee \phi_n)$, $(\phi_1 \rightarrow \phi_2)$, $(\phi_1 \leftrightarrow \phi_2)$ e $\pi = i.\pi'$, para algum $i$ e alguma posição $\pi' \in pos(\phi_i)$, então $\phi|_\pi = \phi_i|_{\pi'}$.
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+    Seja $\phi = p \vee (q \wedge \neg r)$. Observe que:
+    \begin{equation*}
+        \begin{split}
+            pos(\neg r) & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in pos(r)\} \\
+                        & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in \{\varepsilon\}\} \\
+                        & = \{\varepsilon,1\}
+        \end{split}
+    \end{equation*}
+    \begin{equation*}
+        \begin{split}
+            pos(q \wedge \neg r) & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in pos(q)\} \cup \{2.\pi \mid \pi \in pos(\neg r)\} \\
+                                 & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in \{\varepsilon\}\} \cup \{2.\pi \mid \pi \in \{\varepsilon,1\}\} \\
+                                 & = \{\varepsilon,1,2,2.1\}
+        \end{split}
+    \end{equation*}
+    \begin{equation*}
+        \begin{split}
+            pos(\phi) & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in pos(p)\} \cup \{2.\pi \mid \pi \in pos(q \wedge \neg r)\} \\
+                      & = \{\varepsilon\} \cup \{1.\pi \mid \pi \in \{\varepsilon\}\} \cup \{2.\pi \mid \pi \in \{\varepsilon,1,2,2.1\}\} \\
+                      & = \{\varepsilon,1,2,2.1,2.2,2.2.1\}
+        \end{split}
+    \end{equation*}
+    Além disso, note que:
+    \begin{itemize}
+        \item $\phi|_{\varepsilon} = \phi = p \vee (q \wedge \neg r)$
+        \item $\phi|_{1} = p|_{\varepsilon} = p$
+        \item $\phi|_{2} = (q \wedge \neg r)|_{\varepsilon} = q \wedge \neg r$
+        \item $\phi|_{2.1} = (q \wedge \neg r)|_{1} = q|_{\varepsilon} = q$
+        \item $\phi|_{2.2} = (q \wedge \neg r)|_{2} = (\neg r)|_{\varepsilon} = \neg r$
+        \item $\phi|_{2.2.1} = (q \wedge \neg r)|_{2.1} = (\neg r)|_{1} = r|_{\varepsilon} = r$
+    \end{itemize}
+    Observe que $\{\phi|_\pi \mid \pi \in pos(\phi)\} = \{\psi \mid \psi \sqsubseteq \phi\}$ é o conjunto de todas as subfórmulas de $\phi$.
+\end{example}
+
+\begin{definition}
+    Definimos a \emph{polaridade} de $\phi$ na posição $\pi$, escrito $pol(\phi,\pi)$, como:
+    \begin{enumerate}
+        \item Se $\pi = \varepsilon$, então $pol(\phi,\pi) = 1$.
+        \item Se $\pi = \pi'.i$, para algum $i \neq \varepsilon$, então
+            \[
+                pol(\phi,\pi) =
+                \begin{cases}
+                    \hfill               0  \hfill & \text{ se $\phi|_{\pi'} = \phi_1 \leftrightarrow \phi_2$} \\
+                    \hfill -pol(\phi,\pi')  \hfill & \text{ se $\phi|_{\pi'} = \phi_1 \rightarrow \phi_2$ e $i=1$, ou $\phi|_{\pi'} = \neg \phi_1$} \\
+                    \hfill  pol(\phi,\pi')  \hfill & \text{ caso contrário} \\
+                \end{cases}
+            \]
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+    Seja $\phi = (p \rightarrow q) \rightarrow \neg(p \leftrightarrow (r \vee s))$. Temos que:
+    \begin{itemize}
+        \item $pol(\phi,\varepsilon) = 1$
+        \item $pol(\phi,1) = -1$
+        \item $pol(\phi,1.1) = 1$
+        \item $pol(\phi,1.2) = -1$
+        \item $pol(\phi,2) = 1$
+        \item $pol(\phi,2.1) = -1$
+        \item $pol(\phi,2.1.1) = 0$
+        \item $pol(\phi,2.1.2) = 0$
+        \item $pol(\phi,2.1.2.1) = 0$
+        \item $pol(\phi,2.1.2.2) = 0$
+    \end{itemize}
+\end{example}
+
+\begin{definition}
+    Dizemos que uma transformação $\tau$ \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\tau(\phi) \leftrightarrow \phi) = V$, para qualquer fórmula $\phi$ e qualquer modelo $\mathbb{v}$.
+\end{definition}
+
+\begin{definition}
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente em símbolos proposicionais.
+\end{definition}
+
+\begin{theorem}
+    \label{fnn_theorem}
+    As transformações
+    \begin{enumerate}
+        \item $\neg \neg \phi_1 \longmapsto \phi_1$
+        \item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$
+        \item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$
+        \item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
+        \item $\phi|_\pi = \phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$, se $pol(\phi,\pi) = 1$
+        \item $\phi|_\pi = \phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \wedge \phi_2) \vee (\neg \phi_2 \wedge \neg \phi_1)$, se $pol(\phi,\pi) = -1$
+    \end{enumerate}
+    preservam equivalência e produzem fórmulas na FNN. A prova segue por indução na estrutura de uma fórmula.
+\end{theorem}
+
+A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois sempre podemos transformar equivalências em posições mais curtas primeiro, de modo a evitar este caso.
+
+\begin{definition}
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal clausal} (FNC) se, e somente se, $$\phi = \bigwedge_i \left( \bigvee_j l_{i,j} \right)$$ onde, para cada $l_{i,j}$, ou $l_{i,j} = \neg p_{i,j}$ e $p_{i,j} \in \mathcal{P}$, ou $l_{i,j} \in \mathcal{P}$. Cada $l_{i,j}$ é chamado de \emph{literal} e cada disjunção de literais é uma \emph{cláusula}. Em outras palavras, uma fórmula está na FNC se, e somente se, ela é uma conjunção de cláusulas.
+\end{definition}
+
+\begin{theorem}
+    A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC. A prova segue por indução na estrutura de uma fórmula. Chamaremos esta transformação de \emph{distribuição}.
+\end{theorem}
+
+\begin{example}
+    Considere $\phi = \neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações do Teorema \ref{fnn_theorem}, começando pela transformação do item 5, e então aplicando distribuição, temos:
+    \begin{equation*}
+        \begin{split}
+            \phi & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) \\
+                 & \longmapsto \neg((\neg \phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_1)) \\
+                 & \longmapsto \neg(\neg \phi_1 \vee \phi_2) \vee \neg(\neg \phi_2 \vee \phi_1) \\
+                 & \longmapsto (\neg \neg \phi_1 \wedge \neg \phi_2) \vee (\neg \neg \phi_2 \wedge \neg \phi_1) \\
+                 & \longmapsto (\phi_1 \wedge \neg \phi_2) \vee (\phi_2 \wedge \neg \phi_1) \\
+                 & \longmapsto ((\phi_1 \wedge \neg \phi_2) \vee \phi_2) \wedge ((\phi_1 \wedge \neg \phi_2) \vee \neg \phi_1) \\
+                 & \longmapsto (\phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_2) \wedge (\phi_1 \vee \neg \phi_1) \wedge (\neg \phi_2 \vee \neg \phi_1)
+        \end{split}
+    \end{equation*}
+    Se $\phi_1,\phi_2 \in \mathcal{P}$, a fórmula que obtemos já está na FNC e podemos retirar as tautologias $(\neg \phi_2 \vee \phi_2)$ e $(\phi_1 \vee \neg \phi_1)$. Caso contrário, as transformações ainda precisam ser aplicadas, de modo que $\neg \phi_i$ será transformada em uma fórmula $\psi \neq \neg \phi_i$, ainda que $\mathbb{v}(\psi) = \mathbb{v}(\neg \phi_i)$ em qualquer modelo $\mathbb{v}$.
+    
+    Considere agora uma transformação que leva em conta polaridade.
+    \begin{equation*}
+        \begin{split}
+            \phi & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) \\
+                 & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) \\
+                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\neg \neg \phi_1 \vee \neg \neg \phi_2) \\
+                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
+        \end{split}
+    \end{equation*}
+    Neste caso, não somente o número de passos de transformação é menor, como também as tautologias indesejadas não aparecem.
+\end{example}
+
+\begin{definition}
+    Um \emph{renomeamento} de uma fórmula $\phi$ é um conjunto de subfórmulas próprias de $\phi$.
+\end{definition}
+
+\begin{theorem}
+    Seja $\psi$ uma fórmula e $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\psi$.\break A transformação $$\psi \longmapsto \psi' \wedge (r_1 \rightarrow \phi_1') \wedge ... \wedge (r_n \rightarrow \phi_n')$$ onde
+    \begin{enumerate}
+        \item Para todo $i$, $r_i \in \mathcal{P}$ e $r_i$ não ocorre em $\psi$.
+        \item Se $i \neq j$, então $r_i \neq r_j$.
+        \item $\psi'$ e $\phi_i'$ são, respectivamente, $\psi$ e $\phi_i$ com as ocorrências de $\phi_j$, em posições diferentes de $\varepsilon$, substituídas por $r_j$, para todo par $i,j$.
+    \end{enumerate}
+    preserva equivalência. Com um argumento para $n=1$, esta prova segue por indução nos subconjuntos de $R$.
+\end{theorem}
+
+\begin{example}
+    
+\end{example}

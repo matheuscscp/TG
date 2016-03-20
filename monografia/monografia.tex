@@ -1,0 +1,47 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Classe do documento
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Opções:
+%  - Graduação: bacharelado|engenharia|licenciatura
+%  - Pós-graduação: [qualificacao], mestrado|doutorado, ppca|ppginf
+
+\documentclass[bacharelado]{UnB-CIC}%
+
+\usepackage{pdfpages}% incluir PDFs, usado no apêndice
+\usepackage{amsfonts}
+\usepackage{mathbbol}
+\usepackage{amsthm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Informações do Trabalho
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\orientador{\prof[a] \dr[a] Cláudia Nalon}{CIC/UnB}%
+\coordenador{\prof \dr Flávio de Barros Vidal}{CIC/UnB}%
+\diamesano{18}{dezembro}{2015}%
+
+\membrobanca{\prof \dr Membro1}{CIC/UnB}%
+\membrobanca{\dr Membro2}{CIC/UnB}%
+
+\autor{Matheus C.S.C.}{Pimenta}%
+
+\titulo{Título da monografia}%
+
+\palavraschave{LaTeX, metodologia científica, trabalho de conclusão de curso}%
+\keywords{LaTeX, scientific method, thesis}%
+
+\newcommand{\unbcic}{\texttt{UnB-CIC}}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Texto
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}%
+    \capitulo{1_Introducao}{Introdução}%
+    \capitulo{2_Referencial_Teorico}{Referencial Teórico}%
+    \capitulo{3_TCC}{Trabalho de Conclusão de Curso}%
+    \capitulo{4_Apresentacao}{Apresentações}%
+
+    \apendice{Apendice_Fichamento}{Fichamento de Artigo Científico}%
+    \anexo{Anexo1}{Documentação Original \unbcic\ (parcial)}%
+\end{document}%
