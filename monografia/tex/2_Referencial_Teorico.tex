@@ -13,11 +13,33 @@
     \end{enumerate}
     Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
     
-    Em particular, se $\phi$ é uma conjunção com $n=0$, escrevemos $\phi=\top$. Analogamente, se $\phi$ é uma disjunção com $n=0$, escrevemos $\phi=\bot$.
+    Em particular, denotamos a conjunção vazia ($n=0$) por $\top$ e a disjunção vazia por $\bot$.
+\end{definition}
+
+\begin{example}
+	São fórmulas:
+	\begin{itemize}
+		\item $\phi = (p \rightarrow q) \rightarrow \neg s$
+		\item $\psi = (p \vee q) \leftrightarrow (r \wedge s)$
+		\item $\xi  = \neg(p \rightarrow q)$
+	\end{itemize}
+	Note que $p \rightarrow q$ é subfórmula imediata de $\phi$ e de $\xi$.
+\end{example}
+
+\begin{definition}
+    Dizemos que $\phi$ é \emph{subfórmula} de $\psi$, escrito $\phi \sqsubseteq \psi$, se, e somente se, alguma das possibilidades ocorre:
+    \begin{enumerate}
+    	\item $\phi = \psi$.
+    	\item $\phi$ é subfórmula imediata de $\psi$.
+    	\item Existe uma sequência finita de fórmulas $\phi_1,...,\phi_n$ tal que:
+    	\begin{enumerate}
+    		\item $\phi$ é subfórmula imediata de $\phi_1$.
+    		\item $\phi_n$ é subfórmula imediata de $\psi$.
+    		\item $\phi_i$ é subfórmula imediata de $\phi_{i+1}$, para todo $i$.
+    	\end{enumerate}
+    \end{enumerate}
     
-    Dizemos ainda que $\phi$ é \emph{subfórmula} de $\psi$, escrito $\phi \sqsubseteq \psi$, se, e somente se, $\phi = \psi$; ou $\phi$ é subfórmula imediata de $\psi$; ou existe uma sequência finita de fórmulas $\phi_1,...,\phi_n$ tal que $\phi$ é subfórmula imediata de $\phi_1$, $\phi_n$ é subfórmula imediata de $\psi$ e $\phi_i$ é subfórmula imediata de $\phi_{i+1}$, para todo $i$.
-    
-    Por fim, se $\phi \sqsubseteq \psi$, mas $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
+    Se $\phi \sqsubseteq \psi$ e $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
 \end{definition}
 
 \begin{example}
@@ -30,7 +52,31 @@
 \end{example}
 
 \begin{definition}
-    Uma \emph{valoração booleana} é uma função $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$. Estendemos esta definição para fórmulas da seguinte maneira. Sejam $\phi_1,...,\phi_n$ fórmulas quaisquer. Então:
+	Seja $\phi$ uma fórmula. Definimos $tam(\phi)$, o \emph{tamanho} de $\phi$, como o seguinte número:
+	\begin{enumerate}
+		\item Se $\phi \in \mathcal{P}$, então $tam(\phi) = 1$.
+		\item $tam(\neg \phi) = 1 + tam(\phi)$.
+		\item $tam(\phi_1 \wedge ... \wedge \phi_n) = tam(\phi_1 \vee ... \vee \phi_n) = n - 1 + \sum_i \phi_i$.
+		\item $tam(\phi_1 \rightarrow \phi_2) = tam(\phi_1 \leftrightarrow \phi_2) = 1 + tam(\phi_1) + tam(\phi_2)$.
+		\item $tam(\top) = tam(\bot) = 1$.
+	\end{enumerate}
+\end{definition}
+
+\begin{example}
+	Seja $\phi = p \rightarrow (\neg r \vee (q \leftrightarrow s))$. Então
+	\begin{equation*}
+	\begin{split}
+	tam(\phi) & = 1 + tam(p) + tam(\neg r \vee (q \leftrightarrow s))\\
+	& = 1 + 1 + (1 + tam(\neg r) + tam(q \leftrightarrow s))\\
+	& = 1 + 1 + (1 + (1 + tam(r)) + (1 + tam(q) + tam(s)))\\
+	& = 1 + 1 + (1 + (1 + 1) + (1 + 1 + 1))\\
+	& = 8\\
+	\end{split}
+	\end{equation*}
+\end{example}
+
+\begin{definition}
+    Uma \emph{valoração booleana} é uma função $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$. Estendemos esta definição para fórmulas da seguinte maneira:
     \begin{enumerate}
         \item Se $\phi_1 \in \mathcal{P}$, então $\mathbb{v}(\phi_1) = \mathbb{v}_0(\phi_1)$.
         \item $\mathbb{v}(\neg \phi_1) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$.
@@ -42,11 +88,11 @@
         \item $\mathbb{v}(\bot) = F$.
     \end{enumerate}
     
-    Dizemos que a extensão $\mathbb{v}$ de uma valoração booleana $\mathbb{v}_0$ é uma \emph{interpretação}. Além disso, deizse $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\mathbb{v}$ é um \emph{modelo} para $\phi$.
+    Dizemos que a extensão $\mathbb{v}$ de uma valoração booleana $\mathbb{v}_0$ é uma \emph{interpretação}. Além disso, dizemos que $\mathbb{v}$ é também um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
 \end{definition}
 
 \begin{example}
-    Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 : (p,q,r,s) \longmapsto (V,F,V,V)$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
+    Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,F),(r,V),(s,V)\}$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
     \begin{itemize}
         \item $\mathbb{v}(q \wedge r \wedge s) = F$
         \item $\mathbb{v}(p \vee (q \wedge r \wedge s)) = V$
@@ -55,10 +101,15 @@
         \item $\mathbb{v}((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)) = V$
         \item $\mathbb{v}(\phi) = F$
     \end{itemize}
+    Logo, $\mathbb{v}$ não é um modelo para $\phi$.
 \end{example}
 
 \begin{definition}
-    Uma fórmula $\phi$ tal que $\mathbb{v}(\phi) = V$, para todo modelo $\mathbb{v}$, é chamada de \emph{tautologia}. De maneira análoga, se $\mathbb{v}(\phi) = F$ para todo modelo $\mathbb{v}$, $\phi$ é dita uma \emph{falsidade}.
+	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda que $\phi$ é \emph{falsificável}.
+	
+	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}, ou que $\phi$ é \emph{infalsificável}. Por outro lado, se toda interpretação falsifica $\phi$, então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
+	
+	Se $\phi$ é simultaneamente satisfatível e falsificável, então dizemos que $\phi$ é uma \emph{contingência}.
 \end{definition}
 
 \begin{example}
@@ -67,24 +118,37 @@
         \item $\phi \vee \neg \phi$
         \item $\phi \rightarrow \phi$
         \item $\phi \leftrightarrow \phi$
+        \item $\top$
     \end{itemize}
-    São falsidades:
+    São contradições:
     \begin{itemize}
         \item $\phi \wedge \neg \phi$
         \item $\phi \leftrightarrow \neg \phi$
+        \item $\bot$
+    \end{itemize}
+    São contingências:
+    \begin{itemize}
+    	\item $p$
+    	\item $\neg p$
+    	\item $p \wedge q$
+    	\item $p \vee q$
+    	\item $p \rightarrow q$
+    	\item $p \leftrightarrow q$
     \end{itemize}
 \end{example}
 
 \begin{definition}
+	Uma \emph{posição} é uma sequência finita de números naturais. Usaremos as notações alternativas $\varepsilon$, para a posição vazia, e $a_1.\cdots.a_n$, para a posição $(a_1,\cdots,a_n)$, onde $n \in \mathbb{Z}^*$.
+	
     Definimos o \emph{conjunto de posições} de uma fórmula $\phi$, $pos(\phi)$, da seguinte maneira:
     \begin{enumerate}
         \item Se $\phi \in \mathcal{P}$, então $pos(\phi) = \{\varepsilon\}$.
-        \item Se $\phi = \neg \phi_1$, $(\phi_1 \wedge ... \wedge \phi_n)$, $(\phi_1 \vee ... \vee \phi_n)$, $(\phi_1 \rightarrow \phi_2)$, $(\phi_1 \leftrightarrow \phi_2)$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_i \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$ onde $\varepsilon.\pi = \pi$, $\pi.\varepsilon.\pi' = \pi.\pi'$ e $\pi.\varepsilon = \pi$, ou seja, omitimos $\varepsilon$ sempre que possível.
+        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_i \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$
     \end{enumerate}
-    Agora, definimos a fórmula $\phi$ \emph{na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
+    Agora, definimos a \emph{subfórmula de} $\phi$ \emph{começando na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
     \begin{enumerate}
         \item Se $\pi = \varepsilon$, então $\phi|_\pi = \phi$.
-        \item Se $\phi = \neg \phi_1$, $(\phi_1 \wedge ... \wedge \phi_n)$, $(\phi_1 \vee ... \vee \phi_n)$, $(\phi_1 \rightarrow \phi_2)$, $(\phi_1 \leftrightarrow \phi_2)$ e $\pi = i.\pi'$, para algum $i$ e alguma posição $\pi' \in pos(\phi_i)$, então $\phi|_\pi = \phi_i|_{\pi'}$.
+        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, e $\pi$ é da forma $i.\pi'$, para algum $i$ e alguma posição $\pi' \in pos(\phi_i)$, então $\phi|_\pi = \phi_i|_{\pi'}$.
     \end{enumerate}
 \end{definition}
 
@@ -124,18 +188,13 @@
 \end{example}
 
 \begin{definition}
-    Definimos a \emph{polaridade} de $\phi$ na posição $\pi$, escrito $pol(\phi,\pi)$, como:
+    Definimos a \emph{polaridade da subfórmula de} $\phi$ \emph{começando na posição} $\pi$, escrito $pol(\phi,\pi)$, como o seguinte número:
     \begin{enumerate}
-        \item Se $\pi = \varepsilon$, então $pol(\phi,\pi) = 1$.
-        \item Se $\pi = \pi'.i$, para algum $i \neq \varepsilon$, então
-            \[
-                pol(\phi,\pi) =
-                \begin{cases}
-                    \hfill               0  \hfill & \text{ se $\phi|_{\pi'} = \phi_1 \leftrightarrow \phi_2$} \\
-                    \hfill -pol(\phi,\pi')  \hfill & \text{ se $\phi|_{\pi'} = \phi_1 \rightarrow \phi_2$ e $i=1$, ou $\phi|_{\pi'} = \neg \phi_1$} \\
-                    \hfill  pol(\phi,\pi')  \hfill & \text{ caso contrário} \\
-                \end{cases}
-            \]
+        \item $pol(\phi,\varepsilon) = 1$.
+        \item Se $\phi|_\pi$ é da forma $\neg \phi_1$, então $pol(\phi,\pi.1) = -pol(\phi,\pi)$.
+        \item Se $\phi|_\pi$ é da forma $\phi_1 \wedge ... \wedge \phi_n$, ou $\phi_1 \vee ... \vee \phi_n$, então $pol(\phi,\pi.i) = pol(\phi,\pi)$, para todo $i$.
+        \item Se $\phi|_\pi$ é da forma $\phi_1 \rightarrow \phi_2$, então $pol(\phi,\pi.1) = -pol(\phi,\pi)$ e $pol(\phi,\pi.2) = pol(\phi,\pi)$.
+        \item Se $\phi|_\pi$ é da forma $\phi_1 \leftrightarrow \phi_2$, então $pol(\phi,\pi.1) = pol(\phi,\pi.2) = 0$.
     \end{enumerate}
 \end{definition}
 
@@ -156,7 +215,7 @@
 \end{example}
 
 \begin{definition}
-    Dizemos que uma transformação $\tau$ \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\tau(\phi) \leftrightarrow \phi) = V$, para qualquer fórmula $\phi$ e qualquer modelo $\mathbb{v}$.
+	Se $\phi$ é transformada em $\psi$ por alguma regra, dizemos que esta transformação \emph{preserva equivalência} se, e somente se, a fórmula $\phi \leftrightarrow \psi$ é uma tautologia.
 \end{definition}
 
 \begin{definition}
@@ -171,8 +230,11 @@
         \item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$
         \item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$
         \item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
-        \item $\phi|_\pi = \phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$, se $pol(\phi,\pi) = 1$
-        \item $\phi|_\pi = \phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \wedge \phi_2) \vee (\neg \phi_2 \wedge \neg \phi_1)$, se $pol(\phi,\pi) = -1$
+        \item Se $\phi|_\pi$ é da forma $\phi_1 \leftrightarrow \phi_2$, então
+        \begin{enumerate}
+        	\item $\phi|_\pi \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$, se $pol(\phi,\pi) = 1$
+        	\item $\phi|_\pi \longmapsto (\phi_1 \wedge \phi_2) \vee (\neg \phi_2 \wedge \neg \phi_1)$, se $pol(\phi,\pi) = -1$
+        \end{enumerate}
     \end{enumerate}
     preservam equivalência e produzem fórmulas na FNN. A prova segue por indução na estrutura de uma fórmula.
 \end{theorem}
@@ -180,7 +242,7 @@
 A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois sempre podemos transformar equivalências em posições mais curtas primeiro, de modo a evitar este caso.
 
 \begin{definition}
-    Dizemos que uma fórmula $\phi$ está na \emph{forma normal clausal} (FNC) se, e somente se, $$\phi = \bigwedge_i \left( \bigvee_j l_{i,j} \right)$$ onde, para cada $l_{i,j}$, ou $l_{i,j} = \neg p_{i,j}$ e $p_{i,j} \in \mathcal{P}$, ou $l_{i,j} \in \mathcal{P}$. Cada $l_{i,j}$ é chamado de \emph{literal} e cada disjunção de literais é uma \emph{cláusula}. Em outras palavras, uma fórmula está na FNC se, e somente se, ela é uma conjunção de cláusulas.
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal clausal} (FNC) se, e somente se, $\phi$ é da forma $$\bigwedge_i \left( \bigvee_j l_{i,j} \right)$$ onde, para cada $l_{i,j}$, ou $l_{i,j}$ é da forma $\neg p_{i,j}$ e $p_{i,j} \in \mathcal{P}$, ou $l_{i,j} \in \mathcal{P}$. Cada $l_{i,j}$ é chamado de \emph{literal} e cada disjunção de literais é uma \emph{cláusula}. Em outras palavras, uma fórmula está na FNC se, e somente se, ela é uma conjunção de cláusulas.
 \end{definition}
 
 \begin{theorem}
@@ -188,7 +250,7 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
 \end{theorem}
 
 \begin{example}
-    Considere $\phi = \neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações do Teorema \ref{fnn_theorem}, começando pela transformação do item 5, e então aplicando distribuição, temos:
+    Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações do Teorema \ref{fnn_theorem} à exaustão, começando pela transformação do item 5.a, e então aplicando distribuição, temos:
     \begin{equation*}
         \begin{split}
             \phi & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) \\
@@ -200,7 +262,7 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
                  & \longmapsto (\phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_2) \wedge (\phi_1 \vee \neg \phi_1) \wedge (\neg \phi_2 \vee \neg \phi_1)
         \end{split}
     \end{equation*}
-    Se $\phi_1,\phi_2 \in \mathcal{P}$, a fórmula que obtemos já está na FNC e podemos retirar as tautologias $(\neg \phi_2 \vee \phi_2)$ e $(\phi_1 \vee \neg \phi_1)$. Caso contrário, as transformações ainda precisam ser aplicadas, de modo que $\neg \phi_i$ será transformada em uma fórmula $\psi \neq \neg \phi_i$, ainda que $\mathbb{v}(\psi) = \mathbb{v}(\neg \phi_i)$ em qualquer modelo $\mathbb{v}$.
+    Se $\phi_1,\phi_2 \in \mathcal{P}$, então a última fórmula já está na FNC, de modo que é fácil identificar e remover as tautologias $\neg \phi_2 \vee \phi_2$ e $\phi_1 \vee \neg \phi_1$. Caso contrário, as transformações aplicadas à exaustão transformam $\neg \phi_i$ em uma fórmula $\psi \neq \neg \phi_i$, dificultando identificar e remover as tautologias mencionadas.
     
     Considere agora uma transformação que leva em conta polaridade.
     \begin{equation*}
@@ -215,16 +277,30 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
 \end{example}
 
 \begin{definition}
-    Um \emph{renomeamento} de uma fórmula $\phi$ é um conjunto de subfórmulas próprias de $\phi$.
+	Sejam $\phi$ e $\psi$ fórmulas tais que $\psi \sqsubset \phi$ e $p \in \mathcal{P}$ tal que $p$ não ocorre em $\phi$. Definimos a \emph{substituição de} $\psi$ \emph{por} $p$ \emph{em} $\phi$, escrito $rep(\phi,\psi,p)$, da seguinte maneira:
+	\begin{enumerate}
+		\item Se $\pi \in pos(\phi)$ e $\phi|_\pi = \psi$, então $\pi \in pos(rep(\phi,\psi,p))$ e $rep(\phi,\psi,p)|_\pi = p$.
+		\item Se $\pi \in pos(\phi)$ e $\phi|_\pi \neq \psi$, então:
+		\begin{enumerate}
+			\item Se $\pi$ é da forma $\pi_1.\pi_2$, onde $\phi|_{\pi_1} = \psi$ e $\pi_2 \in pos(\psi)$, então\break $\pi \notin pos(rep(\phi,\psi,p))$.
+			\item Caso contrário, $\pi \in pos(rep(\phi,\psi,p))$ e $rep(\phi,\psi,p)|_\pi = \phi|_\pi$.
+		\end{enumerate}
+	\end{enumerate}
+	
+	Esta definição pode ser facilmente estendida para funções injetoras que mapeiam subfórmulas próprias de $\phi$ para símbolos proposicionais que não ocorrem em $\phi$. Seja $f = \{(\phi_1,p_1),...,(\phi_n,p_n)\}$ uma função deste tipo. Então, $$rep(\phi,f) = rep(rep(\phi,\phi_1,p_1),\{(\phi_2,p_2),...,(\phi_n,p_n)\})$$
+\end{definition}
+
+\begin{example}
+	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$.\\
+	Então $rep(\phi,\{(p \vee q,a),(p \wedge q,b)\}) = a \rightarrow (r \wedge a \wedge b)$.
+\end{example}
+
+\begin{definition}
+	Um \emph{renomeamento} de uma fórmula $\phi$ é um conjunto de subfórmulas próprias de $\phi$.
 \end{definition}
 
 \begin{theorem}
-    Seja $\psi$ uma fórmula e $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\psi$.\break A transformação $$\psi \longmapsto \psi' \wedge (r_1 \rightarrow \phi_1') \wedge ... \wedge (r_n \rightarrow \phi_n')$$ onde
-    \begin{enumerate}
-        \item Para todo $i$, $r_i \in \mathcal{P}$ e $r_i$ não ocorre em $\psi$.
-        \item Se $i \neq j$, então $r_i \neq r_j$.
-        \item $\psi'$ e $\phi_i'$ são, respectivamente, $\psi$ e $\phi_i$ com as ocorrências de $\phi_j$, em posições diferentes de $\varepsilon$, substituídas por $r_j$, para todo par $i,j$.
-    \end{enumerate}
+	Seja $\phi$ uma fórmula, $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\phi$ e $f : R \longmapsto \mathcal{P}$ uma função injetora tal que $f(\phi_i)$ não ocorre em $\phi$, para todo $i$. Então, a transformação $$\phi \longmapsto rep(\phi,f) \wedge (f(\phi_1) \rightarrow rep(\phi_1,f)) \wedge ... \wedge (f(\phi_n) \rightarrow rep(\phi_n,f))$$
     preserva equivalência. Com um argumento para $n=1$, esta prova segue por indução nos subconjuntos de $R$.
 \end{theorem}
 
