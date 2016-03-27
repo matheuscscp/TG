@@ -109,7 +109,30 @@ void parse() {
       S.push(v);
     }
     else if (c == ')' || isvarsym(c)) { // pop
-      if (c == ')') { compress(S.top()); S.pop(); }
+      if (c == ')') {
+        int u = S.top();
+        compress(u);
+        if (T[u].type != ATOM && T[u].down.size() == 0) { // tautology
+          int& var = id["tauto"];
+          if (!var) { var = nextvar++; varname[var] = "tauto"; }
+          T[u].type = DISJ;
+          int u1 = T.size(); T.emplace_back();
+          int u2 = T.size(); T.emplace_back();
+          int u3 = T.size(); T.emplace_back();
+          T[u].down.push_back(u1);
+          T[u].down.push_back(u2);
+          T[u1].type = ATOM;
+          T[u1].variable = var;
+          T[u1].up = u;
+          T[u2].type = NEGA;
+          T[u2].up = u;
+          T[u2].down.push_back(u3);
+          T[u3].type = ATOM;
+          T[u3].variable = var;
+          T[u3].up = u2;
+        }
+        S.pop();
+      }
       else { // propositional symbol
         // read whole symbol
         string tmp = {raw[i]};
@@ -557,6 +580,7 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
 
 ostream& operator<<(ostream& os, const CNF_t& formula) {
   if (!formula.simple) return os << G;
+  if (simplified.size() == 0) return os << "tauto | -tauto";
   bool pr1 = false;
   for (auto& clause : simplified) {
     if (pr1) os << " & ";
