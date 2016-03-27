@@ -525,8 +525,8 @@ static string char2str(char type) {
   switch (type) {
     case CONJ: return "&";
     case DISJ: return "|";
-    case IMPL: return "=>";
-    case EQUI: return "<=>";
+    case IMPL: return "->";
+    case EQUI: return "<->";
   }
 }
 
@@ -537,7 +537,7 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
       return;
     }
     if (formula[u].type == NEGA) {
-      os << "~";
+      os << "-";
       dfs(formula[u].down[0]);
       return;
     }
@@ -566,7 +566,7 @@ ostream& operator<<(ostream& os, const CNF_t& formula) {
     for (int l : clause) {
       if (pr2) os << " | ";
       pr2 = true;
-      if (l < 0) os << "~";
+      if (l < 0) os << "-";
       os << varname[abs(l)];
     }
     if (simplified.size() > 1 && clause.size() > 1) os << ")";

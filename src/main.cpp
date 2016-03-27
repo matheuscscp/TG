@@ -162,6 +162,9 @@ int main(int argc, char** argv) {
   // input
   getline(cin,raw);
   parse();
+  stringstream ss;
+  ss << T;
+  string original = ss.str();
   
   // info only
   if (args.find("-ionly")) {
@@ -169,6 +172,7 @@ int main(int argc, char** argv) {
     info_stream << size(T) << ",";
     info_stream << clauses(T) << ",";
     info_stream << symbols(T) << ",\n";
+    cnf_stream << original << endl;
     close_files();
     return 0;
   }
@@ -192,7 +196,7 @@ int main(int argc, char** argv) {
   info_stream << CNF.clauses() << ",";
   info_stream << CNF.symbols() << ",\n";
   cnf_stream << CNF << endl;
-  proof_stream << "(" << raw << ") <=> (" << CNF << ")\n";
+  proof_stream << "(" << original << ") <-> (" << CNF << ")\n";
   
   close_files();
   
