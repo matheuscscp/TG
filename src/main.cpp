@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
   info_stream << CNF.symbols() << ",\n";
   cnf_stream << CNF << endl;
   proof_stream << "formulas(sos).\n";
-  proof_stream << "  -((" << original << ") <-> (" << CNF << "))\n";
+  proof_stream << "  -((" << original << ") <-> (" << CNF << ")).\n";
   proof_stream << "end_of_list.\n";
   
   close_files();
