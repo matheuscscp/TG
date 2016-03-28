@@ -12,29 +12,30 @@ void usage() {
   cerr << "\t-i\t<file path>\tRead formula from file.\n";
   cerr << "\t-oinfo\t<file path>\tAppend formula information to file.\n";
   cerr << "\t-ocnf\t<file path>\tWrite CNF to file.\n";
-  cerr << "\t-oproof\t<file path>\tWrite proof formula to file.\n";
+  cerr << "\t-oproof\t<file path>\tWrite proof formula to file. (see note 1)\n";
   cerr << endl;
   cerr << "Pipeline options:\n";
   cerr << "\t-f\tFlat ((p|(q|r)|s) ---> (p|q|r|s)). Before DAG.\n";
   cerr << "\t-m\tMinimize DAG edges ((p&q)|(p&r&q) ---> (p&q)|((p&q)&r)).\n";
   cerr << "\t-a\t<algorithm number>\tSelect renaming algorithm.\n";
-  cerr << "\t-s\tSimplify CNF. (see note 1)\n";
+  cerr << "\t-s\tSimplify CNF. (see note 2)\n";
   cerr << "\t-ionly\tOnly compute formula information.\n";
   cerr << endl;
   cerr << "Additional options:\n";
   cerr << "\t-h\tDisplay usage mode.\n";
   cerr << "\t-syntax\tDisplay formula syntax.\n";
   cerr << endl;
-  cerr << "Renaming algorithms (see note 2):\n";
+  cerr << "Renaming algorithms: (see note 3)\n";
   cerr << "\t1\tKnapsack 0-1 based algorithm.\n";
   cerr << "\t2\tBoy de la Tour's algorithm.\n";
   cerr << endl;
   cerr << "Notes:\n";
-  cerr << "\t1) CNF simplification removes tautologies, repeated literals\n";
+  cerr << "\t1) There is no proof formula if formula renaming is applied.\n";
+  cerr << "\t2) CNF simplification removes tautologies, repeated literals\n";
   cerr << "\tand repeated clauses.\n";
-  cerr << "\t2) If option -a is not set or an invalid algorithm is passed,\n";
+  cerr << "\t3) If option -a is not set or an invalid algorithm is passed,\n";
   cerr << "\tthen no renaming will happen at all.\n";
-  cerr << "\t3) Formula information format:\n";
+  cerr << "\t4) Formula information format:\n";
   cerr << "\t<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;
   exit(-1);
@@ -42,6 +43,8 @@ void usage() {
 
 void syntax() {
   cerr << exe << ": Formula syntax.\n";
+  cerr << endl;
+  cerr << "===== INPUT SYNTAX =====\n";
   cerr << endl;
   cerr << "Propositional symbols are strings of one or more of the following\n";
   cerr << "ASCII characters:\n";
@@ -62,6 +65,10 @@ void syntax() {
   cerr << "\t2) Whitespaces and multiple parentheses are completely ignored.\n";
   cerr << "\tExample:\n";
   cerr << "\t\t(((p => q)))\tis the same as\t\tp=>q\n";
+  cerr << endl;
+  cerr << "===== OUTPUT SYNTAX =====\n";
+  cerr << endl;
+  cerr << "prover9 input syntax.\n";
   cerr << endl;
   exit(-1);
 }
@@ -182,9 +189,10 @@ int main(int argc, char** argv) {
   if (args.find("-f")) flat();
   dag();
   if (args.find("-m")) mindag();
+  bool renamed = false;
   if (args.find("-a")) switch (args.opt<int>("-a")) {
-    case 1: knapsack();     break;
-    case 2: boydelatour();  break;
+    case 1: knapsack();     renamed = true; break;
+    case 2: boydelatour();  renamed = true; break;
   }
   rename();
   if (args.find("-s")) simplecnf();
@@ -195,10 +203,15 @@ int main(int argc, char** argv) {
   info_stream << CNF.size() << ",";
   info_stream << CNF.clauses() << ",";
   info_stream << CNF.symbols() << ",\n";
-  cnf_stream << CNF << endl;
-  proof_stream << "formulas(sos).\n";
-  proof_stream << "  -((" << original << ") <-> (" << CNF << ")).\n";
-  proof_stream << "end_of_list.\n";
+  cnf_stream << "formulas(sos).\n";
+  cnf_stream << "  " << CNF << ".\n";
+  cnf_stream << "end_of_list.\n";
+  if (!renamed) {
+    proof_stream << "formulas(sos).\n";
+    proof_stream << "  ((" << original << ") | (" << CNF << ")) & ";
+    proof_stream <<   "(-(" << original << ") | -(" << CNF << ")).\n";
+    proof_stream << "end_of_list.\n";
+  }
   
   close_files();
   
