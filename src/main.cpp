@@ -213,7 +213,7 @@ int main(int argc, char** argv) {
   }
   else {
     proof_stream << "formulas(sos).\n";
-    proof_stream << "  (" << CNF << ") & -(" << original << ")";
+    proof_stream << "  (" << CNF << ") & -(" << original << ").\n";
     proof_stream << "end_of_list.\n";
   }
   
