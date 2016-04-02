@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
   
   // info only
   if (args.find("-ionly")) {
-    info_stream << in_fn << ",";
+    info_stream << "," << in_fn << ",";
     info_stream << size(T) << ",";
     info_stream << clauses(T) << ",";
     info_stream << symbols(T) << ",\n";
@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
   else cnf();
   
   // output
-  info_stream << in_fn << ",";
+  info_stream << "," << in_fn << ",";
   info_stream << CNF.size() << ",";
   info_stream << CNF.clauses() << ",";
   info_stream << CNF.symbols() << ",\n";
