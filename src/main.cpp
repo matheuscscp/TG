@@ -12,30 +12,29 @@ void usage() {
   cerr << "\t-i\t<file path>\tRead formula from file.\n";
   cerr << "\t-oinfo\t<file path>\tAppend formula information to file.\n";
   cerr << "\t-ocnf\t<file path>\tWrite CNF to file.\n";
-  cerr << "\t-oproof\t<file path>\tWrite proof formula to file. (see note 1)\n";
+  cerr << "\t-oproof\t<file path>\tWrite proof formula to file.\n";
   cerr << endl;
   cerr << "Pipeline options:\n";
   cerr << "\t-f\tFlat ((p|(q|r)|s) ---> (p|q|r|s)). Before DAG.\n";
   cerr << "\t-m\tMinimize DAG edges ((p&q)|(p&r&q) ---> (p&q)|((p&q)&r)).\n";
   cerr << "\t-a\t<algorithm number>\tSelect renaming algorithm.\n";
-  cerr << "\t-s\tSimplify CNF. (see note 2)\n";
+  cerr << "\t-s\tSimplify CNF. (see note 1)\n";
   cerr << "\t-ionly\tOnly compute formula information.\n";
   cerr << endl;
   cerr << "Additional options:\n";
   cerr << "\t-h\tDisplay usage mode.\n";
   cerr << "\t-syntax\tDisplay formula syntax.\n";
   cerr << endl;
-  cerr << "Renaming algorithms: (see note 3)\n";
+  cerr << "Renaming algorithms: (see note 2)\n";
   cerr << "\t1\tKnapsack 0-1 based algorithm.\n";
   cerr << "\t2\tBoy de la Tour's algorithm.\n";
   cerr << endl;
   cerr << "Notes:\n";
-  cerr << "\t1) There is no proof formula if formula renaming is applied.\n";
-  cerr << "\t2) CNF simplification removes tautologies, repeated literals\n";
+  cerr << "\t1) CNF simplification removes tautologies, repeated literals\n";
   cerr << "\tand repeated clauses.\n";
-  cerr << "\t3) If option -a is not set or an invalid algorithm is passed,\n";
+  cerr << "\t2) If option -a is not set or an invalid algorithm is passed,\n";
   cerr << "\tthen no renaming will happen at all.\n";
-  cerr << "\t4) Formula information format:\n";
+  cerr << "\t3) Formula information format:\n";
   cerr << "\t<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;
   exit(-1);
@@ -210,6 +209,11 @@ int main(int argc, char** argv) {
     proof_stream << "formulas(sos).\n";
     proof_stream << "  ((" << original << ") | (" << CNF << ")) & ";
     proof_stream <<   "(-(" << original << ") | -(" << CNF << ")).\n";
+    proof_stream << "end_of_list.\n";
+  }
+  else {
+    proof_stream << "formulas(sos).\n";
+    proof_stream << "  (" << CNF << ") & -(" << original << ")";
     proof_stream << "end_of_list.\n";
   }
   
