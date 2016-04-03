@@ -178,7 +178,6 @@ int main(int argc, char** argv) {
     info_stream << size(T) << ",";
     info_stream << clauses(T) << ",";
     info_stream << symbols(T) << ",\n";
-    cnf_stream << original << endl;
     close_files();
     return 0;
   }
