@@ -62,6 +62,7 @@ uint_t clauses(const std::vector<Vertex>&); // compute number of clauses
    int symbols(const std::vector<Vertex>&); // compute number of symbols
 
 // formatted output
+std::string op2str(char); // convert integer logic operator to string symbol
 std::ostream& operator<<(std::ostream&, const std::vector<Vertex>&);
 std::ostream& operator<<(std::ostream&, const CNF_t&);
 

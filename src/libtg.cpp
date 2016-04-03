@@ -543,13 +543,13 @@ int symbols(const vector<Vertex>& formula) {
   return symbols.size();
 }
 
-// char vertex type to string operator
-static string char2str(char type) {
+string op2str(char type) {
   switch (type) {
+    case NEGA: return "~";
     case CONJ: return "&";
     case DISJ: return "|";
-    case IMPL: return "->";
-    case EQUI: return "<->";
+    case IMPL: return "=>";
+    case EQUI: return "<=>";
   }
 }
 
@@ -560,15 +560,14 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
       return;
     }
     if (formula[u].type == NEGA) {
-      os << "-";
+      os << op2str(NEGA);
       dfs(formula[u].down[0]);
       return;
     }
-    string op = char2str(formula[u].type);
     bool printed = false;
     if (u) os << "(";
     for (int v : formula[u].down) {
-      if (printed) os << " " << op << " ";
+      if (printed) os << " " << op2str(formula[u].type) << " ";
       printed = true;
       dfs(v);
     }
@@ -580,17 +579,17 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
 
 ostream& operator<<(ostream& os, const CNF_t& formula) {
   if (!formula.simple) return os << G;
-  if (simplified.size() == 0) return os << "tauto | -tauto";
+  if (simplified.size() == 0) return os << "tauto " << op2str(IMPL) << " tauto";
   bool pr1 = false;
   for (auto& clause : simplified) {
-    if (pr1) os << " & ";
+    if (pr1) os << " " << op2str(CONJ) << " ";
     pr1 = true;
     bool pr2 = false;
     if (simplified.size() > 1 && clause.size() > 1) os << "(";
     for (int l : clause) {
-      if (pr2) os << " | ";
+      if (pr2) os << " " << op2str(DISJ) << " ";
       pr2 = true;
-      if (l < 0) os << "-";
+      if (l < 0) os << op2str(NEGA);
       os << varname[abs(l)];
     }
     if (simplified.size() > 1 && clause.size() > 1) os << ")";

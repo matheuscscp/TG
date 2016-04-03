@@ -202,19 +202,16 @@ int main(int argc, char** argv) {
   info_stream << CNF.size() << ",";
   info_stream << CNF.clauses() << ",";
   info_stream << CNF.symbols() << ",\n";
-  cnf_stream << "formulas(sos).\n";
-  cnf_stream << "  " << CNF << ".\n";
-  cnf_stream << "end_of_list.\n";
-  if (!renamed) {
-    proof_stream << "formulas(sos).\n";
-    proof_stream << "  ((" << original << ") | (" << CNF << ")) & ";
-    proof_stream <<   "(-(" << original << ") | -(" << CNF << ")).\n";
-    proof_stream << "end_of_list.\n";
+  cnf_stream << CNF << "\n";
+  if (renamed) {
+    proof_stream << "(" << CNF << ") ";
+    proof_stream << op2str(IMPL);
+    proof_stream << " (" << original << ")\n";
   }
   else {
-    proof_stream << "formulas(sos).\n";
-    proof_stream << "  (" << CNF << ") & -(" << original << ").\n";
-    proof_stream << "end_of_list.\n";
+    proof_stream << "(" << CNF << ") ";
+    proof_stream << op2str(EQUI);
+    proof_stream << " (" << original << ")\n";
   }
   
   close_files();
