@@ -1,6 +1,10 @@
 \indent
 
-Satisfatibilidade e prova automática de teoremas são problemas de interesse tanto prático, pela enorme variedade de aplicações, quanto teórico, como em teoria da complexidade computacional. Grande avanço já foi feito em direção a algoritmos de busca rápidos para estes problemas, apesar de ser conjecturado que qualquer um terá custo de tempo exponencial determinístico no pior caso.
+Satisfatibilidade, o problema de determinar se existe uma interpretação sob a qual uma afirmação é verdadeira, é de grande interesse prático. Tal situação aparece, por exemplo, em vários problemas da microeletrônica, como síntese \cite{bloem2014sat}, otimização \cite{gupta2006sat} e verificação \cite{nieuwenhuis2006sat} de \textit{hardware}. Aparece também em problemas de raciocínio automático \cite{harrison2009handbook} e em muitos outros problemas relevantes \cite{horvitz1992automated}.
+
+Satisfatibilidade é também de grande interesse teórico. Em 1971, Cook estabeleceu a dificuldade deste problema para formalizar o enunciado do maior problema ainda não resolvido da Ciência da Computação: P versus NP \cite{cook1971complexity}.
+
+Grande avanço já foi feito em direção a algoritmos de busca rápidos para satisfatibilidade \cite{davis1960computing,davis1962machine,biere2009conflict}, apesar de ser conjecturado que qualquer um terá custo de tempo exponencial determinístico no pior caso.
 
 Uma característica comum a diversos dos algoritmos para satisfatibilidade já descobertos é a redução do problema a fórmulas em uma determinada forma normal. Resultados obtidos com tal e tal algoritmo mostram que é possível lidar melhor com problemas de satisfatibilidade, se esta redução for utilizada. Nestes casos, etapas de pré-processamento são necessárias para colocar fórmulas quaisquer nas respectivas formas normais.
 

@@ -8,4 +8,7 @@ monografia.out
 monografia.pdf
 monografia.synctex.gz
 monografia.toc
+monografia.bbl
+monografia.blg
+monografia.brf
 *.log
