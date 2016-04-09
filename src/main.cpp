@@ -10,7 +10,7 @@ void usage() {
   cerr << endl;
   cerr << "I/O options:\n";
   cerr << "\t-i\t<file path>\tRead formula from file.\n";
-  cerr << "\t-oinfo\t<file path>\tAppend formula information to file.\n";
+  cerr << "\t-oinfo\t<file path>\tWrite formula information to file.\n";
   cerr << "\t-ocnf\t<file path>\tWrite CNF to file.\n";
   cerr << "\t-oproof\t<file path>\tWrite proof formula to file.\n";
   cerr << endl;
@@ -111,14 +111,12 @@ class Args {
 
 // files
 unordered_map<string,fstream*> files;
-ostream& get_output_stream(const string& name, bool append = false) {
+ostream& get_output_stream(const string& name) {
   if (!args.find("-o"+name)) return cout;
   string fn = args.opt<string>("-o"+name);
   auto it = files.find(fn);
   if (it != files.end()) return (ostream&)*it->second;
-  fstream::openmode md = fstream::out;
-  if (append) md = md | fstream::app;
-  fstream* file = new fstream(fn,md);
+  fstream* file = new fstream(fn,fstream::out);
   if (!file->is_open()) {
     cerr << exe << ": ";
     cerr << "error opening `" << fn << "' for " << name << " output.\n";
@@ -158,7 +156,7 @@ int main(int argc, char** argv) {
   }
   
   // init output streams
-  ostream& info_stream  = get_output_stream("info", true);
+  ostream& info_stream  = get_output_stream("info");
   ostream& cnf_stream   = get_output_stream("cnf");
   ostream& proof_stream = get_output_stream("proof");
   
