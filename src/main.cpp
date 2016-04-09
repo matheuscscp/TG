@@ -8,42 +8,48 @@ string exe;
 void usage() {
   cerr << "Usage mode: " << exe << " [options...] \n";
   cerr << endl;
-  cerr << "I/O options:\n";
-  cerr << "\t-i\t<file path>\tRead formula from file.\n";
-  cerr << "\t-oinfo\t<file path>\tWrite formula information to file.\n";
-  cerr << "\t-oformula\t<file path>\tWrite formula to file.\n";
-  cerr << "\t-oproof\t<file path>\tWrite proof formula to file.\n";
-  cerr << endl;
-  cerr << "Pipeline options:\n";
-  cerr << "\t-f\tFlat ((p|(q|r)|s) ---> (p|q|r|s)). Before DAG.\n";
-  cerr << "\t-m\tMinimize DAG edges ((p&q)|(p&r&q) ---> (p&q)|((p&q)&r)).\n";
-  cerr << "\t-a\t<algorithm number>\tSelect renaming algorithm.\n";
-  cerr << "\t-s\tSimplify CNF. (see note 1)\n";
-  cerr << "\t-ionly\tOnly compute formula information.\n";
-  cerr << endl;
-  cerr << "Additional options:\n";
+  cerr << "Help options:\n";
   cerr << "\t-h\tDisplay usage mode.\n";
   cerr << "\t-syntax\tDisplay formula syntax.\n";
   cerr << endl;
-  cerr << "Renaming algorithms: (see note 2)\n";
-  cerr << "\t1\tKnapsack 0-1 based algorithm.\n";
-  cerr << "\t2\tBoy de la Tour's algorithm.\n";
+  cerr << "I/O options:\n";
+  cerr << "\t-i <file path>\t\tRead formula from file.\n";
+  cerr << "\t-oformula <file path>\tWrite formula to file.\n";
+  cerr << "\t-oproof <file path>\tWrite proof formula to file.\n";
+  cerr << "\t-oinfo <file path>\tWrite formula information to file.\n";
+  cerr << endl;
+  cerr << "Pipeline options (stages are executed in the following order):\n";
+  cerr << "\t-ionly\tOnly compute and output formula information and exit.\n";
+  cerr << "\t-n\tPut formula in negation normal form (NNF).\n";
+  cerr << "\t-f\tFlatten formula: (p|(q|r)|s) becomes (p|q|r|s).\n";
+  cerr << "\t-d\tConvert formula tree to directed acyclic graph (DAG).\n";
+  cerr << "\t-m\tMinimize DAG edges: (p&q)|(p&r&q) becomes (p&q)|((p&q)&r).\n";
+  cerr << "\t-r <op>\tSelect a renaming option.\n";
+  cerr << "\t-c <op>\tSelect a conjunctive normal form (CNF) option.\n";
+  cerr << endl;
+  cerr << "Renaming options: (see note 1)\n";
+  cerr << "\t1\tBoy de la Tour's greedy depth-first search algorithm.\n";
+  cerr << "\t2\tKnapsack 0-1 dynamic programming algorithm.\n";
+  cerr << endl;
+  cerr << "CNF options: (see note 1)\n";
+  cerr << "\t1\tApply CNF with no simplification.\n";
+  cerr << "\t2\tRemove tautologies, repeated literals and repeated clauses.\n";
+  cerr << endl;
+  cerr << "Knapsack renaming options:\n";
+  cerr << "\t-K <n>\tChoose at most n subformulas.\n";
+  cerr << "\t-Kpct\tChoose at most n\% of the subformulas (-K <n> required).\n";
   cerr << endl;
   cerr << "Notes:\n";
-  cerr << "\t1) CNF simplification removes tautologies, repeated literals\n";
-  cerr << "\tand repeated clauses.\n";
-  cerr << "\t2) If option -a is not set or an invalid algorithm is passed,\n";
-  cerr << "\tthen no renaming will happen at all.\n";
-  cerr << "\t3) Formula information format:\n";
-  cerr << "\t<file path>,<size>,<number of clauses>,<number of symbols>,\n";
+  cerr << "\t1) The behavior for applying renaming/CNF (-r and -c options)\n";
+  cerr << "\twithout applying NNF/DAG (-n and -d options) is undefined.\n";
+  cerr << "\t2) Formula information format:\n";
+  cerr << "\t,<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;
   exit(-1);
 }
 
 void syntax() {
   cerr << exe << ": Formula syntax.\n";
-  cerr << endl;
-  cerr << "===== INPUT SYNTAX =====\n";
   cerr << endl;
   cerr << "Propositional symbols are strings of one or more of the following\n";
   cerr << "ASCII characters:\n";
@@ -64,10 +70,6 @@ void syntax() {
   cerr << "\t2) Whitespaces and multiple parentheses are completely ignored.\n";
   cerr << "\tExample:\n";
   cerr << "\t\t(((p => q)))\tis the same as\t\tp=>q\n";
-  cerr << endl;
-  cerr << "===== OUTPUT SYNTAX =====\n";
-  cerr << endl;
-  cerr << "prover9 input syntax.\n";
   cerr << endl;
   exit(-1);
 }
@@ -142,8 +144,16 @@ int main(int argc, char** argv) {
   if (args.find("-syntax")) syntax();
   
   // arg checks
-  args.checkopt<int>("-r");
-  args.checkopt<int>("-c");
+  if (args.find("-r")) {
+    int tmp = args.opt<int>("-r");
+    if (tmp != 1 && tmp != 2) usage();
+  }
+  if (args.find("-c")) {
+    int tmp = args.opt<int>("-c");
+    if (tmp != 1 && tmp != 2) usage();
+  }
+  args.checkopt<unsigned>("-K");
+  if (args.find("-Kpct")) args.opt<unsigned>("-K");
   
   // init input stream
   string in_fn = "stdin";
@@ -160,9 +170,9 @@ int main(int argc, char** argv) {
   }
   
   // init output streams
-  ostream& info_stream    = get_output_stream("info");
   ostream& formula_stream = get_output_stream("formula");
   ostream& proof_stream   = get_output_stream("proof");
+  ostream& info_stream    = get_output_stream("info");
   
   // input
   getline(cin,raw);
@@ -181,9 +191,9 @@ int main(int argc, char** argv) {
     return 0;
   }
   
-  // ===========================================================================
+  // ==============
   // BEGIN pipeline
-  // ===========================================================================
+  // ==============
   
   if (args.find("-n")) nnf();
   if (args.find("-f")) flat();
@@ -192,8 +202,14 @@ int main(int argc, char** argv) {
   
   bool renamed = false;
   if (args.find("-r")) switch (args.opt<int>("-r")) {
-    case 1: knapsack();     renamed = true; break;
-    case 2: boydelatour();  renamed = true; break;
+    case 1:
+      renamed = true;
+      boydelatour();
+      break;
+    case 2:
+      renamed = true;
+      knapsack(args.find("-K")?args.opt<unsigned>("-K"):0,args.find("-Kpct"));
+      break;
   }
   rename();
   
@@ -202,15 +218,11 @@ int main(int argc, char** argv) {
     case 2: simplecnf();  break;
   }
   
-  // ===========================================================================
+  // ============
   // END pipeline
-  // ===========================================================================
+  // ============
   
   // output
-  info_stream << "," << in_fn << ",";
-  info_stream << FORMULA.size() << ",";
-  info_stream << FORMULA.clauses() << ",";
-  info_stream << FORMULA.symbols() << ",\n";
   formula_stream << FORMULA << "\n";
   if (renamed) {
     proof_stream << "(" << FORMULA << ") ";
@@ -222,6 +234,10 @@ int main(int argc, char** argv) {
     proof_stream << op2str(EQUI);
     proof_stream << " (" << original << ")\n";
   }
+  info_stream << "," << in_fn << ",";
+  info_stream << FORMULA.size() << ",";
+  info_stream << FORMULA.clauses() << ",";
+  info_stream << FORMULA.symbols() << ",\n";
   
   close_files();
   
