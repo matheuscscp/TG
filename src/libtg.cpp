@@ -12,7 +12,7 @@ int nextvar = 1;
 unordered_map<int,string> varname;
 vector<int> R;
 set<set<int>> simplified;
-CNF_t CNF;
+FORMULA_t FORMULA;
 
 // =============================================================================
 // Implementation
@@ -25,10 +25,10 @@ void Vertex::remove() {
   vector<int>().swap(down);
 }
 
-CNF_t::CNF_t() : simple(false) {}
+FORMULA_t::FORMULA_t() : simple(false) {}
 
-int CNF_t::size() const {
-  if (!simple) return ::size(G);
+int FORMULA_t::size() const {
+  if (!simple) return ::size(G.size() > 0 ? G : T);
   if (simplified.size() == 0) return 1;
   int ret = simplified.size()-1;
   for (auto& clause : simplified) {
@@ -48,13 +48,13 @@ int CNF_t::size() const {
   return ret;
 }
 
-uint_t CNF_t::clauses() const {
-  if (!simple) return ::clauses(G);
+uint_t FORMULA_t::clauses() const {
+  if (!simple) return ::clauses(G.size() > 0 ? G : T);
   return simplified.size();
 }
 
-int CNF_t::symbols() const {
-  if (!simple) return ::symbols(G);
+int FORMULA_t::symbols() const {
+  if (!simple) return ::symbols(G.size() > 0 ? G : T);
   unordered_set<int> symbols;
   for (auto& clause : simplified) for (int l : clause) symbols.insert(abs(l));
   return symbols.size();
@@ -420,7 +420,7 @@ void cnf() {
 }
 
 void simplecnf() {
-  CNF.simple = true;
+  FORMULA.simple = true;
   
   auto insert = [](set<int>& clause, int u) {
     int lit = (G[u].type == ATOM ? G[u].variable : -G[G[u].down[0]].variable);
@@ -577,8 +577,8 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
   return os;
 }
 
-ostream& operator<<(ostream& os, const CNF_t& formula) {
-  if (!formula.simple) return os << G;
+ostream& operator<<(ostream& os, const FORMULA_t& formula) {
+  if (!formula.simple) return os << (G.size() > 0 ? G : T);
   if (simplified.size() == 0) return os << "tauto " << op2str(IMPL) << " tauto";
   bool pr1 = false;
   for (auto& clause : simplified) {

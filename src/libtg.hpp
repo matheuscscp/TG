@@ -18,14 +18,15 @@ struct Vertex {
   Vertex();
   void remove();
 };
-struct CNF_t {
+struct FORMULA_t { // just a wrapper for output methods
   bool simple;
-  CNF_t();
+  FORMULA_t();
   // statistics
-     int    size() const; // compute CNF size
+     int    size() const; // compute size
   uint_t clauses() const; // compute number of clauses
      int symbols() const; // compute number of symbols
 };
+std::ostream& operator<<(std::ostream&, const FORMULA_t&);
 
 // =============================================================================
 // Globals
@@ -37,7 +38,7 @@ extern int nextvar;                                 // next variable id
 extern std::unordered_map<int,std::string> varname; // variables' names
 extern std::vector<int> R;                          // renaming
 extern std::set<std::set<int>> simplified;          // simplified CNF
-extern CNF_t CNF;                                   // final CNF
+extern FORMULA_t FORMULA;                           // final formula wrapper
 
 // =============================================================================
 // Functions
@@ -64,6 +65,5 @@ uint_t clauses(const std::vector<Vertex>&); // compute number of clauses
 // formatted output
 std::string op2str(char); // convert integer logic operator to string symbol
 std::ostream& operator<<(std::ostream&, const std::vector<Vertex>&);
-std::ostream& operator<<(std::ostream&, const CNF_t&);
 
 #endif

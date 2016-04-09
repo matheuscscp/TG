@@ -11,7 +11,7 @@ void usage() {
   cerr << "I/O options:\n";
   cerr << "\t-i\t<file path>\tRead formula from file.\n";
   cerr << "\t-oinfo\t<file path>\tWrite formula information to file.\n";
-  cerr << "\t-ocnf\t<file path>\tWrite CNF to file.\n";
+  cerr << "\t-oformula\t<file path>\tWrite formula to file.\n";
   cerr << "\t-oproof\t<file path>\tWrite proof formula to file.\n";
   cerr << endl;
   cerr << "Pipeline options:\n";
@@ -141,6 +141,10 @@ int main(int argc, char** argv) {
   if (args.find("-h")) usage();
   if (args.find("-syntax")) syntax();
   
+  // arg checks
+  args.checkopt<int>("-r");
+  args.checkopt<int>("-c");
+  
   // init input stream
   string in_fn = "stdin";
   if (args.find("-i")) {
@@ -156,12 +160,9 @@ int main(int argc, char** argv) {
   }
   
   // init output streams
-  ostream& info_stream  = get_output_stream("info");
-  ostream& cnf_stream   = get_output_stream("cnf");
-  ostream& proof_stream = get_output_stream("proof");
-  
-  // additional argument checks
-  args.checkopt<int>("-a");
+  ostream& info_stream    = get_output_stream("info");
+  ostream& formula_stream = get_output_stream("formula");
+  ostream& proof_stream   = get_output_stream("proof");
   
   // input
   getline(cin,raw);
@@ -180,33 +181,44 @@ int main(int argc, char** argv) {
     return 0;
   }
   
-  // pipeline
-  nnf();
+  // ===========================================================================
+  // BEGIN pipeline
+  // ===========================================================================
+  
+  if (args.find("-n")) nnf();
   if (args.find("-f")) flat();
-  dag();
+  if (args.find("-d")) dag();
   if (args.find("-m")) mindag();
+  
   bool renamed = false;
-  if (args.find("-a")) switch (args.opt<int>("-a")) {
+  if (args.find("-r")) switch (args.opt<int>("-r")) {
     case 1: knapsack();     renamed = true; break;
     case 2: boydelatour();  renamed = true; break;
   }
   rename();
-  if (args.find("-s")) simplecnf();
-  else cnf();
+  
+  if (args.find("-c")) switch (args.opt<int>("-c")) {
+    case 1: cnf();        break;
+    case 2: simplecnf();  break;
+  }
+  
+  // ===========================================================================
+  // END pipeline
+  // ===========================================================================
   
   // output
   info_stream << "," << in_fn << ",";
-  info_stream << CNF.size() << ",";
-  info_stream << CNF.clauses() << ",";
-  info_stream << CNF.symbols() << ",\n";
-  cnf_stream << CNF << "\n";
+  info_stream << FORMULA.size() << ",";
+  info_stream << FORMULA.clauses() << ",";
+  info_stream << FORMULA.symbols() << ",\n";
+  formula_stream << FORMULA << "\n";
   if (renamed) {
-    proof_stream << "(" << CNF << ") ";
+    proof_stream << "(" << FORMULA << ") ";
     proof_stream << op2str(IMPL);
     proof_stream << " (" << original << ")\n";
   }
   else {
-    proof_stream << "(" << CNF << ") ";
+    proof_stream << "(" << FORMULA << ") ";
     proof_stream << op2str(EQUI);
     proof_stream << " (" << original << ")\n";
   }
