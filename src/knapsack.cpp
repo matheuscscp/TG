@@ -39,8 +39,8 @@ static ptype p(const vector<int>& Rnm) {
 // f(0,j) = f(i,0) = {}
 // f(i,j) = { f(i-1,j-1) U {i}          if p(f(i-1,j-1) U {i}) < p(f(i-1,j))
 //          { f(i-1,j)                  otherwise
-void knapsack() {
-  // find subformulas with BFS
+void knapsack(unsigned K, bool pct) {
+  // find available subformulas with breadth-first search
   vector<int> subformulas;
   {
     vector<bool> found(G.size(),false);
@@ -57,15 +57,17 @@ void knapsack() {
     }
   }
   
+  // compute input size
+  unsigned n = subformulas.size();
+  K = (K ? (pct ? round(n*(K/100.0)) : min(n,K)) : n);
+  
   // knapsack 0-1
-  int n = subformulas.size();
-  vector<vector<int>> dp(n+1);
-  for (int i = 0; i < n; i++) for (int j = n; 1 <= j; j--) {
+  vector<vector<int>> dp(K+1);
+  for (int i = 0; i < n; i++) for (int j = K; 1 <= j; j--) {
     vector<int> alt = dp[j-1]; alt.push_back(subformulas[i]);
     if (p(alt) < p(dp[j])) dp[j] = alt;
   }
   
-  // as dp[j] is now f(n,j), we have that R = dp[n] = f(n,n).
-  // alternatively, R may be f(n,K), for some K <= n.
-  R = dp[n];
+  // now, dp[j] = f(n,j). so dp[K] is the answer
+  R = dp[K];
 }
