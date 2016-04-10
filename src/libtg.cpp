@@ -386,6 +386,7 @@ void rename() {
     
     // change renamed formula to variable
     G[u].type = ATOM;
+    G[u].down.clear();
   }
 }
 
