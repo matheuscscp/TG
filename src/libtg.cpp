@@ -495,49 +495,48 @@ int size(const vector<Vertex>& formula) {
 }
 
 uint_t clauses(const vector<Vertex>& formula) {
-  vector<pair<uint_t,uint_t>> dp(formula.size(),make_pair(uint_t(0),uint_t(0)));
-  function<pair<uint_t,uint_t>(int)> dfs = [&](int u) {
+  vector<vector<uint_t>> dp(2,vector<uint_t>(formula.size(),uint_t(0)));
+  function<uint_t(int,int)> f = [&](int i, int u) {
     // memoization
-    pair<uint_t,uint_t>& ret = dp[u];
-    if (ret.first) return ret;
+    uint_t& ret = dp[i][u];
+    if (ret) return ret;
     
     // base
-    if (formula[u].type == ATOM) return ret = make_pair(uint_t(1),uint_t(1));
+    if (formula[u].type == ATOM) return ret = uint_t(1);
     
-    // compute children
-    for (int v : formula[u].down) dfs(v);
-    auto& p1 = dp[formula[u].down[0]];
-    auto& p2 = (formula[u].down.size() > 1 ? dp[formula[u].down[1]] : dp[0]);
-    
-    // compute vertex
-    switch (formula[u].type) {
-      case NEGA: ret = make_pair(p1.second,p1.first); break;
-      case IMPL: ret = make_pair(p1.second*p2.first,p1.first+p2.second); break;
-      case EQUI:
-        ret = make_pair(
-          p1.first*p2.second+p1.second*p2.first,
-          p1.first*p2.first+p1.second*p2.second
-        );
-        break;
+    // transition
+    int p1 = formula[u].down[0];
+    int p2 = (formula[u].down.size() > 1 ? formula[u].down[1] : 0);
+    if (i == 0) switch (formula[u].type) {
+      case NEGA: ret = f(1,p1);                         break;
+      case IMPL: ret = f(1,p1)*f(0,p2);                 break;
+      case EQUI: ret = f(1,p1)*f(0,p2)+f(1,p2)*f(0,p1); break;
       case CONJ:
-        ret = make_pair(uint_t(0),uint_t(1));
-        for (int v : formula[u].down) {
-          ret.first += dp[v].first;
-          ret.second *= dp[v].second;
-        }
+        ret = uint_t(0);
+        for (int v : formula[u].down) ret += f(0,v);
         break;
       case DISJ:
-        ret = make_pair(uint_t(1),uint_t(0));
-        for (int v : formula[u].down) {
-          ret.first *= dp[v].first;
-          ret.second += dp[v].second;
-        }
+        ret = uint_t(1);
+        for (int v : formula[u].down) ret *= f(0,v);
+        break;
+    }
+    else switch (formula[u].type) {
+      case NEGA: ret = f(0,p1);                         break;
+      case IMPL: ret = f(0,p1)+f(1,p2);                 break;
+      case EQUI: ret = f(0,p1)*f(0,p2)+f(1,p1)*f(1,p2); break;
+      case CONJ:
+        ret = uint_t(1);
+        for (int v : formula[u].down) ret *= f(1,v);
+        break;
+      case DISJ:
+        ret = uint_t(0);
+        for (int v : formula[u].down) ret += f(1,v);
         break;
     }
     
     return ret;
   };
-  return dfs(0).first;
+  return f(0,0);
 }
 
 int symbols(const vector<Vertex>& formula) {
