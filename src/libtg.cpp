@@ -25,7 +25,7 @@ void Vertex::remove() {
   vector<int>().swap(down);
 }
 
-FORMULA_t::FORMULA_t() : simple(false) {}
+FORMULA_t::FORMULA_t() : in_cnf(false), simple(false) {}
 
 int FORMULA_t::size() const {
   if (!simple) return ::size(G.size() > 0 ? G : T);
@@ -49,8 +49,10 @@ int FORMULA_t::size() const {
 }
 
 uint_t FORMULA_t::clauses() const {
-  if (!simple) return ::clauses(G.size() > 0 ? G : T);
-  return simplified.size();
+  if (!in_cnf) return ::clauses(G.size() > 0 ? G : T);
+  if (simple) return simplified.size();
+  if (G[0].type != CONJ) return 1;
+  return G[0].down.size();
 }
 
 int FORMULA_t::symbols() const {
@@ -391,6 +393,8 @@ void rename() {
 }
 
 void cnf() {
+  FORMULA.in_cnf = true;
+  
   vector<bool> visited(G.size(),false);
   function<void(int)> dfs = [&](int u) {
     visited[u] = true;
@@ -424,6 +428,7 @@ void cnf() {
 }
 
 void simplecnf() {
+  FORMULA.in_cnf = true;
   FORMULA.simple = true;
   
   auto insert = [](set<int>& clause, int u) {
