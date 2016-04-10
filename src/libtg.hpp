@@ -19,7 +19,7 @@ struct Vertex {
   void remove();
 };
 struct FORMULA_t { // just a wrapper for output methods
-  bool in_cnf, simple;
+  bool simple;
   FORMULA_t();
   // statistics
      int    size() const; // compute size
