@@ -269,7 +269,7 @@ void flat() {
 
 void dag() {
   unordered_map<int,int> var_newu;
-  unordered_map<int,pair<set<int>,int>> oldp_newc;
+  unordered_map<int,vector<int>> oldp_newc;
   G.emplace_back(); // root is always u == 0
   
   // formula is a single propositional symbol
@@ -286,32 +286,25 @@ void dag() {
       G[u].type = ATOM;
       G[u].variable = phi.variable;
     }
-    oldp_newc[phi.up].first.insert(u);
-    oldp_newc[phi.up].second++;
+    oldp_newc[phi.up].push_back(u);
   }
   
   // search tree bottom-up to create vertices for subformulas
-  for (map<pair<char,set<int>>,int> newc_newp; !oldp_newc.empty();) {
+  for (map<pair<char,vector<int>>,int> newc_newp; !oldp_newc.empty();) {
     list<pair<int,int>> tmp;
     for (auto kv = oldp_newc.begin(); kv != oldp_newc.end();) {
       auto& phi = T[kv->first];
-      if (kv->second.second < phi.down.size()) { kv++; continue; }
-      int& u = newc_newp[make_pair(phi.type,kv->second.first)];
+      if (kv->second.size() < phi.down.size()) { kv++; continue; }
+      int& u = newc_newp[make_pair(phi.type,kv->second)];
       if (!u) {
         if (kv->first) u = G.size(), G.emplace_back();
         G[u].type = phi.type;
-        for (int v : kv->second.first) G[u].down.push_back(v);
-        if (G[u].type != NEGA && G[u].down.size() == 1) {
-          G[u].down.push_back(G[u].down[0]);
-        }
+        G[u].down = kv->second;
       }
       if (kv->first) tmp.emplace_back(phi.up,u);
       oldp_newc.erase(kv++);
     }
-    for (auto& kv : tmp) {
-      oldp_newc[kv.first].first.insert(kv.second);
-      oldp_newc[kv.first].second++;
-    }
+    for (auto& kv : tmp) oldp_newc[kv.first].push_back(kv.second);
   }
 }
 
