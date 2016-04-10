@@ -301,7 +301,7 @@ void dag() {
         if (kv->first) u = G.size(), G.emplace_back();
         G[u].type = phi.type;
         for (int v : kv->second.first) G[u].down.push_back(v);
-        if ((phi.type == IMPL || phi.type == EQUI) && G[u].down.size() == 1) {
+        if (G[u].type != NEGA && G[u].down.size() == 1) {
           G[u].down.push_back(G[u].down[0]);
         }
       }
