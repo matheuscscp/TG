@@ -1,0 +1,15 @@
+#!/bin/bash
+
+timeout=300s
+maxformulas=600
+
+scripts/knapsack_cnf_batch parse_correctness "" $timeout $maxformulas
+scripts/knapsack_cnf_batch nnf_correctness "-n" $timeout $maxformulas
+scripts/knapsack_cnf_batch flat_correctness "-f" $timeout $maxformulas
+scripts/knapsack_cnf_batch dag_correctness "-d" $timeout $maxformulas
+scripts/knapsack_cnf_batch mindag_correctness "-d -m" $timeout $maxformulas
+scripts/knapsack_cnf_batch renaming_correctness "-n -d -r 1" $timeout $maxformulas
+scripts/knapsack_cnf_batch cnf_correctness "-n -d -r 1 -c 1" $timeout $maxformulas
+scripts/knapsack_cnf_batch simplecnf_correctness "-n -d -r 1 -c 2" $timeout $maxformulas
+scripts/check_proofs $timeout
+

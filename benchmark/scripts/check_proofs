@@ -1,0 +1,92 @@
+#!/bin/bash
+
+prover_res() {
+  grep Unsat prover.out > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    return 0
+  else
+    grep Sat prover.out > /dev/null 2> /dev/null
+    if [ "$?" = "0" ]; then
+      return 1
+    else
+      grep bad_alloc prover.out > /dev/null 2> /dev/null
+      if [ "$?" = "0" ]; then
+        return 2
+      else
+        return 3
+      fi
+    fi
+  fi
+}
+
+exec 2> /dev/null
+
+if [[ -z "$1" ]]; then
+  echo "Usage mode: $0 <timeout>"
+  exit
+fi
+
+for file in `ls -Sr proofs/*/*`;
+do
+  batch_name=$(echo $file | cut -d'/' -f2)
+  fn=$(basename $file)
+  file=$batch_name/$fn
+  
+  # check if $file was already checked
+  grep ",$file" proofs_checked.txt > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    continue
+  fi
+  
+  # check if batch exited normally
+  grep ",$fn" infos/$batch_name.info > check_proofs.tmp 2> /dev/null
+  if [ "$?" != "0" ]; then
+    echo "$0: error checking $file"
+    exit
+  fi
+  
+  # check if batch exceeded time limit
+  grep ",timeout," check_proofs.tmp > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$file,timeout," >> proofs_checked.txt
+    continue
+  fi
+  
+  # check if batch exceeded memory limit
+  grep ",memout," check_proofs.tmp > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$file,memout," >> proofs_checked.txt
+    continue
+  fi
+  
+  # check file size
+  fsize=$(stat -c%s "proofs/$file")
+  if [ "$fsize" = "0" ]; then
+    echo ",$file,empty," >> proofs_checked.txt
+    continue
+  fi
+  
+  # run prover for supposed theorem $file
+  timeout $1 bddtab < proofs/$file > prover.out 2> prover.out
+  if [ "$?" = "124" ]; then
+    echo ",$file,timeout," >> proofs_checked.txt
+    continue
+  fi
+  
+  # check result
+  prover_res
+  case "$?" in
+    "0")  echo ",$file,ok," >> proofs_checked.txt
+          ;;
+    "1")  echo ",$file,fail," >> proofs_checked.txt
+          ;;
+    "2")  echo ",$file,memout," >> proofs_checked.txt
+          ;;
+    *)    echo "$0: error checking $file"
+          exit
+          ;;
+  esac
+done
+
+rm -rf prover.out check_proofs.tmp
+

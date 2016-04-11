@@ -1,0 +1,51 @@
+#!/bin/bash
+
+if [ "$#" != "4" ]; then
+  echo "Usage mode: $0 <batch name> <pipeline> <timeout> <max formulas>"
+  exit
+fi
+
+mkdir -p outputs/$1
+mkdir -p proofs/$1
+mkdir -p infos
+
+i=-1
+for file in `ls -Sr formulas/*`;
+do
+  # limit number of files to run
+  i=`expr $i + 1`
+  if [ "$i" = "$4" ]; then
+    break
+  fi
+  
+  # check if this file was already executed
+  fn=$(basename $file)
+  grep ",$fn" infos/$1.info > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    continue
+  fi
+  
+  # run file
+  (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 >> infos/$1.info) 2> knapsack_cnf.err
+  
+  # check time limit
+  grep "status 124" knapsack_cnf.err > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$fn,timeout," >> infos/$1.info
+    echo ",$fn,timeout," >> infos/$1.time
+    continue
+  fi
+  
+  # check memory limit
+  grep Command knapsack_cnf.err > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$fn,memout," >> infos/$1.info
+    echo ",$fn,memout," >> infos/$1.time
+    continue
+  fi
+  
+  grep ",$fn" knapsack_cnf.err >> infos/$1.time
+done
+
+rm -rf knapsack_cnf.err
+

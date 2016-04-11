@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rm -rf info_only.txt
+
+for file in formulas/*;
+do
+  ../knapsack_cnf -i $file -oinfo info_only.txt -ionly
+done
+
