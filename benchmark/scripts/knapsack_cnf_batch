@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$#" != "4" ]; then
-  echo "Usage mode: $0 <batch name> <pipeline> <timeout> <max formulas>"
+if [ "$#" != "5" ]; then
+  echo "Usage mode: $0 <batch name> <pipeline> <timeout> <max formulas> <output proofs flag>"
   exit
 fi
 
@@ -26,7 +26,11 @@ do
   fi
   
   # run file
-  (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 >> infos/$1.info) 2> knapsack_cnf.err
+  if [ "$5" = "0" ]; then
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof /dev/null $2 >> infos/$1.info) 2> knapsack_cnf.err
+  else
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 >> infos/$1.info) 2> knapsack_cnf.err
+  fi
   
   # check time limit
   grep "status 124" knapsack_cnf.err > /dev/null 2> /dev/null
