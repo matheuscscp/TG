@@ -268,8 +268,8 @@ void flat() {
 }
 
 void dag() {
-  unordered_map<int,int> var_newu;
-  unordered_map<int,vector<int>> oldp_newc;
+  vector<int> newu(T.size());
+  unordered_map<int,int> var_newu, oldp_newc;
   G.emplace_back(); // root is always u == 0
   
   // formula is a single propositional symbol
@@ -279,32 +279,57 @@ void dag() {
   }
   
   // create vertices for variables
-  for (auto& phi : T) if (phi.type == ATOM) {
+  for (int i = 0; i < T.size(); i++) if (T[i].type == ATOM) {
+    auto& phi = T[i];
     int& u = var_newu[phi.variable];
     if (!u) {
       u = G.size(); G.emplace_back();
       G[u].type = ATOM;
       G[u].variable = phi.variable;
     }
-    oldp_newc[phi.up].push_back(u);
+    newu[i] = u;
+    oldp_newc[phi.up]++;
   }
   
   // search tree bottom-up to create vertices for subformulas
-  for (map<pair<char,vector<int>>,int> newc_newp; !oldp_newc.empty();) {
-    list<pair<int,int>> tmp;
+  map<pair<char,set<int>>,int> newp;
+  map<pair<int,int>,int> newp_impl;
+  while (!oldp_newc.empty()) {
+    list<int> inc;
     for (auto kv = oldp_newc.begin(); kv != oldp_newc.end();) {
       auto& phi = T[kv->first];
-      if (kv->second.size() < phi.down.size()) { kv++; continue; }
-      int& u = newc_newp[make_pair(phi.type,kv->second)];
-      if (!u) {
-        if (kv->first) u = G.size(), G.emplace_back();
-        G[u].type = phi.type;
-        G[u].down = kv->second;
+      if (kv->second < phi.down.size()) { kv++; continue; }
+      if (kv->first) inc.push_back(phi.up);
+      int* u;
+      vector<int> down;
+      if (phi.type != IMPL) {
+        set<int> down_set;
+        for (int v : phi.down) {
+          int tmp = newu[v];
+          down.push_back(tmp);
+          down_set.insert(tmp);
+        }
+        u = &newp[make_pair(phi.type,down_set)];
       }
-      if (kv->first) tmp.emplace_back(phi.up,u);
+      else {
+        pair<int,int> down_pair;
+        int tmp = newu[phi.down[0]];
+        down.push_back(tmp);
+        down_pair.first = tmp;
+        tmp = newu[phi.down[1]];
+        down.push_back(tmp);
+        down_pair.second = tmp;
+        u = &newp_impl[down_pair];
+      }
+      if (!(*u)) {
+        if (kv->first) *u = G.size(), G.emplace_back();
+        G[*u].type = phi.type;
+        G[*u].down.swap(down);
+      }
+      newu[kv->first] = *u;
       oldp_newc.erase(kv++);
     }
-    for (auto& kv : tmp) oldp_newc[kv.first].push_back(kv.second);
+    for (int u : inc) oldp_newc[u]++;
   }
 }
 
