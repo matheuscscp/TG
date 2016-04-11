@@ -1,3 +1,8 @@
 obj
 knapsack_cnf
-benchmark
+benchmark/formulas
+benchmark/outputs
+benchmark/proofs
+benchmark/*.tmp
+benchmark/*.out
+benchmark/*.err
