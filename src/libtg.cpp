@@ -112,25 +112,6 @@ void parse() {
       if (c == ')') {
         int u = S.top();
         compress(u);
-        if (T[u].type != ATOM && T[u].down.size() == 0) { // tautology
-          int& var = id["tauto"];
-          if (!var) { var = nextvar++; varname[var] = "tauto"; }
-          T[u].type = DISJ;
-          int u1 = T.size(); T.emplace_back();
-          int u2 = T.size(); T.emplace_back();
-          int u3 = T.size(); T.emplace_back();
-          T[u].down.push_back(u1);
-          T[u].down.push_back(u2);
-          T[u1].type = ATOM;
-          T[u1].variable = var;
-          T[u1].up = u;
-          T[u2].type = NEGA;
-          T[u2].up = u;
-          T[u2].down.push_back(u3);
-          T[u3].type = ATOM;
-          T[u3].variable = var;
-          T[u3].up = u2;
-        }
         S.pop();
       }
       else { // propositional symbol
@@ -240,21 +221,18 @@ static void flat(vector<Vertex>& formula, int u) {
   auto& phi = formula[u];
   for (bool changed = true; changed;) {
     changed = false;
-    unordered_set<int> newc;
+    vector<int> newc;
     for (int v : phi.down) {
       auto& psi = formula[v];
       if ((psi.type != CONJ && psi.type != DISJ) || psi.type != phi.type) {
-        newc.insert(v);
+        newc.push_back(v);
         continue;
       }
       changed = true;
-      for (int w : psi.down) newc.insert(w);
+      for (int w : psi.down) newc.push_back(w);
       if (is_tree) psi.remove();
     }
-    if (changed) {
-      phi.down.clear();
-      for (int v : newc) phi.down.push_back(v);
-    }
+    if (changed) phi.down.swap(newc);
   }
   for (int v : phi.down) formula[v].up = u;
 }
@@ -357,7 +335,7 @@ void mindag() {
         if (i < e1.size() || !issubset) continue;
         changed = true;
         if (!uchildofv) newc.push_back(u);
-        e2 = newc;
+        e2.swap(newc);
       }
     }
   }

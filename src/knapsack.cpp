@@ -65,9 +65,9 @@ void knapsack(unsigned K, bool pct) {
   vector<vector<int>> dp(K+1);
   for (int i = 0; i < n; i++) for (int j = K; 1 <= j; j--) {
     vector<int> alt = dp[j-1]; alt.push_back(subformulas[i]);
-    if (p(alt) < p(dp[j])) dp[j] = alt;
+    if (p(alt) < p(dp[j])) dp[j].swap(alt);
   }
   
   // now, dp[j] = f(n,j). so dp[K] is the answer
-  R = dp[K];
+  R.swap(dp[K]);
 }

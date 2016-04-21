@@ -40,8 +40,8 @@ void usage() {
   cerr << "\t-Kpct\tChoose at most n\% of the subformulas (-K <n> required).\n";
   cerr << endl;
   cerr << "Notes:\n";
-  cerr << "\t1) The behavior for applying renaming/CNF (-r and -c options)\n";
-  cerr << "\twithout applying NNF/DAG (-n and -d options) is undefined.\n";
+  cerr << "\t1) The behavior for applying either renaming or CNF without\n";
+  cerr << "\tapplying both NNF and DAG is undefined.\n";
   cerr << "\t2) Formula information format:\n";
   cerr << "\t,<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;

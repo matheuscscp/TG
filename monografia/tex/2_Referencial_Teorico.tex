@@ -3,7 +3,7 @@
 \end{definition}
 
 \begin{definition}
-    Se $\phi \in \mathcal{P}$, então $\phi$ é uma \emph{fórmula bem-formada}, ou, simplesmente, uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{Z}^*$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula.
+    Se $\phi \in \mathcal{P}$, então $\phi$ é uma \emph{fórmula bem-formada}, ou, simplesmente, uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula.
     \begin{enumerate}
         \item \emph{Negação}: $\neg \phi_1$
         \item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
@@ -13,7 +13,7 @@
     \end{enumerate}
     Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
     
-    Em particular, denotamos a conjunção vazia ($n=0$) por $\top$ e a disjunção vazia por $\bot$.
+    Denotamos a conjunção vazia, $\phi_1 \wedge ... \wedge \phi_n$ com $n=0$, por $\top$, a disjunção vazia por $\bot$ e o conjunto das fórmulas por $\mathcal{L}$.
 \end{definition}
 
 \begin{example}
@@ -31,12 +31,7 @@
     \begin{enumerate}
     	\item $\phi = \psi$.
     	\item $\phi$ é subfórmula imediata de $\psi$.
-    	\item Existe uma sequência finita de fórmulas $\phi_1,...,\phi_n$ tal que:
-    	\begin{enumerate}
-    		\item $\phi$ é subfórmula imediata de $\phi_1$.
-    		\item $\phi_n$ é subfórmula imediata de $\psi$.
-    		\item $\phi_i$ é subfórmula imediata de $\phi_{i+1}$, para todo $i$.
-    	\end{enumerate}
+    	\item $\phi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\psi$.
     \end{enumerate}
     
     Se $\phi \sqsubseteq \psi$ e $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
@@ -56,7 +51,7 @@
 	\begin{enumerate}
 		\item Se $\phi \in \mathcal{P}$, então $tam(\phi) = 1$.
 		\item $tam(\neg \phi) = 1 + tam(\phi)$.
-		\item $tam(\phi_1 \wedge ... \wedge \phi_n) = tam(\phi_1 \vee ... \vee \phi_n) = n - 1 + \sum_i \phi_i$.
+		\item $tam(\phi_1 \wedge ... \wedge \phi_n) = tam(\phi_1 \vee ... \vee \phi_n) = n - 1 + \sum_i tam(\phi_i)$.
 		\item $tam(\phi_1 \rightarrow \phi_2) = tam(\phi_1 \leftrightarrow \phi_2) = 1 + tam(\phi_1) + tam(\phi_2)$.
 		\item $tam(\top) = tam(\bot) = 1$.
 	\end{enumerate}
@@ -76,7 +71,9 @@
 \end{example}
 
 \begin{definition}
-    Uma \emph{valoração booleana} é uma função $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$. Estendemos esta definição para fórmulas da seguinte maneira:
+	Dizemos que $\mathbb{v}_0$ é uma \emph{valoração booleana} se $\mathbb{v}_0$ é uma função tal que $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$.
+    
+    Seja $\mathbb{v}_0$ uma valoração booleana. Dizemos que $\mathbb{v}$ é \emph{interpretação} se $\mathbb{v}$ é uma função tal que $\mathbb{v} : \mathcal{L} \longmapsto \{V,F\}$ e:
     \begin{enumerate}
         \item Se $\phi_1 \in \mathcal{P}$, então $\mathbb{v}(\phi_1) = \mathbb{v}_0(\phi_1)$.
         \item $\mathbb{v}(\neg \phi_1) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$.
@@ -88,7 +85,7 @@
         \item $\mathbb{v}(\bot) = F$.
     \end{enumerate}
     
-    Dizemos que a extensão $\mathbb{v}$ de uma valoração booleana $\mathbb{v}_0$ é uma \emph{interpretação}. Além disso, dizemos que $\mathbb{v}$ é também um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
+    Dizemos que a interpretação $\mathbb{v}$ é um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
 \end{definition}
 
 \begin{example}
@@ -107,7 +104,7 @@
 \begin{definition}
 	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda que $\phi$ é \emph{falsificável}.
 	
-	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}, ou que $\phi$ é \emph{infalsificável}. Por outro lado, se toda interpretação falsifica $\phi$, então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
+	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}. Por outro lado, se toda interpretação falsifica $\phi$, então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
 	
 	Se $\phi$ é simultaneamente satisfatível e falsificável, então dizemos que $\phi$ é uma \emph{contingência}.
 \end{definition}
@@ -138,7 +135,7 @@
 \end{example}
 
 \begin{definition}
-	Uma \emph{posição} é uma sequência finita de números naturais. Usaremos as notações alternativas $\varepsilon$, para a posição vazia, e $a_1.\cdots.a_n$, para a posição $(a_1,\cdots,a_n)$, onde $n \in \mathbb{Z}^*$.
+	Uma \emph{posição} é uma sequência finita de números naturais. Usaremos as notações alternativas $\varepsilon$, para a posição vazia $()$, e $a_1.\cdots.a_n$, para a posição $(a_1,\cdots,a_n)$, onde $n \in \mathbb{N} \cup \{0\}$. Além disso, se $\pi = a_1.\cdots.a_n$ é uma posição e $i$ é um número natural, então $i.\pi$ denota a posição $i.a_1.\cdots.a_n$ e $\pi.i$ denota a posição $a_1.\cdots.a_n.i$.
 	
     Definimos o \emph{conjunto de posições} de uma fórmula $\phi$, $pos(\phi)$, da seguinte maneira:
     \begin{enumerate}
@@ -148,7 +145,7 @@
     Agora, definimos a \emph{subfórmula de} $\phi$ \emph{começando na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
     \begin{enumerate}
         \item Se $\pi = \varepsilon$, então $\phi|_\pi = \phi$.
-        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, e $\pi$ é da forma $i.\pi'$, para algum $i$ e alguma posição $\pi' \in pos(\phi_i)$, então $\phi|_\pi = \phi_i|_{\pi'}$.
+        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, e $\pi$ é da forma $i.\pi'$, para algum natural $i$ e alguma posição $\pi' \in pos(\phi_i)$, então $\phi|_\pi = \phi_i|_{\pi'}$.
     \end{enumerate}
 \end{definition}
 
@@ -192,7 +189,7 @@
     \begin{enumerate}
         \item $pol(\phi,\varepsilon) = 1$.
         \item Se $\phi|_\pi$ é da forma $\neg \phi_1$, então $pol(\phi,\pi.1) = -pol(\phi,\pi)$.
-        \item Se $\phi|_\pi$ é da forma $\phi_1 \wedge ... \wedge \phi_n$, ou $\phi_1 \vee ... \vee \phi_n$, então $pol(\phi,\pi.i) = pol(\phi,\pi)$, para todo $i$.
+        \item Se $\phi|_\pi$ é da forma $\phi_1 \wedge ... \wedge \phi_n$, ou $\phi_1 \vee ... \vee \phi_n$, então $pol(\phi,\pi.i) = pol(\phi,\pi)$, para $i=1,...,n$.
         \item Se $\phi|_\pi$ é da forma $\phi_1 \rightarrow \phi_2$, então $pol(\phi,\pi.1) = -pol(\phi,\pi)$ e $pol(\phi,\pi.2) = pol(\phi,\pi)$.
         \item Se $\phi|_\pi$ é da forma $\phi_1 \leftrightarrow \phi_2$, então $pol(\phi,\pi.1) = pol(\phi,\pi.2) = 0$.
     \end{enumerate}
@@ -219,7 +216,7 @@
 \end{definition}
 
 \begin{definition}
-    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente em símbolos proposicionais.
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e qualquer negação ocorre na frente de um símbolo proposicional.
 \end{definition}
 
 \begin{theorem}
@@ -236,18 +233,26 @@
         	\item $\phi|_\pi \longmapsto (\phi_1 \wedge \phi_2) \vee (\neg \phi_2 \wedge \neg \phi_1)$, se $pol(\phi,\pi) = -1$
         \end{enumerate}
     \end{enumerate}
-    preservam equivalência e produzem fórmulas na FNN. A prova segue por indução na estrutura de uma fórmula.
+    preservam equivalência e produzem fórmulas na FNN.
 \end{theorem}
+
+A prova segue por indução na estrutura de uma fórmula.
 
 A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois sempre podemos transformar equivalências em posições mais curtas primeiro, de modo a evitar este caso.
 
 \begin{definition}
-    Dizemos que uma fórmula $\phi$ está na \emph{forma normal clausal} (FNC) se, e somente se, $\phi$ é da forma $$\bigwedge_i \left( \bigvee_j l_{i,j} \right)$$ onde, para cada $l_{i,j}$, ou $l_{i,j}$ é da forma $\neg p_{i,j}$ e $p_{i,j} \in \mathcal{P}$, ou $l_{i,j} \in \mathcal{P}$. Cada $l_{i,j}$ é chamado de \emph{literal} e cada disjunção de literais é uma \emph{cláusula}. Em outras palavras, uma fórmula está na FNC se, e somente se, ela é uma conjunção de cláusulas.
+	Dizemos que $\phi$ é um \emph{literal} se, e somente se, $\phi \in \mathcal{P}$, ou $\phi$ é da forma $\neg p$, onde $p \in \mathcal{P}$.
+	
+	Dizemos que uma disjunção de literais é uma \emph{cláusula}.
+	
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal clausal} (FNC) se, e somente se, $\phi$ é uma conjunção de cláusulas.
 \end{definition}
 
 \begin{theorem}
-    A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC. A prova segue por indução na estrutura de uma fórmula. Chamaremos esta transformação de \emph{distribuição}.
+    A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ chamada \emph{distribuição}, preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC.
 \end{theorem}
+
+A prova segue por indução na estrutura de uma fórmula.
 
 \begin{example}
     Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações do Teorema \ref{fnn_theorem} à exaustão, começando pela transformação do item 5.a, e então aplicando distribuição, temos:
