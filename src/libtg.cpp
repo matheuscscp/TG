@@ -13,6 +13,7 @@ unordered_map<int,string> varname;
 vector<int> R;
 set<set<int>> simplified;
 FORMULA_t FORMULA;
+bool is_tree = true;
 
 // =============================================================================
 // Implementation
@@ -216,8 +217,8 @@ void nnf() {
 }
 
 // (p|(q|r)|s) becomes (p|q|r|s)
-static void flat(vector<Vertex>& formula, int u) {
-  bool is_tree = (&formula == &T);
+static void flat(int u) {
+  vector<Vertex>& formula = (is_tree ? T : G);
   auto& phi = formula[u];
   for (bool changed = true; changed;) {
     changed = false;
@@ -239,13 +240,15 @@ static void flat(vector<Vertex>& formula, int u) {
 
 void flat() {
   function<void(int)> dfs = [&](int u) {
-    flat(T,u);
+    flat(u);
     for (int v : T[u].down) dfs(v);
   };
   dfs(0);
 }
 
 void dag() {
+  is_tree = false;
+  
   vector<int> newu(T.size());
   unordered_map<int,int> var_newu, oldp_newc;
   G.emplace_back(); // root is always u == 0
@@ -387,34 +390,35 @@ void rename() {
 }
 
 void cnf() {
-  vector<bool> visited(G.size(),false);
+  vector<Vertex>& form = (is_tree ? T : G);
+  vector<bool> visited(form.size(),false);
   function<void(int)> dfs = [&](int u) {
     visited[u] = true;
-    flat(G,u);
-    if (G[u].type == DISJ) {
+    flat(u);
+    if (form[u].type == DISJ) {
       int con = -1;
-      for (auto it = G[u].down.begin(); it != G[u].down.end(); it++) {
-        if (G[*it].type == CONJ) {
+      for (auto it = form[u].down.begin(); it != form[u].down.end(); it++) {
+        if (form[*it].type == CONJ) {
           con = *it;
-          G[u].down.erase(it);
+          form[u].down.erase(it);
           break;
         }
       }
       if (con < 0) return;
-      int rem = G.size(); G.emplace_back(); visited.push_back(false);
-      G[rem] = G[u];
-      G[u].type = CONJ;
-      G[u].down.clear();
-      for (int v : G[con].down) {
-        int dis = G.size(); G.emplace_back(); visited.push_back(false);
-        G[dis].type = DISJ;
-        G[dis].down.push_back(rem);
-        G[dis].down.push_back(v);
-        G[u].down.push_back(dis);
+      int rem = form.size(); form.emplace_back(); visited.push_back(false);
+      form[rem] = form[u];
+      form[u].type = CONJ;
+      form[u].down.clear();
+      for (int v : form[con].down) {
+        int dis = form.size(); form.emplace_back(); visited.push_back(false);
+        form[dis].type = DISJ;
+        form[dis].down.push_back(rem);
+        form[dis].down.push_back(v);
+        form[u].down.push_back(dis);
       }
     }
-    for (int v : G[u].down) if (!visited[v]) dfs(v);
-    flat(G,u);
+    for (int v : form[u].down) if (!visited[v]) dfs(v);
+    flat(u);
   };
   dfs(0);
 }
@@ -422,51 +426,55 @@ void cnf() {
 void simplecnf() {
   FORMULA.simple = true;
   
-  auto insert = [](set<int>& clause, int u) {
-    int lit = (G[u].type == ATOM ? G[u].variable : -G[G[u].down[0]].variable);
+  vector<Vertex>& form = (is_tree ? T : G);
+  
+  auto insert = [&](set<int>& clause, int u) {
+    int lit;
+    if (form[u].type == ATOM) lit = form[u].variable;
+    else                      lit = -form[form[u].down[0]].variable;
     if (clause.find(-lit) != clause.end()) return false; // tautology
     clause.insert(lit);
     return true;
   };
   
-  vector<bool> visited(G.size(),false);
+  vector<bool> visited(form.size(),false);
   function<void(int)> dfs = [&](int u) {
     visited[u] = true;
-    flat(G,u);
-    if (G[u].type == DISJ) {
+    flat(u);
+    if (form[u].type == DISJ) {
       set<int> clause;
       int con = -1;
-      for (auto it = G[u].down.begin(); it != G[u].down.end(); it++) {
-        if (G[*it].type == ATOM || G[*it].type == NEGA) {
-          if (!insert(clause,*it)) { G[u].remove(); return; }
+      for (auto it = form[u].down.begin(); it != form[u].down.end(); it++) {
+        if (form[*it].type == ATOM || form[*it].type == NEGA) {
+          if (!insert(clause,*it)) { form[u].remove(); return; }
         }
         else {
           con = *it;
-          G[u].down.erase(it);
+          form[u].down.erase(it);
           break;
         }
       }
       if (con < 0) { simplified.insert(clause); return; }
-      int rem = G.size(); G.emplace_back(); visited.push_back(false);
-      G[rem] = G[u];
-      G[u].type = CONJ;
-      G[u].down.clear();
-      for (int v : G[con].down) {
-        int dis = G.size(); G.emplace_back(); visited.push_back(false);
-        G[dis].type = DISJ;
-        G[dis].down.push_back(rem);
-        G[dis].down.push_back(v);
-        G[u].down.push_back(dis);
+      int rem = form.size(); form.emplace_back(); visited.push_back(false);
+      form[rem] = form[u];
+      form[u].type = CONJ;
+      form[u].down.clear();
+      for (int v : form[con].down) {
+        int dis = form.size(); form.emplace_back(); visited.push_back(false);
+        form[dis].type = DISJ;
+        form[dis].down.push_back(rem);
+        form[dis].down.push_back(v);
+        form[u].down.push_back(dis);
       }
     }
-    else if (G[u].type != CONJ) {
+    else if (form[u].type != CONJ) {
       set<int> clause;
       insert(clause,u);
       simplified.insert(clause);
       return;
     }
-    for (int v : G[u].down) if (!visited[v]) dfs(v);
-    flat(G,u);
+    for (int v : form[u].down) if (!visited[v]) dfs(v);
+    flat(u);
   };
   dfs(0);
 }

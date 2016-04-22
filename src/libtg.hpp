@@ -39,6 +39,7 @@ extern std::unordered_map<int,std::string> varname; // variables' names
 extern std::vector<int> R;                          // renaming
 extern std::set<std::set<int>> simplified;          // simplified CNF
 extern FORMULA_t FORMULA;                           // final formula wrapper
+extern bool is_tree;                                // which vector to use
 
 // =============================================================================
 // Functions

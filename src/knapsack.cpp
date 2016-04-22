@@ -3,21 +3,27 @@
 
 using namespace std;
 
+static vector<Vertex>* formula;
+
 // p(Rnm) = number of clauses if we rename the subformulas in Rnm
 typedef uint_t ptype;
 static ptype p(const vector<int>& Rnm) {
-  vector<ptype> dp(G.size(),0);
+  vector<ptype> dp(formula->size(),0);
   function<ptype(int)> f = [&](int u) {
     ptype& ans = dp[u];
     if (ans) return ans;
-    switch (char(G[u].type&~(1<<7))) {
+    switch (char((*formula)[u].type&~(1<<7))) {
       case CONJ:
         ans = 0;
-        for (int v : G[u].down) ans += (G[v].type&(1<<7) ? ptype(1) : f(v));
+        for (int v : (*formula)[u].down) {
+          ans += ((*formula)[v].type&(1<<7) ? ptype(1) : f(v));
+        }
         break;
       case DISJ:
         ans = 1;
-        for (int v : G[u].down) ans *= (G[v].type&(1<<7) ? ptype(1) : f(v));
+        for (int v : (*formula)[u].down) {
+          ans *= ((*formula)[v].type&(1<<7) ? ptype(1) : f(v));
+        }
         break;
       default:
         ans = 1;
@@ -26,10 +32,10 @@ static ptype p(const vector<int>& Rnm) {
     return ans;
   };
   
-  for (int u : Rnm) G[u].type |=  (1<<7);
+  for (int u : Rnm) (*formula)[u].type |=  (1<<7);
   ptype ret = f(0);
   for (int u : Rnm) ret += f(u);
-  for (int u : Rnm) G[u].type &= ~(1<<7);
+  for (int u : Rnm) (*formula)[u].type &= ~(1<<7);
   return ret;
 }
 
@@ -43,13 +49,13 @@ void knapsack(unsigned K, bool pct) {
   // find available subformulas with breadth-first search
   vector<int> subformulas;
   {
-    vector<bool> found(G.size(),false);
+    vector<bool> found(formula->size(),false);
     found[0] = true;
     queue<int> Q;
     Q.push(0);
     while (!Q.empty()) {
       int u = Q.front(); Q.pop();
-      for (int v : G[u].down) if (!found[v]) {
+      for (int v : (*formula)[u].down) if (!found[v]) {
         found[v] = true;
         Q.push(v);
         subformulas.push_back(v);
