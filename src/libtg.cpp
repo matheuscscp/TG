@@ -29,7 +29,7 @@ void Vertex::remove() {
 FORMULA_t::FORMULA_t() : simple(false) {}
 
 int FORMULA_t::size() const {
-  if (!simple) return ::size(G.size() > 0 ? G : T);
+  if (!simple) return ::size(is_tree ? T : G);
   if (simplified.size() == 0) return 1;
   int ret = simplified.size()-1;
   for (auto& clause : simplified) {
@@ -50,15 +50,35 @@ int FORMULA_t::size() const {
 }
 
 uint_t FORMULA_t::clauses() const {
-  if (!simple) return ::clauses(G.size() > 0 ? G : T);
+  if (!simple) return ::clauses(is_tree ? T : G);
   return simplified.size();
 }
 
 int FORMULA_t::symbols() const {
-  if (!simple) return ::symbols(G.size() > 0 ? G : T);
+  if (!simple) return ::symbols(is_tree ? T : G);
   unordered_set<int> symbols;
   for (auto& clause : simplified) for (int l : clause) symbols.insert(abs(l));
   return symbols.size();
+}
+
+ostream& operator<<(ostream& os, const FORMULA_t& formula) {
+  if (!formula.simple) return os << (is_tree ? T : G);
+  if (simplified.size() == 0) return os << "tauto " << op2str(IMPL) << " tauto";
+  bool pr1 = false;
+  for (auto& clause : simplified) {
+    if (pr1) os << " " << op2str(CONJ) << " ";
+    pr1 = true;
+    bool pr2 = false;
+    if (simplified.size() > 1 && clause.size() > 1) os << "(";
+    for (int l : clause) {
+      if (pr2) os << " " << op2str(DISJ) << " ";
+      pr2 = true;
+      if (l < 0) os << op2str(NEGA);
+      os << varname[abs(l)];
+    }
+    if (simplified.size() > 1 && clause.size() > 1) os << ")";
+  }
+  return os;
 }
 
 void parse() {
@@ -231,7 +251,6 @@ static void flat(int u) {
       }
       changed = true;
       for (int w : psi.down) newc.push_back(w);
-      if (is_tree) psi.remove();
     }
     if (changed) phi.down.swap(newc);
   }
@@ -562,6 +581,30 @@ string op2str(char type) {
   }
 }
 
+ostream& operator<<(ostream& os, const pair<const vector<Vertex>&,int>& formula) {
+  function<void(int)> dfs = [&](int u) {
+    if (formula.first[u].type == ATOM) {
+      os << varname[formula.first[u].variable];
+      return;
+    }
+    if (formula.first[u].type == NEGA) {
+      os << op2str(NEGA);
+      dfs(formula.first[u].down[0]);
+      return;
+    }
+    bool printed = false;
+    if (u) os << "(";
+    for (int v : formula.first[u].down) {
+      if (printed) os << " " << op2str(formula.first[u].type) << " ";
+      printed = true;
+      dfs(v);
+    }
+    if (u) os << ")";
+  };
+  dfs(formula.second);
+  return os;
+}
+
 ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
   function<void(int)> dfs = [&](int u) {
     if (formula[u].type == ATOM) {
@@ -583,25 +626,5 @@ ostream& operator<<(ostream& os, const vector<Vertex>& formula) {
     if (u) os << ")";
   };
   dfs(0);
-  return os;
-}
-
-ostream& operator<<(ostream& os, const FORMULA_t& formula) {
-  if (!formula.simple) return os << (G.size() > 0 ? G : T);
-  if (simplified.size() == 0) return os << "tauto " << op2str(IMPL) << " tauto";
-  bool pr1 = false;
-  for (auto& clause : simplified) {
-    if (pr1) os << " " << op2str(CONJ) << " ";
-    pr1 = true;
-    bool pr2 = false;
-    if (simplified.size() > 1 && clause.size() > 1) os << "(";
-    for (int l : clause) {
-      if (pr2) os << " " << op2str(DISJ) << " ";
-      pr2 = true;
-      if (l < 0) os << op2str(NEGA);
-      os << varname[abs(l)];
-    }
-    if (simplified.size() > 1 && clause.size() > 1) os << ")";
-  }
   return os;
 }

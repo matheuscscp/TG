@@ -46,6 +46,8 @@ static ptype p(const vector<int>& Rnm) {
 // f(i,j) = { f(i-1,j-1) U {i}          if p(f(i-1,j-1) U {i}) < p(f(i-1,j))
 //          { f(i-1,j)                  otherwise
 void knapsack(unsigned K, bool pct) {
+  formula = (is_tree ? &T : &G);
+  
   // find available subformulas with breadth-first search
   vector<int> subformulas;
   {
