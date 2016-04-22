@@ -27,9 +27,9 @@ do
   
   # run file
   if [ "$5" = "0" ]; then
-    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof /dev/null $2 >> infos/$1.info) 2> knapsack_cnf_$$.err
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof /dev/null $2 > knapsack_cnf_$$.out) 2> knapsack_cnf_$$.err
   else
-    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 >> infos/$1.info) 2> knapsack_cnf_$$.err
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 > knapsack_cnf_$$.out) 2> knapsack_cnf_$$.err
   fi
   
   # check time limit
@@ -48,8 +48,10 @@ do
     continue
   fi
   
+  grep ",$fn" knapsack_cnf_$$.out >> infos/$1.info
   grep ",$fn" knapsack_cnf_$$.err >> infos/$1.time
 done
 
+rm -rf knapsack_cnf_$$.out
 rm -rf knapsack_cnf_$$.err
 
