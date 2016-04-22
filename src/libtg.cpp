@@ -345,11 +345,13 @@ void mindag() {
 }
 
 void rename() {
+  vector<Vertex>& formula = (is_tree ? T : G);
+  
   if (R.size() == 0) return;
   
   // create new variables
   for (int u : R) {
-    auto& phi = G[u];
+    auto& phi = formula[u];
     phi.variable = nextvar++;
     stringstream ss;
     ss << "rnm" << phi.variable;
@@ -357,35 +359,35 @@ void rename() {
   }
   
   // move old root to new vertex
-  int oldroot = G.size(); G.emplace_back();
-  G[oldroot] = G[0];
+  int oldroot = formula.size(); formula.emplace_back();
+  formula[oldroot] = formula[0];
   
   // init new root
-  G[0].type = CONJ;
-  G[0].down.clear();
-  G[0].down.push_back(oldroot);
+  formula[0].type = CONJ;
+  formula[0].down.clear();
+  formula[0].down.push_back(oldroot);
   
   // add new definitions
   for (int u : R) {
     // create disjunction
-    int dis = G.size(); G.emplace_back();
-    G[dis].type = DISJ;
-    G[0].down.push_back(dis);
+    int dis = formula.size(); formula.emplace_back();
+    formula[dis].type = DISJ;
+    formula[0].down.push_back(dis);
     
     // create negation
-    int neg = G.size(); G.emplace_back();
-    G[neg].type = NEGA;
-    G[dis].down.push_back(neg);
-    G[neg].down.push_back(u);
+    int neg = formula.size(); formula.emplace_back();
+    formula[neg].type = NEGA;
+    formula[dis].down.push_back(neg);
+    formula[neg].down.push_back(u);
     
     // move renamed formula
-    int v = G.size(); G.emplace_back();
-    G[v] = G[u];
-    G[dis].down.push_back(v);
+    int v = formula.size(); formula.emplace_back();
+    formula[v] = formula[u];
+    formula[dis].down.push_back(v);
     
     // change renamed formula to variable
-    G[u].type = ATOM;
-    G[u].down.clear();
+    formula[u].type = ATOM;
+    formula[u].down.clear();
   }
 }
 
