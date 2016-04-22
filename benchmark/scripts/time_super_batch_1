@@ -8,15 +8,15 @@ fi
 timeout=1000s
 maxformulas=1200
 
-(scripts/knapsack_cnf_batch nfc1_$1 "-n -f -c 1" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfc2_$1 "-n -f -c 2" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfr1c1_$1 "-n -f -r 1 -c 1" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfr1c2_$1 "-n -f -r 1 -c 2" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfr2c1_$1 "-n -f -r 2 -c 1" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfr2c2_$1 "-n -f -r 2 -c 2" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfdr1c1_$1 "-n -f -d -r 1 -c 1" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfdr1c2_$1 "-n -f -d -r 1 -c 2" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfdr2c1_$1 "-n -f -d -r 2 -c 1" $timeout $maxformulas 0) &
-(scripts/knapsack_cnf_batch nfdr2c2_$1 "-n -f -d -r 2 -c 2" $timeout $maxformulas 0) &
+(scripts/knapsack_cnf_batch nfc1_$1 "-n -f -c 1" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfc2_$1 "-n -f -c 2" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfr1c1_$1 "-n -f -r 1 -c 1" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfr1c2_$1 "-n -f -r 1 -c 2" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfr2c1_$1 "-n -f -r 2 -c 1" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfr2c2_$1 "-n -f -r 2 -c 2" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfdr1c1_$1 "-n -f -d -r 1 -c 1" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfdr1c2_$1 "-n -f -d -r 1 -c 2" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfdr2c1_$1 "-n -f -d -r 2 -c 1" $timeout $maxformulas 1) &
+(scripts/knapsack_cnf_batch nfdr2c2_$1 "-n -f -d -r 2 -c 2" $timeout $maxformulas 1) &
 wait
 
