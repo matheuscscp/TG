@@ -41,7 +41,7 @@ void usage() {
   cerr << endl;
   cerr << "Notes:\n";
   cerr << "\t1) Both renaming and CNF stages require formulas in NNF.\n";
-  cerr << "\t2) Formula information format:\n";
+  cerr << "\t2) Formula information output format:\n";
   cerr << "\t,<file path>,<size>,<number of clauses>,<number of symbols>,\n";
   cerr << endl;
   exit(-1);
