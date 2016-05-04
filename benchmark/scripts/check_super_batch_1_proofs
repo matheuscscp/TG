@@ -1,0 +1,16 @@
+#!/bin/bash
+
+timeout=1000s
+
+(scripts/check_batch_proofs nfc1_1 $timeout) &
+(scripts/check_batch_proofs nfc2_1 $timeout) &
+(scripts/check_batch_proofs nfr1c1_1 $timeout) &
+(scripts/check_batch_proofs nfr1c2_1 $timeout) &
+(scripts/check_batch_proofs nfr2c1_1 $timeout) &
+(scripts/check_batch_proofs nfr2c2_1 $timeout) &
+(scripts/check_batch_proofs nfdr1c1_1 $timeout) &
+(scripts/check_batch_proofs nfdr1c2_1 $timeout) &
+(scripts/check_batch_proofs nfdr2c1_1 $timeout) &
+(scripts/check_batch_proofs nfdr2c2_1 $timeout) &
+wait
+
