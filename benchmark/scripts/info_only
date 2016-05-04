@@ -4,6 +4,6 @@ rm -rf info_only.txt
 
 for file in formulas/*;
 do
-  ../knapsack_cnf -i $file -oinfo info_only.txt -ionly
+  ../knapsack_cnf -i $file -ionly >> info_only.txt
 done
 
