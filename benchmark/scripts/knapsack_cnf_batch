@@ -27,13 +27,13 @@ do
   
   # run file
   if [ "$5" = "0" ]; then
-    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof /dev/null $2 > knapsack_cnf_$$.out) 2> knapsack_cnf_$$.err
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof /dev/null $2 > knapsack_cnf_batch_$$.out) 2> knapsack_cnf_batch_$$.err
   else
-    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 > knapsack_cnf_$$.out) 2> knapsack_cnf_$$.err
+    (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $3 ../knapsack_cnf -i $file -oformula outputs/$1/$fn -oproof proofs/$1/$fn $2 > knapsack_cnf_batch_$$.out) 2> knapsack_cnf_batch_$$.err
   fi
   
   # check time limit
-  grep "status 124" knapsack_cnf_$$.err > /dev/null 2> /dev/null
+  grep "status 124" knapsack_cnf_batch_$$.err > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
     echo ",$fn,timeout," >> infos/$1.info
     echo ",$fn,timeout," >> infos/$1.time
@@ -41,17 +41,16 @@ do
   fi
   
   # check memory limit
-  grep Command knapsack_cnf_$$.err > /dev/null 2> /dev/null
+  grep Command knapsack_cnf_batch_$$.err > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
     echo ",$fn,memout," >> infos/$1.info
     echo ",$fn,memout," >> infos/$1.time
     continue
   fi
   
-  grep ",$fn" knapsack_cnf_$$.out >> infos/$1.info
-  grep ",$fn" knapsack_cnf_$$.err >> infos/$1.time
+  grep ",$fn" knapsack_cnf_batch_$$.out >> infos/$1.info
+  grep ",$fn" knapsack_cnf_batch_$$.err >> infos/$1.time
 done
 
-rm -rf knapsack_cnf_$$.out
-rm -rf knapsack_cnf_$$.err
+rm -rf knapsack_cnf_batch_$$.out knapsack_cnf_batch_$$.err
 

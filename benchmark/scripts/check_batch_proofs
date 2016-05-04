@@ -1,15 +1,15 @@
 #!/bin/bash
 
 prover_res() {
-  grep Unsat prover.out > /dev/null 2> /dev/null
+  grep Theorem prover_$$.out > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
     return 0
   else
-    grep Sat prover.out > /dev/null 2> /dev/null
+    grep CounterSatisfiable prover_$$.out > /dev/null 2> /dev/null
     if [ "$?" = "0" ]; then
       return 1
     else
-      grep bad_alloc prover.out > /dev/null 2> /dev/null
+      grep bad_alloc prover_$$.out > /dev/null 2> /dev/null
       if [ "$?" = "0" ]; then
         return 2
       else
@@ -19,68 +19,64 @@ prover_res() {
   fi
 }
 
-exec 2> /dev/null
-
-if [[ -z "$1" ]]; then
-  echo "Usage mode: $0 <timeout>"
+if [ "$#" != "2" ]; then
+  echo "Usage mode: $0 <batch name> <timeout>"
   exit
 fi
 
-for file in `ls -Sr proofs/*/*`;
+for file in `ls -Sr proofs/$1/*`;
 do
-  batch_name=$(echo $file | cut -d'/' -f2)
   fn=$(basename $file)
-  file=$batch_name/$fn
   
   # check if $file was already checked
-  grep ",$file" proofs_checked.txt > /dev/null 2> /dev/null
+  grep ",$fn" infos/$1.check > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
     continue
   fi
   
   # check if batch exited normally
-  grep ",$fn" infos/$batch_name.info > check_proofs.tmp 2> /dev/null
+  grep ",$fn" infos/$1.info > check_proofs_$$.tmp 2> /dev/null
   if [ "$?" != "0" ]; then
-    echo "$0: error checking $file"
+    echo "$0: $fn do not occurs inside infos/$1.info"
     exit
   fi
   
   # check if batch exceeded time limit
-  grep ",timeout," check_proofs.tmp > /dev/null 2> /dev/null
+  grep ",timeout," check_proofs_$$.tmp > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
-    echo ",$file,timeout," >> proofs_checked.txt
+    echo ",$fn,timeout," >> infos/$1.check
     continue
   fi
   
   # check if batch exceeded memory limit
-  grep ",memout," check_proofs.tmp > /dev/null 2> /dev/null
+  grep ",memout," check_proofs_$$.tmp > /dev/null 2> /dev/null
   if [ "$?" = "0" ]; then
-    echo ",$file,memout," >> proofs_checked.txt
+    echo ",$fn,memout," >> infos/$1.check
     continue
   fi
   
   # check file size
-  fsize=$(stat -c%s "proofs/$file")
+  fsize=$(stat -c%s "$file")
   if [ "$fsize" = "0" ]; then
-    echo ",$file,empty," >> proofs_checked.txt
+    echo ",$fn,empty," >> infos/$1.check
     continue
   fi
   
   # run prover for supposed theorem $file
-  timeout $1 bddtab < proofs/$file > prover.out 2> prover.out
+  timeout $2 eprover -s --auto --tptp3-format $file > prover_$$.out 2> prover_$$.out
   if [ "$?" = "124" ]; then
-    echo ",$file,timeout," >> proofs_checked.txt
+    echo ",$fn,timeout," >> infos/$1.check
     continue
   fi
   
   # check result
   prover_res
   case "$?" in
-    "0")  echo ",$file,ok," >> proofs_checked.txt
+    "0")  echo ",$fn,ok," >> infos/$1.check
           ;;
-    "1")  echo ",$file,fail," >> proofs_checked.txt
+    "1")  echo ",$fn,fail," >> infos/$1.check
           ;;
-    "2")  echo ",$file,memout," >> proofs_checked.txt
+    "2")  echo ",$fn,memout," >> infos/$1.check
           ;;
     *)    echo "$0: error checking $file"
           exit
@@ -88,5 +84,5 @@ do
   esac
 done
 
-rm -rf prover.out check_proofs.tmp
+rm -rf prover_$$.out check_proofs_$$.tmp
 
