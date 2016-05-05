@@ -57,7 +57,7 @@ do
   
   # check file size
   fsize=$(stat -c%s "$file")
-  if [ "$fsize" = "0" ]; then
+  if [ "$fsize" = "23" ]; then
     echo ",$fn,empty," >> infos/$1.check
     continue
   fi
