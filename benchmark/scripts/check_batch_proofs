@@ -9,7 +9,7 @@ prover_res() {
     if [ "$?" = "0" ]; then
       return 1
     else
-      grep bad_alloc prover_$$.out > /dev/null 2> /dev/null
+      grep ResourceOut prover_$$.out > /dev/null 2> /dev/null
       if [ "$?" = "0" ]; then
         return 2
       else
