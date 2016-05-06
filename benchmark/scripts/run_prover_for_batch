@@ -1,0 +1,98 @@
+#!/bin/bash
+
+prover_res() {
+  grep Theorem prover_$$.out > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    return 0
+  else
+    grep CounterSatisfiable prover_$$.out > /dev/null 2> /dev/null
+    if [ "$?" = "0" ]; then
+      return 1
+    else
+      grep ResourceOut prover_$$.out > /dev/null 2> /dev/null
+      if [ "$?" = "0" ]; then
+        return 2
+      else
+        return 3
+      fi
+    fi
+  fi
+}
+
+if [ "$#" != "2" ]; then
+  echo "Usage mode: $0 <batch name> <timeout>"
+  exit
+fi
+
+for file in `ls -Sr outputs/$1/*`;
+do
+  fn=$(basename $file)
+  
+  # check if $file was already runned
+  grep ",$fn" infos/$1.pinfo > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    continue
+  fi
+  
+  # check if batch exited normally
+  grep ",$fn" infos/$1.info > run_prover_$$.tmp 2> /dev/null
+  if [ "$?" != "0" ]; then
+    echo "$0: $fn do not occurs inside infos/$1.info"
+    exit
+  fi
+  
+  # check if batch exceeded time limit
+  grep ",timeout," run_prover_$$.tmp > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$fn,timeout," >> infos/$1.pinfo
+    echo ",$fn,timeout," >> infos/$1.ptime
+    continue
+  fi
+  
+  # check if batch exceeded memory limit
+  grep ",memout," run_prover_$$.tmp > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$fn,memout," >> infos/$1.pinfo
+    echo ",$fn,memout," >> infos/$1.ptime
+    continue
+  fi
+  
+  # check file size
+  fsize=$(stat -c%s "$file")
+  if [ "$fsize" = "23" ]; then
+    echo ",$fn,empty," >> infos/$1.pinfo
+    echo ",$fn,empty," >> infos/$1.ptime
+    continue
+  fi
+  
+  # run prover
+  (/usr/bin/time -f ",$fn,%e,%U,%S," timeout $2 eprover -s --auto --tptp3-format $file > prover_$$.out) 2> prover_$$.err
+  
+  # check time limit
+  grep "status 124" prover_$$.err > /dev/null 2> /dev/null
+  if [ "$?" = "0" ]; then
+    echo ",$fn,timeout," >> infos/$1.pinfo
+    echo ",$fn,timeout," >> infos/$1.ptime
+    continue
+  fi
+  
+  # check result
+  prover_res
+  case "$?" in
+    "0")  echo ",$fn,theorem," >> infos/$1.pinfo
+          grep ",$fn" prover_$$.err >> infos/$1.ptime
+          ;;
+    "1")  echo ",$fn,countersat," >> infos/$1.pinfo
+          grep ",$fn" prover_$$.err >> infos/$1.ptime
+          ;;
+    "2")  echo ",$fn,memout," >> infos/$1.pinfo
+          grep ",$fn" prover_$$.err >> infos/$1.ptime
+          ;;
+    *)    echo "$0: error checking $file"
+          exit
+          ;;
+  esac
+done
+
+rm -rf prover_$$.out prover_$$.err run_prover_$$.tmp
+
