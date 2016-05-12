@@ -1,9 +1,9 @@
-\begin{definition}
-    Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
-\end{definition}
 
-\begin{definition}
-    Se $\phi \in \mathcal{P}$, então $\phi$ é uma \emph{fórmula bem-formada}, ou, simplesmente, uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula.
+\begin{definition}\textbf{(Sintaxe)}
+	
+	Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
+	
+    Se $\phi \in \mathcal{P}$, dizemos que $\phi$ é uma \emph{fórmula bem formada}, ou simplesmente que $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula:
     \begin{enumerate}
         \item \emph{Negação}: $\neg \phi_1$
         \item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
@@ -13,7 +13,7 @@
     \end{enumerate}
     Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
     
-    Denotamos a conjunção vazia, $\phi_1 \wedge ... \wedge \phi_n$ com $n=0$, por $\top$, a disjunção vazia por $\bot$ e o conjunto das fórmulas por $\mathcal{L}$.
+    Denotamos a conjunção vazia ($\phi_1 \wedge ... \wedge \phi_n$ com $n=0$) por $\top$, a disjunção vazia por $\bot$ e o conjunto das fórmulas por $\mathcal{L}$.
 \end{definition}
 
 \begin{example}
@@ -26,54 +26,11 @@
 	Note que $p \rightarrow q$ é subfórmula imediata de $\phi$ e de $\xi$.
 \end{example}
 
-\begin{definition}
-    Dizemos que $\phi$ é \emph{subfórmula} de $\psi$, escrito $\phi \sqsubseteq \psi$, se, e somente se, alguma das possibilidades ocorre:
-    \begin{enumerate}
-    	\item $\phi = \psi$.
-    	\item $\phi$ é subfórmula imediata de $\psi$.
-    	\item $\phi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\psi$.
-    \end{enumerate}
+\begin{definition}\textbf{(Semântica)}
+	
+	Dizemos que $\mathbb{v}_0$ é uma \emph{valoração booleana} se $\mathbb{v}_0$ é uma função tal que\break $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$.
     
-    Se $\phi \sqsubseteq \psi$ e $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
-\end{definition}
-
-\begin{example}
-    Considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Note que:
-    \begin{itemize}
-        \item A única subfórmula imediata de $\phi$ é $\phi_1 = (p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)$.
-        \item São subfórmulas de $\phi$: $p$, $q$, $r$, $s$, $\neg s$, $q \wedge r \wedge s$, $q \rightarrow \neg s$, $p \vee (q \wedge r \wedge s)$, $\phi_1$ e $\phi$.
-        \item Somente $\phi$ não é subfórmula própria de $\phi$.
-    \end{itemize}
-\end{example}
-
-\begin{definition}
-	Seja $\phi$ uma fórmula. Definimos $tam(\phi)$, o \emph{tamanho} de $\phi$, como o seguinte número:
-	\begin{enumerate}
-		\item Se $\phi \in \mathcal{P}$, então $tam(\phi) = 1$.
-		\item $tam(\neg \phi) = 1 + tam(\phi)$.
-		\item $tam(\phi_1 \wedge ... \wedge \phi_n) = tam(\phi_1 \vee ... \vee \phi_n) = n - 1 + \sum_i tam(\phi_i)$.
-		\item $tam(\phi_1 \rightarrow \phi_2) = tam(\phi_1 \leftrightarrow \phi_2) = 1 + tam(\phi_1) + tam(\phi_2)$.
-		\item $tam(\top) = tam(\bot) = 1$.
-	\end{enumerate}
-\end{definition}
-
-\begin{example}
-	Seja $\phi = p \rightarrow (\neg r \vee (q \leftrightarrow s))$. Então
-	\begin{equation*}
-	\begin{split}
-	tam(\phi) & = 1 + tam(p) + tam(\neg r \vee (q \leftrightarrow s))\\
-	& = 1 + 1 + (1 + tam(\neg r) + tam(q \leftrightarrow s))\\
-	& = 1 + 1 + (1 + (1 + tam(r)) + (1 + tam(q) + tam(s)))\\
-	& = 1 + 1 + (1 + (1 + 1) + (1 + 1 + 1))\\
-	& = 8\\
-	\end{split}
-	\end{equation*}
-\end{example}
-
-\begin{definition}
-	Dizemos que $\mathbb{v}_0$ é uma \emph{valoração booleana} se $\mathbb{v}_0$ é uma função tal que $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F\}$.
-    
-    Seja $\mathbb{v}_0$ uma valoração booleana. Dizemos que $\mathbb{v}$ é \emph{interpretação} se $\mathbb{v}$ é uma função tal que $\mathbb{v} : \mathcal{L} \longmapsto \{V,F\}$ e:
+    Seja $\mathbb{v}_0$ uma valoração booleana. Dizemos que $\mathbb{v}$ é uma \emph{interpretação definida por $\mathbb{v}_0$} se $\mathbb{v}$ é uma função tal que $\mathbb{v} : \mathcal{L} \longmapsto \{V,F\}$ e:
     \begin{enumerate}
         \item Se $\phi_1 \in \mathcal{P}$, então $\mathbb{v}(\phi_1) = \mathbb{v}_0(\phi_1)$.
         \item $\mathbb{v}(\neg \phi_1) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$.
@@ -85,26 +42,26 @@
         \item $\mathbb{v}(\bot) = F$.
     \end{enumerate}
     
-    Dizemos que a interpretação $\mathbb{v}$ é um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
+    Dizemos que uma interpretação $\mathbb{v}$ é um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
 \end{definition}
 
 \begin{example}
     Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,F),(r,V),(s,V)\}$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
-    \begin{itemize}
+    \begin{enumerate}
         \item $\mathbb{v}(q \wedge r \wedge s) = F$
         \item $\mathbb{v}(p \vee (q \wedge r \wedge s)) = V$
         \item $\mathbb{v}(\neg s) = F$
         \item $\mathbb{v}(q \rightarrow \neg s) = V$
         \item $\mathbb{v}((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)) = V$
         \item $\mathbb{v}(\phi) = F$
-    \end{itemize}
+    \end{enumerate}
     Logo, $\mathbb{v}$ não é um modelo para $\phi$.
 \end{example}
 
 \begin{definition}
 	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda que $\phi$ é \emph{falsificável}.
 	
-	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}. Por outro lado, se toda interpretação falsifica $\phi$, então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
+	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}. Por outro lado, se toda interpretação falsifica $\phi$, ou seja, se nenhuma interpretação satisfaz $\phi$ (logo $\phi$ não é satisfatível), então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
 	
 	Se $\phi$ é simultaneamente satisfatível e falsificável, então dizemos que $\phi$ é uma \emph{contingência}.
 \end{definition}
@@ -134,6 +91,103 @@
     \end{itemize}
 \end{example}
 
+\begin{observation}
+	\label{negacoes}
+	Seja $\phi$ uma fórmula e considere a fórmula $\neg \phi$. Observe que se $\phi$ é uma:
+	\begin{enumerate}
+		\item tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
+		\item contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
+		\item contingência, então $\exists \mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
+	\end{enumerate}
+\end{observation}
+
+\begin{definition}
+	Seja $L$ um conjunto de cadeias sobre um alfabeto. Se nos referimos a $L$ como um \emph{problema}, nos referimos ao problema de decidir se uma dada cadeia $w$ pertence a $L$. Ou seja, nos referimos a $L$ como um \emph{problema de decisão}.
+	
+	Dizemos que um problema $L$ é \emph{decidível} quando existe um algoritmo $A$ tal que:
+	\begin{enumerate}
+		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``sim'', $\forall w \in L$.
+		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``não'', $\forall w \notin L$.
+	\end{enumerate}
+	Neste caso, dizemos que $A$ \emph{decide} $L$, ou ainda que $A$ é um \emph{decisor} para $L$.
+\end{definition}
+
+\begin{definition}
+	Definimos $\text{SAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é satisfatível} \}$ como o problema da \emph{satisfatibilidade} e $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é insatisfatível} \} = \{\phi \in \mathcal{L} \mid \phi \notin \text{SAT} \} = \overline{SAT}$ como o problema da \emph{insatisfatibilidade}.
+	
+	Definimos ainda $\text{VAL} = \{\phi \in \mathcal{L} \mid \phi \text{ é tautologia} \}$ como o problema da \emph{validade}.
+	
+	Observe que $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é contradição} \}$.
+\end{definition}
+
+Davis apresenta um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{equivalentes}, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
+
+Mostramos agora que SAT e VAL são equivalentes, através da equivalência de VAL com UNSAT.
+
+Seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
+
+Vamos examinar o comportamento de $R_1$ para todas as possibilidades, ou seja, $\forall \phi \in \mathcal{L}$.
+
+Quando $\phi$ é uma contradição ou uma contingência, da Observação \ref{negacoes}, temos que $\neg \phi$ é uma tautologia ou uma contingência, respectivamente. Em ambos os casos, $R_1$ responde ``não'', pois $A_1$ responde ``não'' sobre a entrada $\neg \phi$. Observe ainda que, em ambos os casos, $\phi \notin \text{VAL}$.
+
+Quando $\phi$ é uma tautologia (logo $\phi \in \text{VAL}$), temos que $\neg \phi$ é uma contradição. Neste caso, $R_1$ responde ``sim'', pois $A_1$ responde ``sim'' sobre a entrada $\neg \phi$.
+
+Mostramos então que $R_1$ decide VAL.
+
+Seja agora $A_2$ um decisor para VAL e considere o seguinte algoritmo, que chamaremos de $R_2$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_2$ sobre a entrada $\neg \phi$.''
+
+Quando $\phi$ é uma tautologia ou uma contingência (ou seja, $\phi \notin \text{UNSAT}$), temos que $\neg \phi$ é uma contradição ou uma contingência, respectivamente. Em ambos os casos, $R_2$ responde ``não'', pois $A_2$ responde ``não'' sobre a entrada $\neg \phi$.
+
+Finalmente, quando $\phi$ é uma contradição, ou seja, quando $\phi \in \text{UNSAT}$, temos que $\neg \phi$ é uma tautologia. Neste caso, $R_2$ responde ``sim'', pois $A_2$ responde ``sim'' sobre a entrada $\neg \phi$.
+
+Mostramos então que $R_2$ decide UNSAT.
+
+Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para VAL, mostramos que VAL e UNSAT são equivalentes. Por transitividade, VAL e SAT são equivalentes.
+
+\begin{definition}
+	Seja $\phi$ uma fórmula. Definimos $tam(\phi)$, o \emph{tamanho} de $\phi$, como o seguinte número:
+	\begin{enumerate}
+		\item Se $\phi \in \mathcal{P}$, então $tam(\phi) = 1$.
+		\item $tam(\neg \phi) = 1 + tam(\phi)$.
+		\item $tam(\phi_1 \wedge ... \wedge \phi_n) = tam(\phi_1 \vee ... \vee \phi_n) = n - 1 + \sum_i tam(\phi_i)$.
+		\item $tam(\phi_1 \rightarrow \phi_2) = tam(\phi_1 \leftrightarrow \phi_2) = 1 + tam(\phi_1) + tam(\phi_2)$.
+		\item $tam(\top) = tam(\bot) = 1$.
+	\end{enumerate}
+\end{definition}
+
+\begin{example}
+	Seja $\phi = p \rightarrow (\neg r \vee (q \leftrightarrow s))$. Então
+	\begin{equation*}
+	\begin{split}
+	tam(\phi) & = 1 + tam(p) + tam(\neg r \vee (q \leftrightarrow s))\\
+	& = 1 + 1 + (1 + tam(\neg r) + tam(q \leftrightarrow s))\\
+	& = 1 + 1 + (1 + (1 + tam(r)) + (1 + tam(q) + tam(s)))\\
+	& = 1 + 1 + (1 + (1 + 1) + (1 + 1 + 1))\\
+	& = 8\\
+	\end{split}
+	\end{equation*}
+\end{example}
+
+\begin{definition}
+	Dizemos que $\phi$ é \emph{subfórmula} de $\psi$, escrito $\phi \sqsubseteq \psi$, se, e somente se, alguma das possibilidades ocorre:
+	\begin{enumerate}
+		\item $\phi = \psi$.
+		\item $\phi$ é subfórmula imediata de $\psi$.
+		\item $\phi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\psi$.
+	\end{enumerate}
+	
+	Se $\phi \sqsubseteq \psi$ e $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
+\end{definition}
+
+\begin{example}
+	Considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Note que:
+	\begin{itemize}
+		\item A única subfórmula imediata de $\phi$ é $\phi_1 = (p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)$.
+		\item São subfórmulas de $\phi$: $p$, $q$, $r$, $s$, $\neg s$, $q \wedge r \wedge s$, $q \rightarrow \neg s$, $p \vee (q \wedge r \wedge s)$, $\phi_1$ e $\phi$.
+		\item Somente $\phi$ não é subfórmula própria de $\phi$.
+	\end{itemize}
+\end{example}
+
 \begin{definition}
 	Uma \emph{posição} é uma sequência finita de números naturais. Usaremos as notações alternativas $\varepsilon$, para a posição vazia $()$, e $a_1.\cdots.a_n$, para a posição $(a_1,\cdots,a_n)$, onde $n \in \mathbb{N} \cup \{0\}$. Além disso, se $\pi = a_1.\cdots.a_n$ é uma posição e $i$ é um número natural, então $i.\pi$ denota a posição $i.a_1.\cdots.a_n$ e $\pi.i$ denota a posição $a_1.\cdots.a_n.i$.
 	
@@ -142,6 +196,7 @@
         \item Se $\phi \in \mathcal{P}$, então $pos(\phi) = \{\varepsilon\}$.
         \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_i \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$
     \end{enumerate}
+    
     Agora, definimos a \emph{subfórmula de} $\phi$ \emph{começando na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
     \begin{enumerate}
         \item Se $\pi = \varepsilon$, então $\phi|_\pi = \phi$.
@@ -212,11 +267,15 @@
 \end{example}
 
 \begin{definition}
-	Se $\phi$ é transformada em $\psi$ por alguma regra, dizemos que esta transformação \emph{preserva equivalência} se, e somente se, a fórmula $\phi \leftrightarrow \psi$ é uma tautologia.
+	Se uma regra transforma $\phi$ em $\psi$, dizemos que esta regra:
+	\begin{enumerate}
+		\item \emph{preserva equivalência} se, e somente se, $\phi \leftrightarrow \psi \in \text{VAL}$.
+		\item \emph{preserva satisfatibilidade} se, e somente se, $\phi \in \text{SAT} \iff \psi \in \text{SAT}$.
+	\end{enumerate}
 \end{definition}
 
 \begin{definition}
-    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e qualquer negação ocorre na frente de um símbolo proposicional.
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente em símbolos proposicionais.
 \end{definition}
 
 \begin{theorem}
@@ -238,7 +297,7 @@
 
 A prova segue por indução na estrutura de uma fórmula.
 
-A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois sempre podemos transformar equivalências em posições mais curtas primeiro, de modo a evitar este caso.
+A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois, para evitar este caso, podemos sempre transformar equivalências em posições mais curtas primeiro.
 
 \begin{definition}
 	Dizemos que $\phi$ é um \emph{literal} se, e somente se, $\phi \in \mathcal{P}$, ou $\phi$ é da forma $\neg p$, onde $p \in \mathcal{P}$.
@@ -249,16 +308,17 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
 \end{definition}
 
 \begin{theorem}
+	\label{fnc_theorem}
     A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ chamada \emph{distribuição}, preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC.
 \end{theorem}
 
 A prova segue por indução na estrutura de uma fórmula.
 
 \begin{example}
-    Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações do Teorema \ref{fnn_theorem} à exaustão, começando pela transformação do item 5.a, e então aplicando distribuição, temos:
+    Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão, começando pela transformação do item 5.a do Teorema \ref{fnn_theorem} e então aplicando distribuição, temos:
     \begin{equation*}
         \begin{split}
-            \phi & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) \\
+            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) \\
                  & \longmapsto \neg((\neg \phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_1)) \\
                  & \longmapsto \neg(\neg \phi_1 \vee \phi_2) \vee \neg(\neg \phi_2 \vee \phi_1) \\
                  & \longmapsto (\neg \neg \phi_1 \wedge \neg \phi_2) \vee (\neg \neg \phi_2 \wedge \neg \phi_1) \\
@@ -269,16 +329,18 @@ A prova segue por indução na estrutura de uma fórmula.
     \end{equation*}
     Se $\phi_1,\phi_2 \in \mathcal{P}$, então a última fórmula já está na FNC, de modo que é fácil identificar e remover as tautologias $\neg \phi_2 \vee \phi_2$ e $\phi_1 \vee \neg \phi_1$. Caso contrário, as transformações aplicadas à exaustão transformam $\neg \phi_i$ em uma fórmula $\psi \neq \neg \phi_i$, dificultando identificar e remover as tautologias mencionadas.
     
-    Considere agora uma transformação que leva em conta polaridade.
+    Considere agora uma transformação que leva em conta polaridade, ou seja, desta vez começamos com a transformação do item 5.b do Teorema \ref{fnn_theorem}.
     \begin{equation*}
         \begin{split}
-            \phi & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) \\
+            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) \\
                  & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) \\
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\neg \neg \phi_1 \vee \neg \neg \phi_2) \\
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
         \end{split}
     \end{equation*}
-    Neste caso, não somente o número de passos de transformação é menor, como também as tautologias indesejadas não aparecem.
+    Agora, o número de passos de transformação foi menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
+    
+    Por fim, note que os fatos ilustrados por este exemplo ocorrem para qualquer subfórmula da forma $\phi_1 \leftrightarrow \phi_2$, que comece em qualquer posição $\pi \in pos(\phi)$, ocorrendo com polaridade negativa, $\forall \phi,\phi_1,\phi_2 \in \mathcal{L}$.
 \end{example}
 
 \begin{definition}
@@ -292,23 +354,37 @@ A prova segue por indução na estrutura de uma fórmula.
 		\end{enumerate}
 	\end{enumerate}
 	
-	Esta definição pode ser facilmente estendida para funções injetoras que mapeiam subfórmulas próprias de $\phi$ para símbolos proposicionais que não ocorrem em $\phi$. Seja $f = \{(\phi_1,p_1),...,(\phi_n,p_n)\}$ uma função deste tipo. Então, $$rep(\phi,f) = rep(rep(\phi,\phi_1,p_1),\{(\phi_2,p_2),...,(\phi_n,p_n)\})$$
+	A definição anterior pode ser facilmente estendida para funções injetoras que mapeiam subfórmulas próprias de $\phi$ para símbolos proposicionais que não ocorrem em $\phi$. Seja $f = \{(\phi_1,p_1),...,(\phi_n,p_n)\}$ uma função deste tipo. Então, $$rep(\phi,f) = rep(rep(\phi,\phi_1,p_1),\{(\phi_2,p_2),...,(\phi_n,p_n)\})$$
 \end{definition}
 
 \begin{example}
-	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$.\\
-	Então $rep(\phi,\{(p \vee q,a),(p \wedge q,b)\}) = a \rightarrow (r \wedge a \wedge b)$.
+	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$. Então $$rep(\phi,\{(p \vee q,a),(p \wedge q,b)\}) = a \rightarrow (r \wedge a \wedge b)$$
 \end{example}
 
 \begin{definition}
-	Um \emph{renomeamento} de uma fórmula $\phi$ é um conjunto de subfórmulas próprias de $\phi$.
+	Um \emph{renomeamento} de $\phi$ é um conjunto $R$ tal que $R \subseteq \{\psi \mid \psi \sqsubset \phi \}$, ou seja, um conjunto de subfórmulas próprias de $\phi$.
 \end{definition}
 
 \begin{theorem}
-	Seja $\phi$ uma fórmula, $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\phi$ e $f : R \longmapsto \mathcal{P}$ uma função injetora tal que $f(\phi_i)$ não ocorre em $\phi$, para todo $i$. Então, a transformação $$\phi \longmapsto rep(\phi,f) \wedge (f(\phi_1) \rightarrow rep(\phi_1,f)) \wedge ... \wedge (f(\phi_n) \rightarrow rep(\phi_n,f))$$
-    preserva equivalência. Com um argumento para $n=1$, esta prova segue por indução nos subconjuntos de $R$.
+	\label{struct_preserving}
+	Seja $\phi$ uma fórmula, $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\phi$ e $f : R \longmapsto \mathcal{P}$ uma função injetora tal que $f(\phi_i)$ não ocorre em $\phi$, para todo $i$. Então a transformação $$\phi \longmapsto rep(\phi,f) \wedge (f(\phi_1) \rightarrow rep(\phi_1,f)) \wedge ... \wedge (f(\phi_n) \rightarrow rep(\phi_n,f))$$
+    preserva satisfatibilidade.
 \end{theorem}
 
+Plaisted dá uma prova para o Teorema \ref{struct_preserving} \cite{plaisted1986structure}.
+
 \begin{example}
+	\label{exemplo_renaming}
+    Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $f = \{(p \leftrightarrow q, r) \}$.\ Então o resultado da transformação do Teorema \ref{struct_preserving} em $\phi$ com $R = \{p \leftrightarrow q\}$ e $f$ é $$(r \leftrightarrow r) \wedge (r \rightarrow (p \leftrightarrow q))$$
     
+    Note que tanto $\phi$ quanto o resultado da transformação são satisfatíveis, mas que $\phi$ é também tautologia, enquanto o resultado é contingência.
 \end{example}
+
+O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente de transformações que preservam equivalência, parecem ter o potencial de mudar o significado da fórmula. Mostramos agora que isto não é um problema.
+
+Suponha que $\tau$ seja uma transformação que preserva satisfatibilidade e seja $\phi$ uma fórmula. Vamos encontrar o significado de $\phi$ através de $\tau(\phi)$ ou de $\tau(\neg \phi)$.
+
+Para verificar se $\phi$ é uma contradição....
+
+
+
