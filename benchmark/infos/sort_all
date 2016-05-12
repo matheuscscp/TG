@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in nf*;
+do
+  ./sort_data < $file > sorted_$file
+done
