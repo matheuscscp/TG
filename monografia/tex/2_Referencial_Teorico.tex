@@ -20,6 +20,8 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
     Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
     
     Denotamos a conjunção vazia ($\phi_1 \wedge ... \wedge \phi_n$ com $n=0$) por $\top$, a disjunção vazia por $\bot$ e o conjunto das fórmulas por $\mathcal{L}$.
+    
+    Denotamos ainda por $SFD(\phi)$ o conjunto das subfórmulas imediatas de $\phi$.
 \end{definition}
 
 \begin{example}
@@ -441,15 +443,52 @@ O Exemplo \ref{exemplo_minimizando} mostra que aplicar a transformação de reno
 
 \begin{algorithm}
 	\begin{algorithmic}[1]
-		\State seja...
+		\State seja $R$ um conjunto vazio global
+		\Function{$R\_rec$}{$\psi,a,b,r$}
+			\If{$(\psi.p,\psi.\overline{p}) \neq (1,1)$}
+				\If{$a \cdot \psi.p + b \cdot \psi.\overline{p} > a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p})$}
+					\State $R \gets R \cup \{\psi \}$
+					\State $R\_rec(\psi,if\_pos(r,1),if\_pos(-r,1),r)$
+					\State $(\psi.p,\psi.\overline{p}) \gets (1,1)$
+				\Else
+					\State seja $SFD(\psi) = \{\psi_1,...,\psi_n \}$
+					\For{$i$}{$1$}{$n$}
+						\State $R\_rec(\psi_i,a_{\psi_i}^{\mathcal{R}(\phi,s)},b_{\psi_i}^{\mathcal{R}(\phi,s)},r \cdot pol(\psi,i))$
+					\EndFor
+					\State $(\psi.p,\psi.\overline{p}) \gets nbcl(\psi)$
+				\EndIf
+			\EndIf
+		\EndFunction
+		\Function{$if\_pos$}{$x,y$}
+			\If{$x \geq 0$}
+				\Return $y$
+			\EndIf
+			\Return $0$
+		\EndFunction
+		\ForAll{$\psi \in SF(\phi)$}
+			\State $(\psi.p,\psi.\overline{p}) \gets (p(\psi),\overline{p}(\psi))$
+		\EndFor
+		\State $R\_rec(\phi,1,0,1)$
 	\end{algorithmic}
 	\caption{Algoritmo de Boy de la Tour para encontrar renomeamentos.}
 	\label{boydelatour}
 \end{algorithm}
 
-O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra em $\phi$ somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. No capítulo que vem a seguir, apresentamos um algoritmo, de custo de tempo igualmente polinomial determinístico, que encontra o número ótimo de cláusulas para qualquer fórmula, sem restrições.
+O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra em $\phi$ somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$ e $b = b_\psi^{\mathcal{R}(\phi,s)}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir dos campos $\psi_i.p$ e $\psi_i.\overline{p}$ das subfórmulas imediatas de $\psi$.
 
-Os números $a$ e $b$ que aparecem no Algoritmo \ref{boydelatour} são definidos pela Tabela \ref{tabela_a_b}.
+\begin{example}
+	Considere a fórmula $\phi = (x \leftrightarrow y) \leftrightarrow (x \leftrightarrow y)$. Vamos executar $R\_rec(\phi,1,0,1)$.
+	
+	Na primeira chamada, a condição da linha 3 é satisfeita, pois $\psi.p = 8$. A condição da linha 4, no entanto, não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 8$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 9$. Portanto, a partir da linha 9, $\psi_1 = \psi_2 = x \leftrightarrow y$ são subfórmulas imediatas de $\psi = \phi$. Na linha 11, a função recursiva é chamada primeiro com $R\_rec(\psi_1,2,2,0)$.
+	
+	Na segunda chamada, temos que $\psi = x \leftrightarrow y$. A condição da linha 3 é satisfeita, pois $\psi.p = 2$. A condição da linha 4 não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 8$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 8$. Agora, a chamada recursiva é feita com $\psi_i = x$. No entanto, símbolos proposicionais nunca são renomeados, pois $p(x) = \overline{p}(x) = 1$. O mesmo ocorre quando a chamada é feita para $\psi_i = y$. Portanto, a segunda chamada recursiva retorna sem incluir subfórmulas em $R$.
+	
+	De volta na primeira chamada, a linha 11 executa com $R\_rec(\psi_2,2,2,0)$, onde $\psi_2 = x \leftrightarrow y$. Vimos que uma chamada com estes valores não inclui subfórmulas em $R$.
+	
+	Com isso, terminamos a execução do algoritmo com $R = \emptyset$. O número de cláusulas é então o número original, $p(\phi) = 8$. No entanto, vimos no Exemplo \ref{exemplo_minimizando} que se $R = \{x \leftrightarrow y\}$, então $p(\mathcal{R}(\phi,s)) = 4$, onde $s$ é alguma substituição de $R$. Isto mostra um caso em que o Algoritmo \ref{boydelatour} não escolhe um renomeamento ótimo.
+\end{example}
+
+No capítulo que vem a seguir, apresentamos um algoritmo de custo de tempo igualmente polinomial determinístico, mas que encontra o número ótimo de cláusulas para qualquer fórmula, sem restrições.
 
 \tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
 	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline

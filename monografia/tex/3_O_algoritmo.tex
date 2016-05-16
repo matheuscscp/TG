@@ -70,19 +70,19 @@ O Algoritmo \ref{knapsack} calcula $f(n,n)$ por computação ascendente, ou seja
 
 A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir.
 
-\textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das linhas 2--9, temos que $dp[j] = f(i-1,j), \forall j$.
+\textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das linhas 2--9, temos que $dp[j] = f(i-1,j), \forall j \leq n$.
 
-\textbf{Inicialização da Invariante 1}: Antes da primeira iteração do laço, temos que\break $dp[j] = \emptyset = f(0,j), \forall j$. 
+\textbf{Inicialização da Invariante 1}: No início da primeira iteração do laço, temos que $i = 1$ e $dp[j] = \emptyset = f(0,j) = f(i-1,j), \forall j \leq n$. 
 
-\textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço,\break $dp[j] = f(i-1,j)$, $\forall j$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
+\textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço,\break $dp[j] = f(i-1,j)$, $\forall j \leq n$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
 
 \textbf{Invariante 2}: No início de cada iteração do laço \textbf{para} das linhas 3--8:
 \begin{enumerate}
 	\item Se $k \leq j$, então $dp[k] = f(i-1,k)$.
-	\item Se $k > j$, então $dp[k] = f(i,k)$.
+	\item Se $j < k \leq n$, então $dp[k] = f(i,k)$.
 \end{enumerate}
 
-\textbf{Inicialização da Invariante 2}: Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[j] = f(i-1,j)$, $\forall j$.
+\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$.
 
 \textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
 
@@ -98,6 +98,6 @@ Note que o algoritmo computa não somente o renomeamento ótimo, mas também os 
 
 \indent
 
-O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 6 custa o tempo de calcular o número de clásulas de duas transformações de renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
+O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 5 custa o tempo de calcular o número de clásulas de duas transformações de renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
 
 O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do arranjo $dp$, da variável $alt$ e do custo de espaço da função $p(R)$. O arranjo $dp$ contém $n+1$ conjuntos de no máximo $n$ elementos, logo seu custo de espaço é $O(n^2)$ no pior caso. A variável $alt$ é um conjunto de no máximo $n$ elementos, logo seu custo é $O(n)$ no pior caso. É possível mostrar que o custo de espaço para calcular $p(R)$ é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. Portanto, o custo de espaço total do algoritmo é $O(n^2 + n + |pos(\phi)|) = O(|pos(\phi)|^2)$ no pior caso.
