@@ -1,0 +1,103 @@
+
+\indent
+
+Neste capítulo, apresentamos um algoritmo que encontra um renomeamento ótimo para qualquer fórmula.
+
+Construiremos o algoritmo a partir do fato enunciado pelo teorema a seguir.
+
+\begin{theorem}
+	\label{optimal_sub}
+	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ seja escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
+\end{theorem}
+
+\emph{Demonstração}: Seja $R_1 = R - \{\psi\}$ e, para obter uma contradição, suponha que $R_1' \subseteq SFP(\phi) - \{\psi \}$ é um renomeamento com no máximo $j-1$ subfórmulas ainda melhor que $R_1$, ou seja, denotando por $p(R)$ o número de cláusulas em uma transformação de renomeamento que usa $R$, temos que $R_1'$ é tal que $p(R_1') < p(R_1)$.
+
+Então, assim como $R$, o renomeamento $R' = R_1' \cup \{\psi \}$ contém no máximo $j$ subfórmulas. Portanto, se concluirmos que $p(R') < p(R)$, então teremos uma contradição, pois sabemos que $R$ é ótimo por hipótese.
+
+\section{Uma fórmula recursiva}
+
+\indent
+
+Seja $SFP(\phi) = \{\phi_1,...,\phi_n \}$ e defina $f(i,j)$ como um renomeamento ótimo que contém no máximo $j$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_i \}$.
+
+Por definição, é claro que $f(i,0) = f(0,j) = \emptyset, \forall i,j$.
+
+Agora, note que, ou $\phi_i \in f(i,j)$, ou $\phi_i \notin f(i,j)$.
+
+Suponha que $\phi_i \in f(i,j)$. Neste caso, o Teorema \ref{optimal_sub} nos garante que $f(i,j) - \{\phi_i \}$ é um renomeamento ótimo com no máximo $j-1$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_{i-1} \}$, ou seja, $p(f(i,j) - \{\phi_i \}) = p(f(i-1,j-1))$.
+
+Suponha agora que $\phi_i \notin f(i,j)$. Neste caso, é claro que $p(f(i,j)) = p(f(i-1,j))$.
+
+Portanto, podemos definir $f(i,j)$ da seguinte maneira. Se $i > 0$ e $j > 0$, então
+\[
+f(i,j) =
+\begin{cases} 
+\hfill f(i-1,j-1) \cup \{\phi_i \}   \hfill & \text{ se } p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j)) \\
+\hfill f(i-1,j) \hfill & \text{ caso contrário} \\
+\end{cases}
+\]
+onde é fácil ver que não há dependência cíclica.
+
+Para obter então um renomeamento ótimo considerando todas as subfórmulas próprias de $\phi$, basta calcular $f(n,n)$.
+
+A próxima seção apresenta um algoritmo baseado em programação dinâmica \cite{bellman2015applied} para calcular $f(n,n)$.
+
+\section{Uma implementação por computação ascendente}
+
+\indent
+
+O Algoritmo \ref{knapsack} calcula $f(n,n)$ por computação ascendente, ou seja, calcula $f(i,j)$, para todo $j$, primeiro para valores pequenos de $i$, até finalmente calcular $f(n,n)$.
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\State seja $dp[0..n]$ um novo arranjo com $dp[j] = \emptyset$ para todo $j$
+		\For{$i$}{$1$}{$n$}
+			\For{$j$}{$n$ \textbf{descendo}}{$1$}
+				\State $alt \gets dp[j-1] \cup \{\phi_i\}$
+				\If{$p(alt) < p(dp[j])$}
+					\State $dp[j] \gets alt$
+				\EndIf
+			\EndFor
+		\EndFor
+	\end{algorithmic}
+	\caption{Computação ascendente de $f(n,n)$.}
+	\label{knapsack}
+\end{algorithm}
+
+\subsection{Prova de correção}
+
+\indent
+
+A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir.
+
+\textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das linhas 2--9, temos que $dp[j] = f(i-1,j), \forall j$.
+
+\textbf{Inicialização da Invariante 1}: Antes da primeira iteração do laço, temos que\break $dp[j] = \emptyset = f(0,j), \forall j$. 
+
+\textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço,\break $dp[j] = f(i-1,j)$, $\forall j$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
+
+\textbf{Invariante 2}: No início de cada iteração do laço \textbf{para} das linhas 3--8:
+\begin{enumerate}
+	\item Se $k \leq j$, então $dp[k] = f(i-1,k)$.
+	\item Se $k > j$, então $dp[k] = f(i,k)$.
+\end{enumerate}
+
+\textbf{Inicialização da Invariante 2}: Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[j] = f(i-1,j)$, $\forall j$.
+
+\textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
+
+\textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, teremos $j = 0$. Neste ponto, teremos $dp[k] = f(i,k), \forall k > 0$, ou seja, $dp[j] = f(i,j), \forall j$.
+
+A propriedade provada na terminação da Invariante 2 prova que, se a Invariante 1 vale antes de uma iteração, então ela também irá valer na iteração seguinte, o que conclui a manutenção da Invariante 1.
+
+\textbf{Terminação da Invariante 1}: A condição para que o laço termine é $i > n$. Como cada iteração adiciona 1 a $i$, teremos $i = n+1$. Neste ponto, teremos $dp[j] = f(n,j), \forall j$, ou seja, teremos $dp[n] = f(n,n)$.
+
+Note que o algoritmo computa não somente o renomeamento ótimo, mas também os renomeamentos ótimos para versões mais restritas do problema. Por exemplo, se quisermos permitir que no máximo $j < n$ subfórmulas sejam escolhidas, basta utilizar $dp[j]$.
+
+\subsection{Análise}
+
+\indent
+
+O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 6 custa o tempo de calcular o número de clásulas de duas transformações de renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
+
+O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do arranjo $dp$, da variável $alt$ e do custo de espaço da função $p(R)$. O arranjo $dp$ contém $n+1$ conjuntos de no máximo $n$ elementos, logo seu custo de espaço é $O(n^2)$ no pior caso. A variável $alt$ é um conjunto de no máximo $n$ elementos, logo seu custo é $O(n)$ no pior caso. É possível mostrar que o custo de espaço para calcular $p(R)$ é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. Portanto, o custo de espaço total do algoritmo é $O(n^2 + n + |pos(\phi)|) = O(|pos(\phi)|^2)$ no pior caso.

@@ -12,16 +12,51 @@
 \usepackage{amsfonts}
 \usepackage{mathbbol}
 \usepackage{amsthm}
+\usepackage{algpseudocode,algorithm}
+
+
+\makeatletter
+\renewcommand{\ALG@name}{Algoritmo}
+\makeatother
+
+% Declaracoes em Português
+\algrenewcommand\algorithmicend{\textbf{fim}}
+\algrenewcommand\algorithmicdo{\textbf{faça}}
+\algrenewcommand\algorithmicwhile{\textbf{enquanto}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicif{\textbf{se}}
+\algrenewcommand\algorithmicthen{\textbf{então}}
+\algrenewcommand\algorithmicelse{\textbf{senão}}
+\algrenewcommand\algorithmicreturn{\textbf{retorne}}
+\algrenewcommand\algorithmicfunction{\textbf{função}}
+\algrenewcommand\algorithmicrequire{\textbf{Entrada:}}
+\algrenewcommand\algorithmicensure{\textbf{Variáveis:}}
+\algrenewcommand\Return{\State \algorithmicreturn{} }
+
+% Rearranja os finais de cada estrutura
+\algrenewtext{EndWhile}{\algorithmicend\ \algorithmicwhile}
+\algrenewtext{EndFor}{\algorithmicend\ \algorithmicfor}
+\algrenewtext{EndIf}{\algorithmicend\ \algorithmicif}
+\algrenewtext{EndFunction}{\algorithmicend\ \algorithmicfunction}
+
+% O comando For, a seguir, retorna 'para #1 -- #2 até #3 faça'
+\algnewcommand\algorithmicto{\textbf{até}}
+\algrenewtext{For}[3]%
+{\algorithmicfor\ #1 $\gets$ #2 \algorithmicto\ #3 \algorithmicdo}
+\algnewcommand\algorithmiceach{\textbf{cada}}
+\algrenewtext{ForAll}[1]
+{\algorithmicfor\ \algorithmiceach\ #1 \algorithmicdo}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Informações do Trabalho
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \orientador{\prof[a] \dr[a] Cláudia Nalon}{CIC/UnB}%
-\coordenador{\prof \dr Flávio de Barros Vidal}{CIC/UnB}%
+\coordenador{\prof \dr Rodrigo Bonifácio de Almeida}{CIC/UnB}%
 \diamesano{18}{dezembro}{2015}%
 
-\membrobanca{\prof \dr Membro1}{CIC/UnB}%
+\membrobanca{\prof[a] \dr[a] Maria Emilia Machado Telles Walter}{CIC/UnB}%
 \membrobanca{\dr Membro2}{CIC/UnB}%
 
 \autor{Matheus C.S.C.}{Pimenta}%
@@ -39,7 +74,7 @@
 \begin{document}%
     \capitulo{1_Introducao}{Introdução}%
     \capitulo{2_Referencial_Teorico}{Referencial Teórico}%
-    \capitulo{3_TCC}{Trabalho de Conclusão de Curso}%
+    \capitulo{3_O_algoritmo}{Um algoritmo para escolher renomeamentos ótimos}%
     \capitulo{4_Apresentacao}{Apresentações}%
 
     \apendice{Apendice_Fichamento}{Fichamento de Artigo Científico}%

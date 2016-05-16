@@ -1,4 +1,10 @@
 
+\section{Lógica proposicional}
+
+\indent
+
+Esta seção apresenta os conceitos básicos que definem a lógica proposicional.
+
 \begin{definition}\textbf{(Sintaxe)}
 	
 	Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
@@ -23,7 +29,8 @@
 		\item $\psi = (p \vee q) \leftrightarrow (r \wedge s)$
 		\item $\xi  = \neg(p \rightarrow q)$
 	\end{itemize}
-	Note que $p \rightarrow q$ é subfórmula imediata de $\phi$ e de $\xi$.
+	
+	Note ainda que $p \rightarrow q$ é subfórmula imediata de $\phi$ e de $\xi$.
 \end{example}
 
 \begin{definition}\textbf{(Semântica)}
@@ -41,8 +48,6 @@
         \item $\mathbb{v}(\top) = V$.
         \item $\mathbb{v}(\bot) = F$.
     \end{enumerate}
-    
-    Dizemos que uma interpretação $\mathbb{v}$ é um \emph{modelo} para $\phi$ se, e somente se, $\mathbb{v}(\phi) = V$.
 \end{definition}
 
 \begin{example}
@@ -55,7 +60,6 @@
         \item $\mathbb{v}((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)) = V$
         \item $\mathbb{v}(\phi) = F$
     \end{enumerate}
-    Logo, $\mathbb{v}$ não é um modelo para $\phi$.
 \end{example}
 
 \begin{definition}
@@ -91,18 +95,15 @@
     \end{itemize}
 \end{example}
 
-\begin{observation}
-	\label{negacoes}
-	Seja $\phi$ uma fórmula e considere a fórmula $\neg \phi$. Observe que se $\phi$ é uma:
-	\begin{enumerate}
-		\item tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
-		\item contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
-		\item contingência, então $\exists \mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
-	\end{enumerate}
-\end{observation}
+\section{Problemas da lógica proposicional}
+\label{problemas_da_logica}
+
+\indent
+
+Apresentamos nesta seção os principais problemas envolvendo a lógica proposicional, que são o alvo deste trabalho.
 
 \begin{definition}
-	Seja $L$ um conjunto de cadeias sobre um alfabeto. Se nos referimos a $L$ como um \emph{problema}, nos referimos ao problema de decidir se uma dada cadeia $w$ pertence a $L$. Ou seja, nos referimos a $L$ como um \emph{problema de decisão}.
+	Seja $L$ um conjunto de cadeias sobre um alfabeto. Se nos referimos a $L$ como um \emph{problema}, referimo-nos ao problema de decidir se uma dada cadeia $w$ pertence a $L$. Ou seja, referimo-nos a $L$ como um \emph{problema de decisão}.
 	
 	Dizemos que um problema $L$ é \emph{decidível} quando existe um algoritmo $A$ tal que:
 	\begin{enumerate}
@@ -120,19 +121,31 @@
 	Observe que $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é contradição} \}$.
 \end{definition}
 
-Davis apresenta um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{equivalentes}, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
+O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
 
-Mostramos agora que SAT e VAL são equivalentes, através da equivalência de VAL com UNSAT.
+Davis et al. apresentam um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{redutíveis} um ao outro, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
 
-Seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
+Mostramos agora que SAT e VAL são redutíveis um ao outro, reduzindo VAL a UNSAT e vice-versa. O teorema que apresentamos a seguir é útil nesta tarefa.
+
+\begin{theorem}
+	\label{negacoes}
+	Se $\phi$ é uma:
+	\begin{enumerate}
+		\item tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
+		\item contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
+		\item contingência, então existem interpretações $\mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
+	\end{enumerate}
+\end{theorem}
+
+Agora, seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
 
 Vamos examinar o comportamento de $R_1$ para todas as possibilidades, ou seja, $\forall \phi \in \mathcal{L}$.
 
-Quando $\phi$ é uma contradição ou uma contingência, da Observação \ref{negacoes}, temos que $\neg \phi$ é uma tautologia ou uma contingência, respectivamente. Em ambos os casos, $R_1$ responde ``não'', pois $A_1$ responde ``não'' sobre a entrada $\neg \phi$. Observe ainda que, em ambos os casos, $\phi \notin \text{VAL}$.
+Quando $\phi$ é uma contradição ou uma contingência, do Teorema \ref{negacoes}, temos que $\neg \phi$ é uma tautologia ou uma contingência, respectivamente. Em ambos os casos, $R_1$ responde ``não'', pois $A_1$ responde ``não'' sobre a entrada $\neg \phi$. Observe ainda que, em ambos os casos, $\phi \notin \text{VAL}$.
 
 Quando $\phi$ é uma tautologia (logo $\phi \in \text{VAL}$), temos que $\neg \phi$ é uma contradição. Neste caso, $R_1$ responde ``sim'', pois $A_1$ responde ``sim'' sobre a entrada $\neg \phi$.
 
-Mostramos então que $R_1$ decide VAL.
+Mostramos então que $R_1$ decide VAL, ou seja, VAL é redutível a UNSAT.
 
 Seja agora $A_2$ um decisor para VAL e considere o seguinte algoritmo, que chamaremos de $R_2$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_2$ sobre a entrada $\neg \phi$.''
 
@@ -140,9 +153,15 @@ Quando $\phi$ é uma tautologia ou uma contingência (ou seja, $\phi \notin \tex
 
 Finalmente, quando $\phi$ é uma contradição, ou seja, quando $\phi \in \text{UNSAT}$, temos que $\neg \phi$ é uma tautologia. Neste caso, $R_2$ responde ``sim'', pois $A_2$ responde ``sim'' sobre a entrada $\neg \phi$.
 
-Mostramos então que $R_2$ decide UNSAT.
+Mostramos então que $R_2$ decide UNSAT, ou seja, UNSAT é redutível a VAL.
 
-Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para VAL, mostramos que VAL e UNSAT são equivalentes. Por transitividade, VAL e SAT são equivalentes.
+Com as \emph{reduções} $R_1$ e $R_2$ e com o fato de que SAT e UNSAT são redutíveis um ao outro, mostramos que VAL e SAT são também redutíveis um ao outro.
+
+\section{Formas normais}
+
+\indent
+
+Esta seção apresenta as definições e resultados que envolvem formas normais, conceito chave para este trabalho.
 
 \begin{definition}
 	Seja $\phi$ uma fórmula. Definimos $tam(\phi)$, o \emph{tamanho} de $\phi$, como o seguinte número:
@@ -176,15 +195,19 @@ Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para
 		\item $\phi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\psi$.
 	\end{enumerate}
 	
+	Denotamos o conjunto $\{\psi \mid \psi \sqsubseteq \phi \}$ das subfórmulas de $\phi$ por $SF(\phi)$.
+	
 	Se $\phi \sqsubseteq \psi$ e $\phi \neq \psi$, então dizemos que $\phi$ é \emph{subfórmula própria} de $\psi$ e escrevemos $\phi \sqsubset \psi$.
+	
+	Denotamos o conjunto $\{\psi \mid \psi \sqsubset \psi \}$ das subfórmulas próprias de $\phi$ por $SFP(\phi)$.
 \end{definition}
 
 \begin{example}
 	Considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Note que:
 	\begin{itemize}
 		\item A única subfórmula imediata de $\phi$ é $\phi_1 = (p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s)$.
-		\item São subfórmulas de $\phi$: $p$, $q$, $r$, $s$, $\neg s$, $q \wedge r \wedge s$, $q \rightarrow \neg s$, $p \vee (q \wedge r \wedge s)$, $\phi_1$ e $\phi$.
-		\item Somente $\phi$ não é subfórmula própria de $\phi$.
+		\item $SF(\phi) = \{p,q,r,s,\neg s,q \wedge r \wedge s,q \rightarrow \neg s,p \vee (q \wedge r \wedge s),\phi_1,\phi \}$.
+		\item $SFP(\phi) = SF(\phi) - \{\phi \}$; e, por definição, isto é verdade para toda $\phi$.
 	\end{itemize}
 \end{example}
 
@@ -227,6 +250,7 @@ Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para
                       & = \{\varepsilon,1,2,2.1,2.2,2.2.1\}
         \end{split}
     \end{equation*}
+    
     Além disso, note que:
     \begin{itemize}
         \item $\phi|_{\varepsilon} = \phi = p \vee (q \wedge \neg r)$
@@ -236,7 +260,8 @@ Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para
         \item $\phi|_{2.2} = (q \wedge \neg r)|_{2} = (\neg r)|_{\varepsilon} = \neg r$
         \item $\phi|_{2.2.1} = (q \wedge \neg r)|_{2.1} = (\neg r)|_{1} = r|_{\varepsilon} = r$
     \end{itemize}
-    Observe que $\{\phi|_\pi \mid \pi \in pos(\phi)\} = \{\psi \mid \psi \sqsubseteq \phi\}$ é o conjunto de todas as subfórmulas de $\phi$.
+    
+    Observe que $\{\phi|_\pi \mid \pi \in pos(\phi)\} = SF(\phi)$.
 \end{example}
 
 \begin{definition}
@@ -269,7 +294,7 @@ Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para
 \begin{definition}
 	Se uma regra transforma $\phi$ em $\psi$, dizemos que esta regra:
 	\begin{enumerate}
-		\item \emph{preserva equivalência} se, e somente se, $\phi \leftrightarrow \psi \in \text{VAL}$.
+		\item \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\phi) = \mathbb{v}(\psi), \forall \mathbb{v}$, ou seja, $\phi \leftrightarrow \psi \in \text{VAL}$.
 		\item \emph{preserva satisfatibilidade} se, e somente se, $\phi \in \text{SAT} \iff \psi \in \text{SAT}$.
 	\end{enumerate}
 \end{definition}
@@ -295,7 +320,7 @@ Com a \emph{redução} $R_1$ de VAL para UNSAT e a redução $R_2$ de UNSAT para
     preservam equivalência e produzem fórmulas na FNN.
 \end{theorem}
 
-A prova segue por indução na estrutura de uma fórmula.
+A prova do Teorema \ref{fnn_theorem} segue por indução na estrutura de uma fórmula.
 
 A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois, para evitar este caso, podemos sempre transformar equivalências em posições mais curtas primeiro.
 
@@ -309,10 +334,10 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
 
 \begin{theorem}
 	\label{fnc_theorem}
-    A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ chamada \emph{distribuição}, preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC.
+    A transformação $$\phi \vee \left( \bigwedge_i \phi_i \right) \longmapsto \bigwedge_i \left( \phi \vee \phi_i \right)$$ chamada de \emph{distribuição}, preserva equivalência e, se aplicada a fórmulas na FNN, produz fórmulas na FNC.
 \end{theorem}
 
-A prova segue por indução na estrutura de uma fórmula.
+A prova do Teorema \ref{fnc_theorem} segue por indução na estrutura de uma fórmula.
 
 \begin{example}
     Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão, começando pela transformação do item 5.a do Teorema \ref{fnn_theorem} e então aplicando distribuição, temos:
@@ -338,53 +363,101 @@ A prova segue por indução na estrutura de uma fórmula.
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
         \end{split}
     \end{equation*}
-    Agora, o número de passos de transformação foi menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
+    Agora, o número de passos de transformação é menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
     
-    Por fim, note que os fatos ilustrados por este exemplo ocorrem para qualquer subfórmula da forma $\phi_1 \leftrightarrow \phi_2$, que comece em qualquer posição $\pi \in pos(\phi)$, ocorrendo com polaridade negativa, $\forall \phi,\phi_1,\phi_2 \in \mathcal{L}$.
+    Por fim, note que os fatos ilustrados por este exemplo ocorrem para qualquer subfórmula da forma $\phi_1 \leftrightarrow \phi_2$ ocorrendo com polaridade negativa em qualquer posição de $\phi$, $\forall \phi,\phi_1,\phi_2 \in \mathcal{L}$.
 \end{example}
 
+\section{Renomeamento}
+
+\indent
+
+Nesta seção introduzimos a transformação feita com renomeamento, que utilizamos para reduzir o tamanho de uma fórmula neste trabalho.
+
 \begin{definition}
-	Sejam $\phi$ e $\psi$ fórmulas tais que $\psi \sqsubset \phi$ e $p \in \mathcal{P}$ tal que $p$ não ocorre em $\phi$. Definimos a \emph{substituição de} $\psi$ \emph{por} $p$ \emph{em} $\phi$, escrito $rep(\phi,\psi,p)$, da seguinte maneira:
-	\begin{enumerate}
-		\item Se $\pi \in pos(\phi)$ e $\phi|_\pi = \psi$, então $\pi \in pos(rep(\phi,\psi,p))$ e $rep(\phi,\psi,p)|_\pi = p$.
-		\item Se $\pi \in pos(\phi)$ e $\phi|_\pi \neq \psi$, então:
-		\begin{enumerate}
-			\item Se $\pi$ é da forma $\pi_1.\pi_2$, onde $\phi|_{\pi_1} = \psi$ e $\pi_2 \in pos(\psi)$, então\break $\pi \notin pos(rep(\phi,\psi,p))$.
-			\item Caso contrário, $\pi \in pos(rep(\phi,\psi,p))$ e $rep(\phi,\psi,p)|_\pi = \phi|_\pi$.
-		\end{enumerate}
-	\end{enumerate}
+	Sejam $\phi$ e $\psi$ fórmulas tais que $\psi \in SFP(\phi)$ e $p \in \mathcal{P}$ tal que $p$ não ocorre em $\phi$. A \emph{substituição de} $\psi$ \emph{por} $p$ \emph{em} $\phi$, denotada por $rep(\phi,\psi,p)$, é a fórmula $\phi$ com todas as ocorrências de $\psi$ trocadas por $p$.
 	
-	A definição anterior pode ser facilmente estendida para funções injetoras que mapeiam subfórmulas próprias de $\phi$ para símbolos proposicionais que não ocorrem em $\phi$. Seja $f = \{(\phi_1,p_1),...,(\phi_n,p_n)\}$ uma função deste tipo. Então, $$rep(\phi,f) = rep(rep(\phi,\phi_1,p_1),\{(\phi_2,p_2),...,(\phi_n,p_n)\})$$
+	Um \emph{renomeamento de $\phi$} é um conjunto de subfórmulas próprias de $\phi$.
+	
+	Seja $R$ um renomeamento de $\phi$. Uma \emph{substituição de $R$ em $\phi$} é uma função injetora $s : R \longmapsto \mathcal{P}$ tal que $p$ não ocorre em $\phi$, $\forall p \in \text{Im}(s)$.
+	
+	Seja $s = \{(\phi_1,p_1),...,(\phi_n,p_n) \}$ uma substituição de $R = \{\phi_1,...,\phi_n \}$ em $\phi$. Definimos
+	\[
+	rep(\phi,s) =
+	\begin{cases} 
+	\hfill \phi    \hfill & \text{ se $n=0$} \\
+	\hfill rep(rep(\phi,\phi_1,p_1),\{(\phi_2,p_2),...,(\phi_n,p_n)\}) \hfill & \text{ se $n > 0$} \\
+	\end{cases}
+	\]
 \end{definition}
 
 \begin{example}
-	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$. Então $$rep(\phi,\{(p \vee q,a),(p \wedge q,b)\}) = a \rightarrow (r \wedge a \wedge b)$$
+	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$ e $s = \{(p \vee q,a),(p \wedge q,b)\}$. Então $$rep(\phi,s) = a \rightarrow (r \wedge a \wedge b)$$
 \end{example}
-
-\begin{definition}
-	Um \emph{renomeamento} de $\phi$ é um conjunto $R$ tal que $R \subseteq \{\psi \mid \psi \sqsubset \phi \}$, ou seja, um conjunto de subfórmulas próprias de $\phi$.
-\end{definition}
 
 \begin{theorem}
 	\label{struct_preserving}
-	Seja $\phi$ uma fórmula, $R = \{\phi_1,...,\phi_n\}$ um renomeamento de $\phi$ e $f : R \longmapsto \mathcal{P}$ uma função injetora tal que $f(\phi_i)$ não ocorre em $\phi$, para todo $i$. Então a transformação $$\phi \longmapsto rep(\phi,f) \wedge (f(\phi_1) \rightarrow rep(\phi_1,f)) \wedge ... \wedge (f(\phi_n) \rightarrow rep(\phi_n,f))$$
-    preserva satisfatibilidade.
+	Seja $s = \{(\phi_1,p_1),...,(\phi_n,p_n) \}$ uma substituição de $R = \{\phi_1,...,\phi_n \}$ em $\phi$, onde $R$ é um renomeamento de $\phi$. Então, a transformação $$\phi \longmapsto \mathcal{R}(\phi,s)$$ onde $$\mathcal{R}(\phi,s) = rep(\phi,s) \wedge (p_1 \rightarrow rep(\phi_1,s-\{(\phi_1,p_1)\})) \wedge ... \wedge (p_n \rightarrow rep(\phi_n,s-\{(\phi_n,p_n)\}))$$
+    que chamaremos de \emph{transformação de renomeamento}, preserva satisfatibilidade.
 \end{theorem}
 
-Plaisted dá uma prova para o Teorema \ref{struct_preserving} \cite{plaisted1986structure}.
+Plaisted et al. provam o Teorema \ref{struct_preserving} \cite{plaisted1986structure}.
 
 \begin{example}
 	\label{exemplo_renaming}
-    Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $f = \{(p \leftrightarrow q, r) \}$.\ Então o resultado da transformação do Teorema \ref{struct_preserving} em $\phi$ com $R = \{p \leftrightarrow q\}$ e $f$ é $$(r \leftrightarrow r) \wedge (r \rightarrow (p \leftrightarrow q))$$
+    Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $s = \{(p \leftrightarrow q, r) \}$. Então $$\mathcal{R}(\phi,s) = (r \leftrightarrow r) \wedge (r \rightarrow (p \leftrightarrow q))$$
     
-    Note que tanto $\phi$ quanto o resultado da transformação são satisfatíveis, mas que $\phi$ é também tautologia, enquanto o resultado é contingência.
+    Note que tanto $\phi$ quanto $\mathcal{R}(\phi,s)$ são satisfatíveis, mas que $\phi$ é uma tautologia da forma $\psi \leftrightarrow \psi$, enquanto $\mathcal{R}(\phi,s)$ é uma contingência, pois
+    \begin{enumerate}
+    	\item Se $\mathbb{v}(r) = F$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = V$.
+    	\item Se $\mathbb{v}(r) = V$, $\mathbb{v}(p) = V$ e $\mathbb{v}(q) = F$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = F$.
+    \end{enumerate}
 \end{example}
 
-O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente de transformações que preservam equivalência, parecem ter o potencial de mudar o significado da fórmula. Mostramos agora que isto não é um problema.
+O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente das que preservam equivalência, podem não preservar o significado de uma fórmula em todas as interpretações. No entanto, isto não é um obstáculo se quisermos determinar precisamente se uma fórmula é uma tautologia, uma contradição ou uma contingência. Isto segue do fato que mostramos na Seção \ref{problemas_da_logica}: SAT, UNSAT e VAL são todos problemas redutíveis uns aos outros. Se uma transformação preserva satisfatibilidade, então é claro que as respostas de decisores para SAT e UNSAT são preservadas por esta transformação. Neste caso, as respostas das reduções que mostramos anteriormente também são preservadas. Portanto, com os procedimentos apropriados, é perfeitamente possível determinar o tipo de uma fórmula através de sua transformação, ou da transformação de sua negação. Este resultado é fundamental para que possamos utilizar renomeamento para minimizar fórmulas.
 
-Suponha que $\tau$ seja uma transformação que preserva satisfatibilidade e seja $\phi$ uma fórmula. Vamos encontrar o significado de $\phi$ através de $\tau(\phi)$ ou de $\tau(\neg \phi)$.
+\section{Minimizando o número de cláusulas}
 
-Para verificar se $\phi$ é uma contradição....
+\begin{example}
+	\label{exemplo_minimizando}
+	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. O número de cláusulas $p(\phi)$ que $\phi$ gera quando é colocada na FNC pode ser calculado pelas fórmulas da Tabela \ref{numerop}. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
+	
+	Considere então um renomeamento $R_1 = \{\phi_1 \}$ e $s_1 = \{(\phi_1,a) \}$. Temos que $$\mathcal{R}(\phi,s_1) = (a \leftrightarrow a) \wedge (a \rightarrow (r \leftrightarrow s))$$ Agora, note que $$p(a \leftrightarrow a) = p(\phi_1) = 2$$ e $$p(a \rightarrow (r \leftrightarrow s)) = p(a \rightarrow \phi_1) = \overline{p}(a)p(\phi_1) = 1 \cdot 2 = 2$$ Portanto, $$p(\mathcal{R}(\phi,s_1)) = 2 + 2 = 4$$
+	
+	Aplicando outro renomeamento $R_2 = \{r,s\}$ com $s_2 = \{(r,a),(s,b) \}$, temos $$\mathcal{R}(\phi,s_2) = ((a \leftrightarrow b) \leftrightarrow (a \leftrightarrow b)) \wedge (a \rightarrow r) \wedge (b \rightarrow s)$$ E é fácil ver que $$p(\mathcal{R}(\phi,s_2)) = p(\phi) + p(a \rightarrow r) + p(b \rightarrow s) = 8 + 1 + 1 = 10$$
+\end{example}
 
+\tabela{Número de cláusulas de uma fórmula}{numerop}{c|c|c}{
+	Forma de $\phi$                   & $p(\phi)$                                                       & $\overline{p}(\phi)$                                            \\ \hline
+	$\neg \phi_1$                     & $\overline{p}(\phi_1)$                                          & $p(\phi_1)$                                                     \\
+	$\phi_1 \wedge ... \wedge \phi_n$ & $\sum_{i=1}^n p(\phi_i)$                                        & $\prod_{i=1}^n \overline{p}(\phi_i)$                            \\
+	$\phi_1 \vee ... \vee \phi_n$     & $\prod_{i=1}^n p(\phi_i)$                                       & $\sum_{i=1}^n \overline{p}(\phi_i)$                             \\
+	$\phi_1 \rightarrow \phi_2$       & $\overline{p}(\phi_1)p(\phi_2)$                                 & $p(\phi_1)+\overline{p}(\phi_2)$                                \\
+	$\phi_1 \leftrightarrow \phi_2$   & $\overline{p}(\phi_1)p(\phi_2) + \overline{p}(\phi_2)p(\phi_1)$ & $p(\phi_1)p(\phi_2) + \overline{p}(\phi_1)\overline{p}(\phi_2)$ \\
+	$\phi \in \mathcal{P}$            & $1$                                                             & $1$                                                            
+}
 
+O Exemplo \ref{exemplo_minimizando} mostra que aplicar a transformação de renomeamento pode aumentar ou diminuir o número de cláusulas, dependendo somente da escolha do renomeamento. Isto nos leva ao seguinte problema de otimização: Dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\mathcal{R}(\phi,s))$ seja o menor possível, onde $s$ é qualquer substituição de $R$ em $\phi$.
 
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\State seja...
+	\end{algorithmic}
+	\caption{Algoritmo de Boy de la Tour para encontrar renomeamentos.}
+	\label{boydelatour}
+\end{algorithm}
+
+O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra em $\phi$ somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. No capítulo que vem a seguir, apresentamos um algoritmo, de custo de tempo igualmente polinomial determinístico, que encontra o número ótimo de cláusulas para qualquer fórmula, sem restrições.
+
+Os números $a$ e $b$ que aparecem no Algoritmo \ref{boydelatour} são definidos pela Tabela \ref{tabela_a_b}.
+
+\tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
+	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline
+	$\neg \psi_1$                          & $b_\psi^\phi$                                              & $a_\psi^\phi$                                              \\
+	$\psi_1 \wedge ... \wedge \psi_n$      & $a_\psi^\phi$                                              & $b_\psi^\phi \prod_{j\neq i} \overline{p}(\phi_j)$         \\
+	$\psi_1 \vee ... \vee \psi_n$          & $a_\psi^\phi \prod_{j\neq i} p(\phi_j)$                    & $b_\psi^\phi$                                              \\
+	$\psi_1 \rightarrow \psi_2, i=1$       & $b_\psi^\phi$                                              & $a_\psi^\phi p(\psi_2)$                                    \\
+	$\psi_1 \rightarrow \psi_2, i=2$       & $a_\psi^\phi \overline{p}(\psi_1)$                         & $b_\psi^\phi$                                              \\
+	$\psi_1 \leftrightarrow \psi_n, j=3-i$ & $a_\psi^\phi \overline{p}(\psi_j) + b_\psi^\phi p(\psi_j)$ & $a_\psi^\phi p(\psi_j) + b_\psi^\phi \overline{p}(\psi_j)$ \\
+	$\psi_i = \phi$                        & $1$                                                        & $0$                                                       
+}
