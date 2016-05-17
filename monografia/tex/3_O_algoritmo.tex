@@ -82,7 +82,7 @@ A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir
 	\item Se $j < k \leq n$, então $dp[k] = f(i,k)$.
 \end{enumerate}
 
-\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$. Portanto, o item 2 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois, $\forall k > j$, temos que $k > n$.
+\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$. Portanto, o item 1 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois, $\forall k > j$, temos que $k > n$.
 
 \textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
 
