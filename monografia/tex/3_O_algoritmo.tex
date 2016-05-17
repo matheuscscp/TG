@@ -7,7 +7,7 @@ Construiremos o algoritmo a partir do fato enunciado pelo teorema a seguir.
 
 \begin{theorem}
 	\label{optimal_sub}
-	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ seja escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
+	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ sejam escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
 \end{theorem}
 
 \emph{Demonstração}: Seja $R_1 = R - \{\psi\}$ e, para obter uma contradição, suponha que $R_1' \subseteq SFP(\phi) - \{\psi \}$ é um renomeamento com no máximo $j-1$ subfórmulas ainda melhor que $R_1$, ou seja, denotando por $p(R)$ o número de cláusulas em uma transformação de renomeamento que usa $R$, temos que $R_1'$ é tal que $p(R_1') < p(R_1)$.
@@ -72,7 +72,7 @@ A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir
 
 \textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das linhas 2--9, temos que $dp[j] = f(i-1,j), \forall j \leq n$.
 
-\textbf{Inicialização da Invariante 1}: No início da primeira iteração do laço, temos que $i = 1$ e $dp[j] = \emptyset = f(0,j) = f(i-1,j), \forall j \leq n$. 
+\textbf{Inicialização da Invariante 1}: No início da primeira iteração do laço, temos que $i = 1$ e $dp[j] = \emptyset = f(0,j) = f(i-1,j), \forall j \leq n$, logo a invariante vale.
 
 \textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço,\break $dp[j] = f(i-1,j)$, $\forall j \leq n$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
 
@@ -82,17 +82,17 @@ A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir
 	\item Se $j < k \leq n$, então $dp[k] = f(i,k)$.
 \end{enumerate}
 
-\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$.
+\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$. Portanto, o item 2 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois, $\forall k > j$, temos que $k > n$.
 
 \textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
 
-\textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, teremos $j = 0$. Neste ponto, teremos $dp[k] = f(i,k), \forall k > 0$, ou seja, $dp[j] = f(i,j), \forall j$.
+\textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, em algum momento teremos $j = 0$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, $dp[k] = f(i,k), \forall k > j = 0$, ou seja,\break $dp[j] = f(i,j), \forall j$.
 
 A propriedade provada na terminação da Invariante 2 prova que, se a Invariante 1 vale antes de uma iteração, então ela também irá valer na iteração seguinte, o que conclui a manutenção da Invariante 1.
 
-\textbf{Terminação da Invariante 1}: A condição para que o laço termine é $i > n$. Como cada iteração adiciona 1 a $i$, teremos $i = n+1$. Neste ponto, teremos $dp[j] = f(n,j), \forall j$, ou seja, teremos $dp[n] = f(n,n)$.
+\textbf{Terminação da Invariante 1}: A condição para que o laço termine é $i > n$. Como cada iteração adiciona 1 a $i$, em algum momento teremos $i = n+1$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, $dp[j] = f(i-1,j) = f(n,j), \forall j$, ou seja,\break $dp[n] = f(n,n)$.
 
-Note que o algoritmo computa não somente o renomeamento ótimo, mas também os renomeamentos ótimos para versões mais restritas do problema. Por exemplo, se quisermos permitir que no máximo $j < n$ subfórmulas sejam escolhidas, basta utilizar $dp[j]$.
+Note que o algoritmo computa não somente o renomeamento ótimo $f(n,n)$, mas também os renomeamentos ótimos para versões mais restritas do problema. Por exemplo, se quisermos permitir que no máximo $j < n$ subfórmulas sejam escolhidas, basta utilizar o resultado $dp[j] = f(n,j)$.
 
 \subsection{Análise}
 
