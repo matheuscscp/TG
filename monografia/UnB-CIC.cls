@@ -296,6 +296,19 @@
 
 
 
+%novo ambiente lemma
+\newcommand{\lemmaname}{Lema}
+\newcounter{lemma}
+\newenvironment{lemma}
+{\refstepcounter{lemma}%
+	\let\old@fboxsep\fboxsep\setlength{\fboxsep}{1em}%
+	\vskip.5\fboxsep\breakbox%
+	\noindent\textbf{\lemmaname~\arabic{lemma}\ \ }}
+{\endbreakbox\vskip.5\fboxsep%
+	\setlength{\fboxsep}{\old@fboxsep}}
+
+
+
 
 %table figures automáticas no ambiente #1
 \newcommand{\SetTableFigures}[1]{

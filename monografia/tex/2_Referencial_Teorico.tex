@@ -422,7 +422,7 @@ O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satis
 
 \begin{example}
 	\label{exemplo_minimizando}
-	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. O número de cláusulas $p(\phi)$ que $\phi$ gera quando é colocada na FNC pode ser calculado pelas fórmulas da Tabela \ref{numerop}. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
+	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. O número de cláusulas $p(\phi)$ que $\phi$ gera quando é colocada na FNC pode ser calculado pelas fórmulas recursivas da Tabela \ref{numerop} \cite{de1992optimality}. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
 	
 	Considere então um renomeamento $R_1 = \{\phi_1 \}$ e $s_1 = \{(\phi_1,a) \}$. Temos que $$\mathcal{R}(\phi,s_1) = (a \leftrightarrow a) \wedge (a \rightarrow (r \leftrightarrow s))$$ Agora, note que $$p(a \leftrightarrow a) = p(\phi_1) = 2$$ e $$p(a \rightarrow (r \leftrightarrow s)) = p(a \rightarrow \phi_1) = \overline{p}(a)p(\phi_1) = 1 \cdot 2 = 2$$ Portanto, $$p(\mathcal{R}(\phi,s_1)) = 2 + 2 = 4$$
 	

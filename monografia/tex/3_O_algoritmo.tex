@@ -3,16 +3,38 @@
 
 Neste capítulo, apresentamos um algoritmo que encontra um renomeamento ótimo para qualquer fórmula.
 
-Construiremos o algoritmo a partir do fato enunciado pelo teorema a seguir.
+\begin{lemma}
+	Sejam $\phi$ e $\psi$ fórmulas tais que $\psi \sqsubset \phi$. Então existem inteiros $m$ e $n$ não negativos e não simultaneamente nulos tais que $$p(\phi) = p_0 + m p(\psi) + n \overline{p}(\psi)$$ onde $p_0$ é .
+\end{lemma}
+
+\emph{Prova}: Primeiro, observe que qualquer fórmula gera no mínimo uma cláusula, ou seja, $p(\psi) > 0, \forall \psi \in \mathcal{L}$. Da Tabela \ref{numerop}, observe também que as únicas operações aritméticas que podem aparecer em uma expressão para $p(\phi)$ são a adição e a multiplicação. Isto garante que não podem aparecer operandos negativos em qualquer expressão para $p(\phi)$.
+
+Considere uma expressão para $p(\phi)$ tal que $p(\xi)$ só não ocorre se $s$
+
+Considere então uma expressão tal que Aplicando então distribuição, agrupando os termos em que $p(\psi)$ é um fator e colocando $p(\psi)$ em evidência, temos $$p(\phi) = p_0' + m p(\psi)$$ Fazendo o mesmo para os termos em que $\overline{p}(\psi)$ é um fator, obtemos $$p(\phi) = p_0 + m p(\psi) + n p(\psi)$$
+
+Note que não pode ocorrer $m = n = 0$, pois, neste caso, $\psi$ não seria subfórmula de $\phi$.
 
 \begin{theorem}
 	\label{optimal_sub}
+	Seja $SFP(\phi) = \{\phi_1,...,\phi_n \}$, onde $\phi_i \sqsubset \phi_j \implies i < j$, e seja\break $R = \{\phi_{k_1},...,\phi_{k_r} \} \subseteq SFP(\phi)$ um renomeamento ótimo que considere somente entre os que contêm no\break máximo $j$ subfórmulas e consideram somente
 	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ sejam escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
 \end{theorem}
 
-\emph{Demonstração}: Seja $R_1 = R - \{\psi\}$ e, para obter uma contradição, suponha que $R_1' \subseteq SFP(\phi) - \{\psi \}$ é um renomeamento com no máximo $j-1$ subfórmulas ainda melhor que $R_1$, ou seja, denotando por $p(R)$ o número de cláusulas em uma transformação de renomeamento que usa $R$, temos que $R_1'$ é tal que $p(R_1') < p(R_1)$.
+\emph{Demonstração}: Seja $R_1 = R - \{\psi\}$ e, para obter uma contradição, suponha que $R_1' \subseteq SFP(\phi) - \{\psi \}$ é um renomeamento com no máximo $j-1$ subfórmulas ainda melhor que $R_1$, ou seja, denotando por $p(R)$ o número de cláusulas em uma transformação de renomeamento que usa $R$, temos que $R_1'$ é tal que $p(R_1') < p(R_1)$. Então, assim como $R$, o renomeamento $R' = R_1' \cup \{\psi \}$ contém no máximo $j$ subfórmulas.
 
-Então, assim como $R$, o renomeamento $R' = R_1' \cup \{\psi \}$ contém no máximo $j$ subfórmulas. Portanto, se concluirmos que $p(R') < p(R)$, então teremos uma contradição, pois sabemos que $R$ é ótimo por hipótese.
+Para cada um dos quatro renomeamentos definidos, vamos agora expressar o número de cláusulas que cada um gera, usando um resultado de Boy de la Tour \cite{de1992optimality}. Temos que
+\begin{enumerate}
+	\item $p(R) = p_0 + a + p(\psi) + b + \overline{p}(\psi)$
+	\item $p(R_1) = p_0 + a p(\psi) + b \overline{p}(\psi)$
+	\item $p(R_1') = p_0' + a' p(\psi) + b' \overline{p}(\psi)$
+	\item $p(R') = p_0' + a' + p(\psi) + b' + \overline{p}(\psi)$
+\end{enumerate}
+
+
+
+
+Portanto, se concluirmos que $p(R') < p(R)$, então teremos uma contradição, pois sabemos que $R$ é ótimo por hipótese.
 
 \section{Uma fórmula recursiva}
 
