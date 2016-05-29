@@ -1,4 +1,6 @@
 
+\label{cap_referencial}
+
 \section{Lógica proposicional}
 
 \indent
@@ -9,7 +11,7 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
 	
 	Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
 	
-    Se $\phi \in \mathcal{P}$, dizemos que $\phi$ é uma \emph{fórmula bem formada}, ou simplesmente que $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$, e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula:
+    Se $\phi \in \mathcal{P}$, dizemos que $\phi$ é uma \emph{fórmula bem formada}, ou simplesmente que $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$ e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula:
     \begin{enumerate}
         \item \emph{Negação}: $\neg \phi_1$
         \item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
@@ -17,11 +19,11 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
         \item \emph{Implicação}: $\phi_1 \rightarrow \phi_2$
         \item \emph{Equivalência}: $\phi_1 \leftrightarrow \phi_2$
     \end{enumerate}
-    Em todos os casos, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$.
+    Em todos os casos acima, dizemos que $\phi_i$ é \emph{subfórmula imediata} de $\phi$, para $i=1,...,n$.
     
     Denotamos a conjunção vazia ($\phi_1 \wedge ... \wedge \phi_n$ com $n=0$) por $\top$, a disjunção vazia por $\bot$ e o conjunto das fórmulas por $\mathcal{L}$.
     
-    Denotamos ainda por $SFD(\phi)$ o conjunto das subfórmulas imediatas de $\phi$.
+    Denotamos ainda por $SFI(\phi)$ o conjunto das subfórmulas imediatas de $\phi$.
 \end{definition}
 
 \begin{example}
@@ -52,6 +54,8 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
     \end{enumerate}
 \end{definition}
 
+No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{interpretação definida por $\mathbb{v}_0$}.
+
 \begin{example}
     Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,F),(r,V),(s,V)\}$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
     \begin{enumerate}
@@ -65,7 +69,7 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
 \end{example}
 
 \begin{definition}
-	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda que $\phi$ é \emph{falsificável}.
+	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda, que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda, que $\phi$ é \emph{falsificável}.
 	
 	Se toda interpretação satisfaz $\phi$, então dizemos que $\phi$ é uma \emph{tautologia}. Por outro lado, se toda interpretação falsifica $\phi$, ou seja, se nenhuma interpretação satisfaz $\phi$ (logo $\phi$ não é satisfatível), então dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
 	
@@ -109,10 +113,12 @@ Apresentamos nesta seção os principais problemas envolvendo a lógica proposic
 	
 	Dizemos que um problema $L$ é \emph{decidível} quando existe um algoritmo $A$ tal que:
 	\begin{enumerate}
-		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``sim'', $\forall w \in L$.
-		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``não'', $\forall w \notin L$.
+		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``sim'', para toda cadeia $w \in L$.
+		\item $A$ realiza um número finito de passos sobre a entrada $w$ e responde ``não'', para toda cadeia $w \notin L$.
 	\end{enumerate}
 	Neste caso, dizemos que $A$ \emph{decide} $L$, ou ainda que $A$ é um \emph{decisor} para $L$.
+	
+	Denotamos por $\overline{L}$ o complemento de $L$, ou seja, o conjunto $\{w \mid w \notin L \}$.
 \end{definition}
 
 \begin{definition}
@@ -133,11 +139,19 @@ Mostramos agora que SAT e VAL são redutíveis um ao outro, reduzindo VAL a UNSA
 	\label{negacoes}
 	Se $\phi$ é uma:
 	\begin{enumerate}
-		\item tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
-		\item contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
-		\item contingência, então existem interpretações $\mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
+		\item tautologia, então $\neg \phi$ é uma contradição.
+		\item contradição, então $\neg \phi$ é uma tautologia.
+		\item contingência, então $\neg \phi$ é uma contingência.
 	\end{enumerate}
 \end{theorem}
+
+Se $\phi$ é uma tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
+
+Se $\phi$ é uma contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
+
+Se $\phi$ é uma contingência, então existem interpretações $\mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
+
+Com isto, provamos o Teorema \ref{negacoes}.
 
 Agora, seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
 
@@ -294,7 +308,9 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
 \end{example}
 
 \begin{definition}
-	Se uma regra transforma $\phi$ em $\psi$, dizemos que esta regra:
+	Denotamos por $$\phi \longmapsto \psi$$ a \emph{regra de reescrita} que transforma uma fórmula da forma de $\phi$ em $\psi$.
+	
+	Se uma regra de reescrita transforma $\phi$ em $\psi$, dizemos que esta regra:
 	\begin{enumerate}
 		\item \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\phi) = \mathbb{v}(\psi), \forall \mathbb{v}$, ou seja, $\phi \leftrightarrow \psi \in \text{VAL}$.
 		\item \emph{preserva satisfatibilidade} se, e somente se, $\phi \in \text{SAT} \iff \psi \in \text{SAT}$.
@@ -309,9 +325,9 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
     \label{fnn_theorem}
     As transformações
     \begin{enumerate}
-        \item $\neg \neg \phi_1 \longmapsto \phi_1$
-        \item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$
-        \item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$
+        \item $\neg \neg \phi_1 \longmapsto \phi_1$ (eliminação de dupla negação)
+        \item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$ (De Morgan)
+        \item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$ (De Morgan)
         \item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
         \item Se $\phi|_\pi$ é da forma $\phi_1 \leftrightarrow \phi_2$, então
         \begin{enumerate}
@@ -324,7 +340,7 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
 
 A prova do Teorema \ref{fnn_theorem} segue por indução na estrutura de uma fórmula.
 
-A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o próximo exemplo. Observe que não é necessário considerar o caso em que a polaridade é zero, pois, para evitar este caso, podemos sempre transformar equivalências em posições mais curtas primeiro.
+A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o Exemplo \ref{exemplo_fnn_fnc}, dado por Nonnengart et al. \cite{nonnengart2001computing}. Observe que não é necessário considerar o caso em que a polaridade é zero, pois, para evitar este caso, basta transformar equivalências em posições mais curtas primeiro.
 
 \begin{definition}
 	Dizemos que $\phi$ é um \emph{literal} se, e somente se, $\phi \in \mathcal{P}$, ou $\phi$ é da forma $\neg p$, onde $p \in \mathcal{P}$.
@@ -342,6 +358,7 @@ A transformação de equivalências dependente de polaridade do Teorema \ref{fnn
 A prova do Teorema \ref{fnc_theorem} segue por indução na estrutura de uma fórmula.
 
 \begin{example}
+	\label{exemplo_fnn_fnc}
     Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão, começando pela transformação do item 5.a do Teorema \ref{fnn_theorem} e então aplicando distribuição, temos:
     \begin{equation*}
         \begin{split}
@@ -397,37 +414,48 @@ Nesta seção introduzimos a transformação feita com renomeamento, que utiliza
 	Seja $\phi = (p \vee q) \rightarrow (r \wedge (p \vee q) \wedge (p \wedge q))$ e $s = \{(p \vee q,a),(p \wedge q,b)\}$. Então $$rep(\phi,s) = a \rightarrow (r \wedge a \wedge b)$$
 \end{example}
 
+\begin{definition}
+	Sejam $\phi$ e $\psi$ tais que $\psi \sqsubseteq \phi$ e $s$ uma substituição em $\phi$ tal que $(\psi,p) \in s$. Denote ainda $rep(\psi,s-\{(\psi,p)\})$ por $\xi$. Definimos
+	\[
+	def(\phi,\psi,s) =
+	\begin{cases} 
+	\hfill p \rightarrow \xi \hfill     & \text{se } pol(\phi,\pi) = 1, \forall \pi \in pos(\phi) \text{ tal que } \phi|_\pi = \psi\\
+	\hfill \xi \rightarrow p \hfill     & \text{se } pol(\phi,\pi) = -1, \forall \pi \in pos(\phi) \text{ tal que } \phi|_\pi = \psi\\
+	\hfill p \leftrightarrow \xi \hfill & \text{caso contrário}\\
+	\end{cases}
+	\]
+\end{definition}
+
 \begin{theorem}
 	\label{struct_preserving}
-	Seja $s = \{(\phi_1,p_1),...,(\phi_n,p_n) \}$ uma substituição de $R = \{\phi_1,...,\phi_n \}$ em $\phi$, onde $R$ é um renomeamento de $\phi$. Então, a transformação $$\phi \longmapsto \mathcal{R}(\phi,s)$$ onde $$\mathcal{R}(\phi,s) = rep(\phi,s) \wedge (p_1 \rightarrow rep(\phi_1,s-\{(\phi_1,p_1)\})) \wedge ... \wedge (p_n \rightarrow rep(\phi_n,s-\{(\phi_n,p_n)\}))$$
-    que chamaremos de \emph{transformação de renomeamento}, preserva satisfatibilidade.
+	Seja $s = \{(\phi_1,p_1),...,(\phi_n,p_n) \}$ uma substituição de $R = \{\phi_1,...,\phi_n \}$ em $\phi$, onde $R$ é um renomeamento de $\phi$. Então, a transformação $$\phi \longmapsto \mathcal{R}(\phi,s)$$ onde $$\mathcal{R}(\phi,s) = rep(\phi,s) \wedge def(\phi,\phi_1,s) \wedge ... \wedge def(\phi,\phi_n,s)$$
+    que chamaremos de \emph{transformação por renomeamento}, preserva satisfatibilidade.
 \end{theorem}
 
 Plaisted et al. provam o Teorema \ref{struct_preserving} \cite{plaisted1986structure}.
 
+Observe que, dado um renomeamento $R$, encontrar uma substituição de $R$ em $\phi$ para uma transformação por renomeamento é uma tarefa fácil, pois $\mathcal{P}$ é infinito e enumerável, enquanto o conjunto dos símbolos proposicionais que ocorrem em $\phi$ é finito.
+
 \begin{example}
 	\label{exemplo_renaming}
-    Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $s = \{(p \leftrightarrow q, r) \}$. Então $$\mathcal{R}(\phi,s) = (r \leftrightarrow r) \wedge (r \rightarrow (p \leftrightarrow q))$$
+    Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $s = \{(p \leftrightarrow q, r) \}$. Então $$\mathcal{R}(\phi,s) = (r \leftrightarrow r) \wedge (r \leftrightarrow (p \leftrightarrow q))$$
     
     Note que tanto $\phi$ quanto $\mathcal{R}(\phi,s)$ são satisfatíveis, mas que $\phi$ é uma tautologia da forma $\psi \leftrightarrow \psi$, enquanto $\mathcal{R}(\phi,s)$ é uma contingência, pois
     \begin{enumerate}
-    	\item Se $\mathbb{v}(r) = F$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = V$.
+    	\item Se $\mathbb{v}(r) = V$, $\mathbb{v}(p) = V$ e $\mathbb{v}(q) = V$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = V$.
     	\item Se $\mathbb{v}(r) = V$, $\mathbb{v}(p) = V$ e $\mathbb{v}(q) = F$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = F$.
     \end{enumerate}
 \end{example}
 
-O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente das que preservam equivalência, podem não preservar o significado de uma fórmula em todas as interpretações. No entanto, isto não é um obstáculo se quisermos determinar precisamente se uma fórmula é uma tautologia, uma contradição ou uma contingência. Isto segue do fato que mostramos na Seção \ref{problemas_da_logica}: SAT, UNSAT e VAL são todos problemas redutíveis uns aos outros. Se uma transformação preserva satisfatibilidade, então é claro que as respostas de decisores para SAT e UNSAT são preservadas por esta transformação. Neste caso, as respostas das reduções que mostramos anteriormente também são preservadas. Portanto, com os procedimentos apropriados, é perfeitamente possível determinar o tipo de uma fórmula através de sua transformação, ou da transformação de sua negação. Este resultado é fundamental para que possamos utilizar renomeamento para minimizar fórmulas.
+O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente das que preservam equivalência, podem não preservar o significado de uma fórmula em todas as interpretações. No entanto, isto não é um obstáculo se quisermos determinar precisamente se uma fórmula é uma tautologia, uma contradição ou uma contingência. Isto segue do fato que mostramos na Seção \ref{problemas_da_logica}: SAT, UNSAT e VAL são todos problemas redutíveis uns aos outros. Se uma transformação preserva satisfatibilidade, então é claro que as respostas de decisores para SAT e UNSAT são preservadas por esta transformação. Neste caso, as respostas das reduções que mostramos anteriormente também são preservadas. Portanto, com os procedimentos apropriados, é perfeitamente possível determinar o tipo de uma fórmula através de sua transformação, ou da transformação de sua negação. Este resultado é fundamental para que possamos utilizar renomeamento para obter fórmulas pequenas.
 
-\section{Minimizando o número de cláusulas}
+\section{Reduzindo o número de cláusulas}
 
-\begin{example}
-	\label{exemplo_minimizando}
-	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. O número de cláusulas $p(\phi)$ que $\phi$ gera quando é colocada na FNC pode ser calculado pelas fórmulas recursivas da Tabela \ref{numerop} \cite{de1992optimality}. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
-	
-	Considere então um renomeamento $R_1 = \{\phi_1 \}$ e $s_1 = \{(\phi_1,a) \}$. Temos que $$\mathcal{R}(\phi,s_1) = (a \leftrightarrow a) \wedge (a \rightarrow (r \leftrightarrow s))$$ Agora, note que $$p(a \leftrightarrow a) = p(\phi_1) = 2$$ e $$p(a \rightarrow (r \leftrightarrow s)) = p(a \rightarrow \phi_1) = \overline{p}(a)p(\phi_1) = 1 \cdot 2 = 2$$ Portanto, $$p(\mathcal{R}(\phi,s_1)) = 2 + 2 = 4$$
-	
-	Aplicando outro renomeamento $R_2 = \{r,s\}$ com $s_2 = \{(r,a),(s,b) \}$, temos $$\mathcal{R}(\phi,s_2) = ((a \leftrightarrow b) \leftrightarrow (a \leftrightarrow b)) \wedge (a \rightarrow r) \wedge (b \rightarrow s)$$ E é fácil ver que $$p(\mathcal{R}(\phi,s_2)) = p(\phi) + p(a \rightarrow r) + p(b \rightarrow s) = 8 + 1 + 1 = 10$$
-\end{example}
+\begin{definition}
+	Denotamos por $p(\phi)$ o \emph{número de cláusulas} da fórmula obtida por aplicar as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão na fórmula $\phi$. Denotamos ainda $p(\neg \phi)$ por $\overline{p}(\phi)$.
+\end{definition}
+
+O número $p(\phi)$ pode ser calculado pela Tabela \ref{numerop} \cite{de1992optimality}.
 
 \tabela{Número de cláusulas de uma fórmula}{numerop}{c|c|c}{
 	Forma de $\phi$                   & $p(\phi)$                                                       & $\overline{p}(\phi)$                                            \\ \hline
@@ -439,34 +467,53 @@ O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satis
 	$\phi \in \mathcal{P}$            & $1$                                                             & $1$                                                            
 }
 
-O Exemplo \ref{exemplo_minimizando} mostra que aplicar a transformação de renomeamento pode aumentar ou diminuir o número de cláusulas, dependendo somente da escolha do renomeamento. Isto nos leva ao seguinte problema de otimização: Dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\mathcal{R}(\phi,s))$ seja o menor possível, onde $s$ é qualquer substituição de $R$ em $\phi$.
+Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R = D(s)$ é o renomeamento associado à substituição $s$.
+
+\begin{example}
+	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
+\end{example}
+
+Agora, dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\phi,R)$ seja o menor possível.
+
+O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir de $\psi_i.p$ e $\psi_i.\overline{p}$.
+
+\tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
+	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline
+	$\neg \psi_1$                          & $b_\psi^\phi$                                              & $a_\psi^\phi$                                              \\
+	$\psi_1 \wedge ... \wedge \psi_n$      & $a_\psi^\phi$                                              & $b_\psi^\phi \prod_{j\neq i} \overline{p}(\psi_j)$         \\
+	$\psi_1 \vee ... \vee \psi_n$          & $a_\psi^\phi \prod_{j\neq i} p(\psi_j)$                    & $b_\psi^\phi$                                              \\
+	$\psi_1 \rightarrow \psi_2, i=1$       & $b_\psi^\phi$                                              & $a_\psi^\phi p(\psi_2)$                                    \\
+	$\psi_1 \rightarrow \psi_2, i=2$       & $a_\psi^\phi \overline{p}(\psi_1)$                         & $b_\psi^\phi$                                              \\
+	$\psi_1 \leftrightarrow \psi_2, j=3-i$ & $a_\psi^\phi \overline{p}(\psi_j) + b_\psi^\phi p(\psi_j)$ & $a_\psi^\phi p(\psi_j) + b_\psi^\phi \overline{p}(\psi_j)$ \\
+	$\psi_i = \phi$                        & $1$                                                        & $0$                                                       
+}
 
 \begin{algorithm}
 	\begin{algorithmic}[1]
 		\State seja $R$ um conjunto vazio global
 		\Function{$R\_rec$}{$\psi,a,b,r$}
-			\If{$(\psi.p,\psi.\overline{p}) \neq (1,1)$}
-				\If{$a \cdot \psi.p + b \cdot \psi.\overline{p} > a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p})$}
-					\State $R \gets R \cup \{\psi \}$
-					\State $R\_rec(\psi,if\_pos(r,1),if\_pos(-r,1),r)$
-					\State $(\psi.p,\psi.\overline{p}) \gets (1,1)$
-				\Else
-					\State seja $SFD(\psi) = \{\psi_1,...,\psi_n \}$
-					\For{$i$}{$1$}{$n$}
-						\State $R\_rec(\psi_i,a_{\psi_i}^{\mathcal{R}(\phi,s)},b_{\psi_i}^{\mathcal{R}(\phi,s)},r \cdot pol(\psi,i))$
-					\EndFor
-					\State $(\psi.p,\psi.\overline{p}) \gets nbcl(\psi)$
-				\EndIf
-			\EndIf
+		\If{$(\psi.p,\psi.\overline{p}) \neq (1,1)$}
+		\If{$a \cdot \psi.p + b \cdot \psi.\overline{p} > a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p})$}
+		\State $R \gets R \cup \{\psi \}$
+		\State $R\_rec(\psi,if\_pos(r,1),if\_pos(-r,1),r)$
+		\State $(\psi.p,\psi.\overline{p}) \gets (1,1)$
+		\Else
+		\State seja $SFI(\psi) = \{\psi_1,...,\psi_n \}$
+		\For{$i$}{$1$}{$n$}
+		\State $R\_rec(\psi_i,a_{\psi_i}^{\mathcal{R}(\phi,s)},b_{\psi_i}^{\mathcal{R}(\phi,s)},r \cdot pol(\psi,i))$
+		\EndFor
+		\State $(\psi.p,\psi.\overline{p}) \gets nbcl(\psi)$
+		\EndIf
+		\EndIf
 		\EndFunction
 		\Function{$if\_pos$}{$x,y$}
-			\If{$x \geq 0$}
-				\Return $y$
-			\EndIf
-			\Return $0$
+		\If{$x \geq 0$}
+		\Return $y$
+		\EndIf
+		\Return $0$
 		\EndFunction
 		\ForAll{$\psi \in SF(\phi)$}
-			\State $(\psi.p,\psi.\overline{p}) \gets (p(\psi),\overline{p}(\psi))$
+		\State $(\psi.p,\psi.\overline{p}) \gets (p(\psi),\overline{p}(\psi))$
 		\EndFor
 		\State $R\_rec(\phi,1,0,1)$
 	\end{algorithmic}
@@ -474,29 +521,22 @@ O Exemplo \ref{exemplo_minimizando} mostra que aplicar a transformação de reno
 	\label{boydelatour}
 \end{algorithm}
 
-O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra em $\phi$ somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$ e $b = b_\psi^{\mathcal{R}(\phi,s)}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir dos campos $\psi_i.p$ e $\psi_i.\overline{p}$ das subfórmulas imediatas de $\psi$.
-
 \begin{example}
-	Considere a fórmula $\phi = (x \leftrightarrow y) \leftrightarrow (x \leftrightarrow y)$. Vamos executar $R\_rec(\phi,1,0,1)$.
+	Considere a fórmula $\phi = (x_1 \wedge x_2 \wedge x_3) \vee (y_1 \wedge y_2 \wedge y_3)$. Vamos executar $R\_rec(\phi,1,0,1)$.
 	
-	Na primeira chamada, a condição da linha 3 é satisfeita, pois $\psi.p = 8$. A condição da linha 4, no entanto, não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 8$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 9$. Portanto, a partir da linha 9, $\psi_1 = \psi_2 = x \leftrightarrow y$ são subfórmulas imediatas de $\psi = \phi$. Na linha 11, a função recursiva é chamada primeiro com $R\_rec(\psi_1,2,2,0)$.
+	Na primeira chamada, a condição da linha 3 é satisfeita, pois $\psi.p = 9$. A condição da linha 4, no entanto, não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 10$. Portanto, a partir da linha 9, $\psi_1 = x_1 \wedge x_2 \wedge x_3$ e $\psi_2 = y_1 \wedge y_2 \wedge y_3$ são subfórmulas imediatas de $\psi = \phi$. Na linha 11, a função recursiva é chamada primeiro com $R\_rec(\psi_1,3,0,1)$.
 	
-	Na segunda chamada, temos que $\psi = x \leftrightarrow y$. A condição da linha 3 é satisfeita, pois $\psi.p = 2$. A condição da linha 4 não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 8$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 8$. Agora, a chamada recursiva é feita com $\psi_i = x$. No entanto, símbolos proposicionais nunca são renomeados, pois $p(x) = \overline{p}(x) = 1$. O mesmo ocorre quando a chamada é feita para $\psi_i = y$. Portanto, a segunda chamada recursiva retorna sem incluir subfórmulas em $R$.
+	Na segunda chamada, temos que $\psi = x_1 \wedge x_2 \wedge x_3$. A condição da linha 3 é satisfeita, pois $\psi.p = 3$. A condição da linha 4 é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 6$. Portanto, após a linha 5, teremos $R = \{x_1 \wedge x_2 \wedge x_3 \}$. A linha 6 é executada: $R\_rec(\psi,1,0,1)$.
 	
-	De volta na primeira chamada, a linha 11 executa com $R\_rec(\psi_2,2,2,0)$, onde $\psi_2 = x \leftrightarrow y$. Vimos que uma chamada com estes valores não inclui subfórmulas em $R$.
+	Na terceira chamada, a condição da linha 3 é novamente satisfeita, pois $\psi.p$ ainda vale 3. A condição da linha 4, no entanto, não é satisfeita, pois agora $a \cdot \psi.p + b \cdot \psi.\overline{p} = 3$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 4$. Portanto, a partir da linha 9, temos $\psi_i = x_i$, para $i=1,2,3$. Assim, o algoritmo recursivo é chamado três vezes, para três literais. Mas é fácil ver que o algoritmo nunca escolhe literais para serem renomeados. Portanto, a terceira chamada retorna para a segunda, que está agora na linha 7.
 	
-	Com isso, terminamos a execução do algoritmo com $R = \emptyset$. O número de cláusulas é então o número original, $p(\phi) = 8$. No entanto, vimos no Exemplo \ref{exemplo_minimizando} que se $R = \{x \leftrightarrow y\}$, então $p(\mathcal{R}(\phi,s)) = 4$, onde $s$ é alguma substituição de $R$. Isto mostra um caso em que o Algoritmo \ref{boydelatour} não escolhe um renomeamento ótimo.
+	De volta à segunda chamada, na linha 7, os valores $\psi.p$ e $\psi.\overline{p}$ são atualizados. Isto encerra a segunda chamada recursiva.
+	
+	De volta à primeira chamada, a linha 11 é agora executada com $R\_rec(\psi_2,1,0,1)$. No entanto, já vimos que uma chamada com estes parâmetros e $\psi$ da forma $y_1 \wedge y_2 \wedge y_3$ não modifica o conjunto $R$.
+	
+	O algoritmo termina então com $R = \{x_1 \wedge x_2 \wedge x_3 \}$.
+	
+	É fácil ver que $p(\phi,R) = 6$. Para ver que este resultado é ótimo, observe que basta considerar a inclusão das subfórmulas $\phi_1 = x_1 \wedge x_2 \wedge x_3$ e $\phi_2 = y_1 \wedge y_2 \wedge y_3$, pois qualquer outra subfórmula é um símbolo proposicional ou a própria $\phi$. Se incluímos ambas $\phi_1$ e $\phi_2$, a transformação gera 7 cláusulas. Se $R = \emptyset$, a fórmula permanece com 9 cláusulas. Se somente $\phi_1$, ou somente $\phi_2$ for incluída, a transformação gera 6 cláusulas. Logo, um renomeamento ótimo gera 6 cláusulas e o Algoritmo \ref{boydelatour} é capaz de encontrar um destes renomeamentos.
 \end{example}
 
-No capítulo que vem a seguir, apresentamos um algoritmo de custo de tempo igualmente polinomial determinístico, mas que encontra o número ótimo de cláusulas para qualquer fórmula, sem restrições.
-
-\tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
-	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline
-	$\neg \psi_1$                          & $b_\psi^\phi$                                              & $a_\psi^\phi$                                              \\
-	$\psi_1 \wedge ... \wedge \psi_n$      & $a_\psi^\phi$                                              & $b_\psi^\phi \prod_{j\neq i} \overline{p}(\phi_j)$         \\
-	$\psi_1 \vee ... \vee \psi_n$          & $a_\psi^\phi \prod_{j\neq i} p(\phi_j)$                    & $b_\psi^\phi$                                              \\
-	$\psi_1 \rightarrow \psi_2, i=1$       & $b_\psi^\phi$                                              & $a_\psi^\phi p(\psi_2)$                                    \\
-	$\psi_1 \rightarrow \psi_2, i=2$       & $a_\psi^\phi \overline{p}(\psi_1)$                         & $b_\psi^\phi$                                              \\
-	$\psi_1 \leftrightarrow \psi_n, j=3-i$ & $a_\psi^\phi \overline{p}(\psi_j) + b_\psi^\phi p(\psi_j)$ & $a_\psi^\phi p(\psi_j) + b_\psi^\phi \overline{p}(\psi_j)$ \\
-	$\psi_i = \phi$                        & $1$                                                        & $0$                                                       
-}
+No Capítulo \ref{cap_algoritmo}, que vem a seguir, apresentamos um algoritmo de custo de tempo igualmente polinomial determinístico, mas que, para algumas famílias de fórmulas, encontra renomeamentos melhores que os construídos pelo Algoritmo \ref{boydelatour}.

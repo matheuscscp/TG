@@ -270,6 +270,19 @@
 	\setlength{\fboxsep}{\old@fboxsep}}
 
 
+
+%novo ambiente affirmation
+\newcommand{\affirmationname}{Afirmação}
+\newcounter{affirmation}
+\newenvironment{affirmation}
+{\refstepcounter{affirmation}%
+	\let\old@fboxsep\fboxsep\setlength{\fboxsep}{1em}%
+	\vskip.5\fboxsep\breakbox%
+	\noindent\textbf{\affirmationname~\arabic{affirmation}\ \ }}
+{\endbreakbox\vskip.5\fboxsep%
+	\setlength{\fboxsep}{\old@fboxsep}}
+
+
 %novo ambiente example
 \newcommand{\examplename}{Exemplo}
 \newcounter{example}
@@ -292,6 +305,19 @@
 	\vskip.5\fboxsep\breakbox%
 	\noindent\textbf{\theoremname~\arabic{theorem}\ \ }}
 	{\endbreakbox\vskip.5\fboxsep%
+	\setlength{\fboxsep}{\old@fboxsep}}
+
+
+
+%novo ambiente conjecture
+\newcommand{\conjecturename}{Conjectura}
+\newcounter{conjecture}
+\newenvironment{conjecture}
+{\refstepcounter{conjecture}%
+	\let\old@fboxsep\fboxsep\setlength{\fboxsep}{1em}%
+	\vskip.5\fboxsep\breakbox%
+	\noindent\textbf{\conjecturename~\arabic{conjecture}\ \ }}
+{\endbreakbox\vskip.5\fboxsep%
 	\setlength{\fboxsep}{\old@fboxsep}}
 
 

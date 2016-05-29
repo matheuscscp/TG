@@ -1,74 +1,71 @@
 
-\indent
+\label{cap_algoritmo}
 
-Neste capítulo, apresentamos um algoritmo que encontra um renomeamento ótimo para qualquer fórmula.
-
-\begin{lemma}
-	Sejam $\phi$ e $\psi$ fórmulas tais que $\psi \sqsubset \phi$. Então existem inteiros $m$ e $n$ não negativos e não simultaneamente nulos tais que $$p(\phi) = p_0 + m p(\psi) + n \overline{p}(\psi)$$ onde $p_0$ é .
-\end{lemma}
-
-\emph{Prova}: Primeiro, observe que qualquer fórmula gera no mínimo uma cláusula, ou seja, $p(\psi) > 0, \forall \psi \in \mathcal{L}$. Da Tabela \ref{numerop}, observe também que as únicas operações aritméticas que podem aparecer em uma expressão para $p(\phi)$ são a adição e a multiplicação. Isto garante que não podem aparecer operandos negativos em qualquer expressão para $p(\phi)$.
-
-Considere uma expressão para $p(\phi)$ tal que $p(\xi)$ só não ocorre se $s$
-
-Considere então uma expressão tal que Aplicando então distribuição, agrupando os termos em que $p(\psi)$ é um fator e colocando $p(\psi)$ em evidência, temos $$p(\phi) = p_0' + m p(\psi)$$ Fazendo o mesmo para os termos em que $\overline{p}(\psi)$ é um fator, obtemos $$p(\phi) = p_0 + m p(\psi) + n p(\psi)$$
-
-Note que não pode ocorrer $m = n = 0$, pois, neste caso, $\psi$ não seria subfórmula de $\phi$.
-
-\begin{theorem}
+\begin{affirmation}
 	\label{optimal_sub}
-	Seja $SFP(\phi) = \{\phi_1,...,\phi_n \}$, onde $\phi_i \sqsubset \phi_j \implies i < j$, e seja\break $R = \{\phi_{k_1},...,\phi_{k_r} \} \subseteq SFP(\phi)$ um renomeamento ótimo que considere somente entre os que contêm no\break máximo $j$ subfórmulas e consideram somente
 	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ sejam escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
-\end{theorem}
+\end{affirmation}
 
-\emph{Demonstração}: Seja $R_1 = R - \{\psi\}$ e, para obter uma contradição, suponha que $R_1' \subseteq SFP(\phi) - \{\psi \}$ é um renomeamento com no máximo $j-1$ subfórmulas ainda melhor que $R_1$, ou seja, denotando por $p(R)$ o número de cláusulas em uma transformação de renomeamento que usa $R$, temos que $R_1'$ é tal que $p(R_1') < p(R_1)$. Então, assim como $R$, o renomeamento $R' = R_1' \cup \{\psi \}$ contém no máximo $j$ subfórmulas.
+\emph{Contraexemplo}: Seja $\phi = ((p_1 \wedge p_2 \wedge p_3 \wedge p_4) \vee (q_1 \wedge q_2)) \wedge ((r_1 \wedge r_2) \vee (s_1 \wedge ... \wedge s_{100}))$. Então $p(\phi) = 208$.
 
-Para cada um dos quatro renomeamentos definidos, vamos agora expressar o número de cláusulas que cada um gera, usando um resultado de Boy de la Tour \cite{de1992optimality}. Temos que
+Vamos calcular um renomeamento ótimo para $\phi$ que tenha no máximo 2 subfórmulas.
+
+Observe primeiro que se $\psi$ é da forma $\xi_1 \vee \xi_2$, onde $\xi_1$ e $\xi_2$ são conjunções de literais todos distintos entre si, então:
 \begin{enumerate}
-	\item $p(R) = p_0 + a + p(\psi) + b + \overline{p}(\psi)$
-	\item $p(R_1) = p_0 + a p(\psi) + b \overline{p}(\psi)$
-	\item $p(R_1') = p_0' + a' p(\psi) + b' \overline{p}(\psi)$
-	\item $p(R') = p_0' + a' + p(\psi) + b' + \overline{p}(\psi)$
+	\item $p(\psi) = p(\xi_1)p(\xi_2)$;
+	\item $p(\psi, \{\xi_1 \}) = p(\psi, \{\xi_2 \}) = p(\xi_1)+p(\xi_2)$; e
+	\item $p(\psi,\{\xi_1,\xi_2 \}) = 1+p(\xi_1)+p(\xi_2)$
 \end{enumerate}
+Ou seja, se $p(\xi_1),p(\xi_2) \geq 2$, então $\{\xi_1 \}$ e $\{\xi_2 \}$ são renomeamentos ótimos para $\psi$. Em outras palavras, em uma disjunção de duas conjunções de literais, basta renomear uma das conjunções para obter um renomeamento ótimo.
 
+Sejam então $\xi_1 = p_1 \wedge p_2 \wedge p_3 \wedge p_4$, $\xi_2 = q_1 \wedge q_2$, $\xi_3 = q_1 \wedge q_2$ e $\xi_4 = s_1 \wedge ... \wedge s_{100}$. Usando o fato acima, temos que $R = \{\xi_1,\xi_4 \}$ é ótimo e $|R| \leq 2$. No entanto, $$p(\phi,R - \{\xi_4 \}) = 206 > 110 = p(\phi,\{\xi_3 \})$$ Ou seja, $R' = R - \{\xi_4 \} = \{\xi_1 \}$ é tal que $\xi_4 \notin R'$ e $|R'| \leq 1$, mas $R'$ não é ótimo.
 
+Com isto, provamos que a Afirmação \ref{optimal_sub} é falsa, até mesmo para fórmulas que satisfazem $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$, como a do contraexemplo.
 
+Se a Afirmação \ref{optimal_sub} fosse verdadeira, ela caracterizaria o que chamamos de \emph{subestrutura ótima} do problema de encontrar renomeamentos que geram o menor número possível de cláusulas. Ou seja, quando uma solução ótima para um problema é sempre feita de soluções ótimas para subproblemas, isto é, para versões menores do problema, dizemos que o problema exibe subestrutura ótima.
 
-Portanto, se concluirmos que $p(R') < p(R)$, então teremos uma contradição, pois sabemos que $R$ é ótimo por hipótese.
+Propomos agora uma solução baseada na Afirmação \ref{optimal_sub} adaptada como uma heurística. A Afirmação \ref{optimal_sub} não é verdade. Ou seja, como vimos, $R - \{\psi \}$ não é necessariamente ótimo para a versão menor do problema. Mas a heurística é: $R - \{\psi \}$ pode não ser ótimo, mas é, em grande parte das vezes, ``muito bom''. Verificamos este fato experimentalmente, comparando o algoritmo aqui proposto com um outro, e apresentamos os resultados no Capítulo \ref{cap_resultados}.
 
 \section{Uma fórmula recursiva}
 
 \indent
 
-Seja $SFP(\phi) = \{\phi_1,...,\phi_n \}$ e defina $f(i,j)$ como um renomeamento ótimo que contém no máximo $j$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_i \}$.
+Nesta seção, tomamos a Afirmação \ref{optimal_sub} como verdade para construir uma fórmula recursiva que encontra bons renomeamentos. Como provamos anteriormente que a afirmação é falsa para algumas fórmulas, deve ficar claro que aqui a usamos como uma heurística, ou seja, quando nos referirmos nesta seção a um renomeamento ótimo, referimo-nos na verdade a um renomeamento que ``provavelmente é muito bom''.
+
+Seja então $SFP(\phi) = \{\phi_1,...,\phi_n \}$ e defina $f(i,j)$ como um renomeamento ótimo que contém no máximo $j$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_i \}$.
 
 Por definição, é claro que $f(i,0) = f(0,j) = \emptyset, \forall i,j$.
 
 Agora, note que, ou $\phi_i \in f(i,j)$, ou $\phi_i \notin f(i,j)$.
 
-Suponha que $\phi_i \in f(i,j)$. Neste caso, o Teorema \ref{optimal_sub} nos garante que $f(i,j) - \{\phi_i \}$ é um renomeamento ótimo com no máximo $j-1$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_{i-1} \}$, ou seja, $p(f(i,j) - \{\phi_i \}) = p(f(i-1,j-1))$.
+Suponha que $\phi_i \in f(i,j)$. Neste caso, a Afirmação \ref{optimal_sub} nos garante que $f(i,j) - \{\phi_i \}$ é um renomeamento ótimo com no máximo $j-1$ subfórmulas, considerando somente as subfórmulas em $\{\phi_1,...,\phi_{i-1} \}$, ou seja, $p(\phi,f(i,j) - \{\phi_i \}) = p(\phi,f(i-1,j-1))$.
 
-Suponha agora que $\phi_i \notin f(i,j)$. Neste caso, é claro que $p(f(i,j)) = p(f(i-1,j))$.
+Suponha agora que $\phi_i \notin f(i,j)$. Neste caso, é claro que $p(\phi,f(i,j)) = p(\phi,f(i-1,j))$.
 
 Portanto, podemos definir $f(i,j)$ da seguinte maneira. Se $i > 0$ e $j > 0$, então
 \[
 f(i,j) =
 \begin{cases} 
-\hfill f(i-1,j-1) \cup \{\phi_i \}   \hfill & \text{ se } p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j)) \\
+\hfill f(i-1,j-1) \cup \{\phi_i \}   \hfill & \text{ se } p(\phi,f(i-1,j-1) \cup \{\phi_i \}) < p(\phi,f(i-1,j)) \\
 \hfill f(i-1,j) \hfill & \text{ caso contrário} \\
 \end{cases}
 \]
-onde é fácil ver que não há dependência cíclica.
+
+Observe que não há dependência cíclica na definição da fórmula, pois $f(i,j)$ depende somente de $f(i-1,k)$, para todo $i > 0$ e $k=j-1,j$.
 
 Para obter então um renomeamento ótimo considerando todas as subfórmulas próprias de $\phi$, basta calcular $f(n,n)$.
 
-A próxima seção apresenta um algoritmo baseado em programação dinâmica \cite{bellman2015applied} para calcular $f(n,n)$.
+Observe ainda que resultados intermediários da fórmula são utilizados múltiplas vezes. Por exemplo, suponha que $n = 3$. Neste caso, $f(n,n)$ depende de $f(2,2)$ e $f(2,3)$. Agora, $f(2,2)$ depende de $f(1,1)$ e $f(1,2)$; e $f(2,3)$ depende de $f(1,2)$ e $f(1,3)$. Ou seja, tanto $f(2,2)$ quanto $f(2,3)$ dependem de $f(1,2)$. Portanto, o valor de $f(1,2)$ é usado no mínimo duas vezes para calcular $f(n,n) = f(3,3)$. Chamamos esta propriedade de \emph{sobreposição de subproblemas}.
+
+Quando expressamos uma solução para um problema desta maneira, onde ficam evidentes a subestrutura ótima e a sobreposição de subproblemas, podemos aplicar\break \emph{programação dinâmica} \cite{bellman2015applied}. Começando pelos subproblemas menores, calculamos as soluções de cada subproblema uma única vez e, no fim da computação, calculamos a solução do problema principal.
+
+Portanto, se a Afirmação \ref{optimal_sub} fosse verdadeira, o algoritmo que propomos a seguir seria considerado uma programação dinâmica implementada por abordagem ascendente \cite{bellman2015applied}.
 
 \section{Uma implementação por computação ascendente}
 
 \indent
 
-O Algoritmo \ref{knapsack} calcula $f(n,n)$ por computação ascendente, ou seja, calcula $f(i,j)$, para todo $j$, primeiro para valores pequenos de $i$, até finalmente calcular $f(n,n)$.
+O Algoritmo \ref{knapsack} calcula e armazena $f(n,n)$ em $dp[n]$.
 
 \begin{algorithm}
 	\begin{algorithmic}[1]
@@ -76,7 +73,7 @@ O Algoritmo \ref{knapsack} calcula $f(n,n)$ por computação ascendente, ou seja
 		\For{$i$}{$1$}{$n$}
 			\For{$j$}{$n$ \textbf{descendo}}{$1$}
 				\State $alt \gets dp[j-1] \cup \{\phi_i\}$
-				\If{$p(alt) < p(dp[j])$}
+				\If{$p(\phi,alt) < p(\phi,dp[j])$}
 					\State $dp[j] \gets alt$
 				\EndIf
 			\EndFor
@@ -106,7 +103,7 @@ A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir
 
 \textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$. Portanto, o item 1 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois, $\forall k > j$, temos que $k > n$.
 
-\textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(f(i-1,j-1) \cup \{\phi_i \}) < p(f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
+\textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(\phi,f(i-1,j-1) \cup \{\phi_i \}) < p(\phi,f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
 
 \textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, em algum momento teremos $j = 0$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, $dp[k] = f(i,k), \forall k > j = 0$, ou seja,\break $dp[j] = f(i,j), \forall j$.
 
@@ -114,12 +111,30 @@ A propriedade provada na terminação da Invariante 2 prova que, se a Invariante
 
 \textbf{Terminação da Invariante 1}: A condição para que o laço termine é $i > n$. Como cada iteração adiciona 1 a $i$, em algum momento teremos $i = n+1$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, $dp[j] = f(i-1,j) = f(n,j), \forall j$, ou seja,\break $dp[n] = f(n,n)$.
 
-Note que o algoritmo computa não somente o renomeamento ótimo $f(n,n)$, mas também os renomeamentos ótimos para versões mais restritas do problema. Por exemplo, se quisermos permitir que no máximo $j < n$ subfórmulas sejam escolhidas, basta utilizar o resultado $dp[j] = f(n,j)$.
+Note que o algoritmo computa não somente o renomeamento $f(n,n)$, mas também renomeamentos para versões mais restritas do problema. Por exemplo, se quisermos permitir que no máximo $j < n$ subfórmulas sejam escolhidas, basta utilizar o resultado $dp[j] = f(n,j)$.
 
 \subsection{Análise}
 
 \indent
 
-O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 5 custa o tempo de calcular o número de clásulas de duas transformações de renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
+O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 5 custa o tempo de calcular o número de clásulas de duas transformações por renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
 
-O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do arranjo $dp$, da variável $alt$ e do custo de espaço da função $p(R)$. O arranjo $dp$ contém $n+1$ conjuntos de no máximo $n$ elementos, logo seu custo de espaço é $O(n^2)$ no pior caso. A variável $alt$ é um conjunto de no máximo $n$ elementos, logo seu custo é $O(n)$ no pior caso. É possível mostrar que o custo de espaço para calcular $p(R)$ é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. Portanto, o custo de espaço total do algoritmo é $O(n^2 + n + |pos(\phi)|) = O(|pos(\phi)|^2)$ no pior caso.
+O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do arranjo $dp$, da variável $alt$ e do custo de espaço para calcular o número de clásulas de duas transformações por renomeamento. O arranjo $dp$ contém $n+1$ conjuntos de no máximo $n$ elementos, logo seu custo de espaço é $O(n^2)$ no pior caso. A variável $alt$ é um conjunto de no máximo $n$ elementos, logo seu custo é $O(n)$ no pior caso. É possível mostrar que o custo de espaço para calcular o número de clásulas de duas transformações por renomeamento é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. Portanto, o custo de espaço total do algoritmo é\break $O(n^2 + n + |pos(\phi)|) = O(|pos(\phi)|^2)$ no pior caso.
+
+\section{Conjectura para árvores lineares}
+
+\indent
+
+\begin{definition}
+	Uma fórmula $\phi$ é dita uma \emph{árvore linear} se:
+	\begin{enumerate}
+		\item $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$; e
+		\item $\phi$ está na FNN.
+	\end{enumerate}
+\end{definition}
+
+\begin{conjecture}
+	Se $\phi$ é uma árvore linear e $SFP(\phi) = \{\phi_1,...,\phi_n \}$, então $f(n,n)$ é ótimo.
+\end{conjecture}
+
+Assim como ocorre com os algoritmos de Boy de la Tour \cite{de1992optimality} e Jackson et al. \cite{jackson2004clause}, afirmamos que nosso algoritmo encontra renomeamentos ótimos para árvores lineares. Não provamos esta afirmação analiticamente, mas, para confirmar este fato, apresentamos resultados experimentais no Capítulo \ref{cap_resultados}, que vem a seguir.

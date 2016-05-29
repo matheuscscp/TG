@@ -1,0 +1,44 @@
+
+\label{cap_resultados}
+
+\indent
+
+Apresentamos neste capítulo a metodologia empregada e os resultados experimentais obtidos ao testar se fórmulas menores produzem respostas mais rápido e ao comparar algoritmos para escolha de renomeamento.
+
+\section{Metodologia}
+
+\indent
+
+Apresentamos nesta seção os detalhes necessários para reproduzir os experimentos realizados.
+
+\subsection{Da representação de uma fórmula}
+
+\indent
+
+A forma que utilizamos para representar fórmulas lógicas em textos teóricos, ou seja, cadeias da respectiva linguagem formal, se mostra pouco prática para implementar transformações ou algoritmos de busca.
+
+Observe, no entanto, que definimos a linguagem formal da lógica proposicional como uma \emph{gramática livre-do-contexto} \cite{sipser2012introduction} e, portanto, é garantido que temos um algoritmo de custo de tempo polinomial determinístico para obter a \emph{árvore sintática}, ou simplesmente \emph{árvore}, de uma fórmula \cite{younger1967recognition}. Tal estrutura se mostra muito mais prática para a implementação de algoritmos de transformação e busca do que cadeias de linguagens formais.
+
+Ainda melhor que árvores para representar fórmulas, são \emph{grafos acíclicos dirigidos}, ou simplesmente DAGs na sigla do inglês, onde vértices que representam subfórmulas distintas compartilham arestas com o vértice de uma mesma subfórmula que ambos possuem em comum \cite{jackson2004clause}. Tais estruturas equivalem a representar o conjunto de subfórmulas de fato como um conjunto, ou seja, $|\{\psi \in SF(\phi) \mid \psi = \xi \}| = 1$, para todas $\phi$ e $\xi \sqsubseteq \phi$. É então uma forma de representação oposta a árvores, que representam o conjunto de subfórmulas como um multiconjunto, ou seja, é possível acontecer $|\{\psi \in SF(\phi) \mid \psi = \xi \}| > 1$. Em outras palavras, árvores sempre representam fórmulas como se nunca houvesse repetição de subfórmulas, criando cópias distintas para as distintas posições em que uma mesma subfórmula ocorre, enquanto DAGs permitem uma representação ``honesta'', ou seja, repetições de subfórmulas podem ser consideradas e cada subfórmula é representada por um único objeto. Além disso, DAGs são exponencialmente menores que árvores no melhor caso, como mostra a Figura \ref{figura_DAG}, e, portanto, propícios a algoritmos de programação dinâmica exponencialmente mais rápidos no melhor caso.
+
+\begin{figure}
+	$(p \leftrightarrow p) \leftrightarrow (p \leftrightarrow p)$
+	\label{figura_DAG}
+	\caption{Representações de $\phi = (p \leftrightarrow p) \leftrightarrow (p \leftrightarrow p)$. (a) Cadeia de $\mathcal{L}$. (b) Árvore sintática. (c) Grafo acíclico dirigido.}
+\end{figure}
+
+As três formas de representação de fórmulas apresentadas nesta seção são utilizadas em diferentes etapas da implementação, como discutimos a seguir.
+
+porque NNF (pq tem q por na CNF e pq fica tudo mais facil, renaming e tal. fora o fato de poder testar a optimalidade restrita do nosso algoritmo)
+
+por que DAG depois de NNF (arvore mais facil pra fazer NNF)
+
+detalhes de implementacao do Boy para usar DAG (ordenacao topologica e prog dinamica no calculo dos ai's)
+
+detalhes de implementacao do Knapsack (aritmetica de precisao arbitraria)
+
+para simplificar o trabalho, soh aplicamos simplificacao no final, durante a distribuicao
+
+pipeline
+
+pipelina de ordem fixa com estagios flexiveis
