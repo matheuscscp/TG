@@ -1,5 +1,0 @@
-#!/bin/bash
-
-fixo: dag, knapsack, simple, uma familia
-variavel: 75 e 50%
-dados: tempos do eprover
