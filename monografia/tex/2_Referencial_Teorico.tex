@@ -11,7 +11,7 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
 	
 	Seja o conjunto infinito e enumerável $\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,...\}$. Dizemos que $\mathcal{P}$ é o conjunto dos \emph{símbolos proposicionais}.
 	
-    Se $\phi \in \mathcal{P}$, dizemos que $\phi$ é uma \emph{fórmula bem formada}, ou simplesmente que $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$ e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula:
+    Se $\phi \in \mathcal{P}$, dizemos que $\phi$ é uma \emph{fórmula bem-formada}, ou simplesmente que $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$ são fórmulas quaisquer, onde $n \in \mathbb{N} \cup \{0\}$ e $\phi$ é de uma das formas a seguir, então $\phi$ também é uma fórmula:
     \begin{enumerate}
         \item \emph{Negação}: $\neg \phi_1$
         \item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
@@ -317,6 +317,13 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
 	\end{enumerate}
 \end{definition}
 
+\begin{theorem}
+	\label{teo_flattening}
+	Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_n$ e $\phi_1$ da forma $\psi_1 \wedge ... \wedge \psi_k$. Então a transformação $$\phi \longmapsto \psi_1 \wedge ... \wedge \psi_k \wedge \phi_2 \wedge ... \wedge \phi_n$$ que chamaremos de \emph{aplainamento}, preserva equivalência. O mesmo vale para disjunções.
+\end{theorem}
+
+O Teorema \ref{teo_flattening} é apenas uma formalização do fato que podemos considerar uma conjunção de conjunções como uma única conjunção, e que o mesmo vale para disjunções. Usaremos este fato mais adiante, no Capítulo \ref{cap_resultados}.
+
 \begin{definition}
     Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente em símbolos proposicionais.
 \end{definition}
@@ -424,6 +431,7 @@ Nesta seção introduzimos a transformação feita com renomeamento, que utiliza
 	\hfill p \leftrightarrow \xi \hfill & \text{caso contrário}\\
 	\end{cases}
 	\]
+	como a \emph{definição de $\psi$ em $\phi$ segundo $s$}.
 \end{definition}
 
 \begin{theorem}
