@@ -442,8 +442,6 @@ Nesta seção introduzimos a transformação feita com renomeamento, que utiliza
 
 Plaisted et al. provam o Teorema \ref{struct_preserving} \cite{plaisted1986structure}.
 
-Observe que, dado um renomeamento $R$, encontrar uma substituição de $R$ em $\phi$ para uma transformação por renomeamento é uma tarefa fácil, pois $\mathcal{P}$ é infinito e enumerável, enquanto o conjunto dos símbolos proposicionais que ocorrem em $\phi$ é finito.
-
 \begin{example}
 	\label{exemplo_renaming}
     Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $s = \{(p \leftrightarrow q, r) \}$. Então $$\mathcal{R}(\phi,s) = (r \leftrightarrow r) \wedge (r \leftrightarrow (p \leftrightarrow q))$$
@@ -458,6 +456,10 @@ Observe que, dado um renomeamento $R$, encontrar uma substituição de $R$ em $\
 O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satisfatibilidade, diferentemente das que preservam equivalência, podem não preservar o significado de uma fórmula em todas as interpretações. No entanto, isto não é um obstáculo se quisermos determinar precisamente se uma fórmula é uma tautologia, uma contradição ou uma contingência. Isto segue do fato que mostramos na Seção \ref{problemas_da_logica}: SAT, UNSAT e VAL são todos problemas redutíveis uns aos outros. Se uma transformação preserva satisfatibilidade, então é claro que as respostas de decisores para SAT e UNSAT são preservadas por esta transformação. Neste caso, as respostas das reduções que mostramos anteriormente também são preservadas. Portanto, com os procedimentos apropriados, é perfeitamente possível determinar o tipo de uma fórmula através de sua transformação, ou da transformação de sua negação. Este resultado é fundamental para que possamos utilizar renomeamento para obter fórmulas pequenas.
 
 \section{Reduzindo o número de cláusulas}
+
+\indent
+
+Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter renomeamentos que geram fórmulas pequenas. Começamos pela definição mais básica deste tópico.
 
 \begin{definition}
 	Denotamos por $p(\phi)$ o \emph{número de cláusulas} da fórmula obtida por aplicar as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão na fórmula $\phi$. Denotamos ainda $p(\neg \phi)$ por $\overline{p}(\phi)$.
@@ -483,7 +485,21 @@ Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R
 
 Agora, dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\phi,R)$ seja o menor possível.
 
-O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optimality}, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$,\break ou seja, desde que qualquer subfórmula ocorra somente uma vez. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso. Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir de $\psi_i.p$ e $\psi_i.\overline{p}$.
+\begin{definition}
+	Uma fórmula $\phi$ é dita uma \emph{árvore linear} se:
+	\begin{enumerate}
+		\item $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$; e
+		\item $\phi$ está na FNN.
+	\end{enumerate}
+\end{definition}
+
+O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour, encontra um renomeamento que produz o número ótimo (mínimo) de cláusulas, desde que $\phi$ seja uma árvore linear \cite{de1992optimality}, ou seja, desde que não ocorram repetições de subfórmulas e $\phi$ esteja na FNN. Seu custo de tempo é $O(|pos(\phi)|^2)$ determinístico no pior caso.
+
+Os coeficientes $a$ e $b$ que aparecem no algoritmo são exatamente os números de vezes que os números $p(\psi)$ e $\overline{p}(\psi)$, respectivamente, são somados ao valor de $p(\phi)$. Em outras palavras, o algoritmo utiliza a forma irredutível de $p(\phi)$ em função de $p(\psi)$ e $\overline{p}(\psi)$: $$p(\phi) = a_\psi^\phi p(\psi) + b_\psi^\phi \overline{p}(\psi) + c$$ onde $c$ não depende de $p(\psi)$ ou $\overline{p}(\psi)$.
+
+As escritas $\psi.p$ e $\psi.\overline{p}$ que aparecem no algoritmo representam inicialmente $p(\psi)$ e $\overline{p}(\psi)$, respectivamente. No entanto, se $\psi$ é incluída em $R$, sua contribuição para $p(\phi,R)$ muda. Para esta mudança ser refletida nos cálculos do algoritmo, os valores de $p(\psi)$ e $\overline{p}(\psi)$ são armazenados e atualizados em campos, para cada subfórmula. As notações $\psi.p$ e $\psi.\overline{p}$ indicam estes campos. Portanto, pode ocorrer em algum momento que $p(\psi) \neq \psi.p$ ou $\overline{p}(\psi) \neq \psi.\overline{p}$.
+
+Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir de $\psi_i.p$ e $\psi_i.\overline{p}$.
 
 \tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
 	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline
@@ -532,15 +548,15 @@ O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour \cite{de1992optima
 \begin{example}
 	Considere a fórmula $\phi = (x_1 \wedge x_2 \wedge x_3) \vee (y_1 \wedge y_2 \wedge y_3)$. Vamos executar $R\_rec(\phi,1,0,1)$.
 	
-	Na primeira chamada, a condição da linha 3 é satisfeita, pois $\psi.p = 9$. A condição da linha 4, no entanto, não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 10$. Portanto, a partir da linha 9, $\psi_1 = x_1 \wedge x_2 \wedge x_3$ e $\psi_2 = y_1 \wedge y_2 \wedge y_3$ são subfórmulas imediatas de $\psi = \phi$. Na linha 11, a função recursiva é chamada primeiro com $R\_rec(\psi_1,3,0,1)$.
+	Na primeira chamada, a condição da Linha 3 é satisfeita, pois $\psi.p = 9$. A condição da Linha 4, no entanto, não é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 10$. Portanto, a partir da Linha 9, $\psi_1 = x_1 \wedge x_2 \wedge x_3$ e $\psi_2 = y_1 \wedge y_2 \wedge y_3$ são subfórmulas imediatas de $\psi = \phi$. Na Linha 11, a função recursiva é chamada primeiro com $R\_rec(\psi_1,3,0,1)$.
 	
-	Na segunda chamada, temos que $\psi = x_1 \wedge x_2 \wedge x_3$. A condição da linha 3 é satisfeita, pois $\psi.p = 3$. A condição da linha 4 é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 6$. Portanto, após a linha 5, teremos $R = \{x_1 \wedge x_2 \wedge x_3 \}$. A linha 6 é executada: $R\_rec(\psi,1,0,1)$.
+	Na segunda chamada, temos que $\psi = x_1 \wedge x_2 \wedge x_3$. A condição da Linha 3 é satisfeita, pois $\psi.p = 3$. A condição da Linha 4 é satisfeita, pois $a \cdot \psi.p + b \cdot \psi.\overline{p} = 9$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 6$. Portanto, após a Linha 5, teremos $R = \{x_1 \wedge x_2 \wedge x_3 \}$. A Linha 6 é executada: $R\_rec(\psi,1,0,1)$.
 	
-	Na terceira chamada, a condição da linha 3 é novamente satisfeita, pois $\psi.p$ ainda vale 3. A condição da linha 4, no entanto, não é satisfeita, pois agora $a \cdot \psi.p + b \cdot \psi.\overline{p} = 3$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 4$. Portanto, a partir da linha 9, temos $\psi_i = x_i$, para $i=1,2,3$. Assim, o algoritmo recursivo é chamado três vezes, para três literais. Mas é fácil ver que o algoritmo nunca escolhe literais para serem renomeados. Portanto, a terceira chamada retorna para a segunda, que está agora na linha 7.
+	Na terceira chamada, a condição da Linha 3 é novamente satisfeita, pois $\psi.p$ ainda vale 3. A condição da Linha 4, no entanto, não é satisfeita, pois agora $a \cdot \psi.p + b \cdot \psi.\overline{p} = 3$ e $a + b + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p}) = 4$. Portanto, a partir da Linha 9, temos $\psi_i = x_i$, para $i=1,2,3$. Assim, o algoritmo recursivo é chamado três vezes, para três literais. Mas é fácil ver que o algoritmo nunca escolhe literais para serem renomeados. Portanto, a terceira chamada retorna para a segunda, que está agora na Linha 7.
 	
-	De volta à segunda chamada, na linha 7, os valores $\psi.p$ e $\psi.\overline{p}$ são atualizados. Isto encerra a segunda chamada recursiva.
+	De volta à segunda chamada, na Linha 7, os valores $\psi.p$ e $\psi.\overline{p}$ são atualizados. Isto encerra a segunda chamada recursiva.
 	
-	De volta à primeira chamada, a linha 11 é agora executada com $R\_rec(\psi_2,1,0,1)$. No entanto, já vimos que uma chamada com estes parâmetros e $\psi$ da forma $y_1 \wedge y_2 \wedge y_3$ não modifica o conjunto $R$.
+	De volta à primeira chamada, a Linha 11 é agora executada com $R\_rec(\psi_2,1,0,1)$. No entanto, já vimos que uma chamada com estes parâmetros e $\psi$ da forma $y_1 \wedge y_2 \wedge y_3$ não modifica o conjunto $R$.
 	
 	O algoritmo termina então com $R = \{x_1 \wedge x_2 \wedge x_3 \}$.
 	

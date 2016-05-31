@@ -1,6 +1,10 @@
 
 \label{cap_algoritmo}
 
+\indent
+
+Apresentamos neste capítulo um algoritmo de renomeamento para reduzir o número de clásulas geradas por uma fórmula. Começamos por uma afirmação essencial.
+
 \begin{affirmation}
 	\label{optimal_sub}
 	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ sejam escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
@@ -22,7 +26,7 @@ Sejam então $\xi_1 = p_1 \wedge p_2 \wedge p_3 \wedge p_4$, $\xi_2 = q_1 \wedge
 
 Com isto, provamos que a Afirmação \ref{optimal_sub} é falsa, até mesmo para fórmulas que satisfazem $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$, como a do contraexemplo.
 
-Se a Afirmação \ref{optimal_sub} fosse verdadeira, ela caracterizaria o que chamamos de \emph{subestrutura ótima} do problema de encontrar renomeamentos que geram o menor número possível de cláusulas. Ou seja, quando uma solução ótima para um problema é sempre feita de soluções ótimas para subproblemas, isto é, para versões menores do problema, dizemos que o problema exibe subestrutura ótima.
+Se a Afirmação \ref{optimal_sub} fosse verdadeira, ela caracterizaria o que chamamos de uma\break \emph{subestrutura ótima} do problema de encontrar renomeamentos que geram o menor número possível de cláusulas. Ou seja, quando uma solução ótima para um problema é sempre feita de soluções ótimas para subproblemas, isto é, para versões menores do problema, dizemos que o problema exibe subestrutura ótima.
 
 Propomos agora uma solução baseada na Afirmação \ref{optimal_sub} adaptada como uma heurística. A Afirmação \ref{optimal_sub} não é verdade. Ou seja, como vimos, $R - \{\psi \}$ não é necessariamente ótimo para a versão menor do problema. Mas a heurística é: $R - \{\psi \}$ pode não ser ótimo, mas é, em grande parte das vezes, ``muito bom''. Verificamos este fato experimentalmente, comparando o algoritmo aqui proposto com um outro, e apresentamos os resultados no Capítulo \ref{cap_resultados}.
 
@@ -51,7 +55,7 @@ f(i,j) =
 \end{cases}
 \]
 
-Observe que não há dependência cíclica na definição da fórmula, pois $f(i,j)$ depende somente de $f(i-1,k)$, para todo $i > 0$ e $k=j-1,j$.
+Observe que não há dependência cíclica na definição da fórmula, pois $f(i,j)$ depende somente de $f(i-1,k)$, para todo $i > 0$ e $k=j-1$ ou $k=j$.
 
 Para obter então um renomeamento ótimo considerando todas as subfórmulas próprias de $\phi$, basta calcular $f(n,n)$.
 
@@ -89,23 +93,23 @@ O Algoritmo \ref{knapsack} calcula e armazena $f(n,n)$ em $dp[n]$.
 
 A correção do Algoritmo \ref{knapsack} segue das invariantes de laço a seguir.
 
-\textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das linhas 2--9, temos que $dp[j] = f(i-1,j), \forall j \leq n$.
+\textbf{Invariante 1}: No início de cada iteração do laço \textbf{para} das Linhas 2--9, temos que se $j \leq n$, então $dp[j] = f(i-1,j)$.
 
-\textbf{Inicialização da Invariante 1}: No início da primeira iteração do laço, temos que $i = 1$ e $dp[j] = \emptyset = f(0,j) = f(i-1,j), \forall j \leq n$, logo a invariante vale.
+\textbf{Inicialização da Invariante 1}: No início da primeira iteração do laço, temos que $i = 1$ e se $j \leq n$, então $dp[j] = \emptyset = f(0,j) = f(i-1,j)$. Logo, a invariante vale.
 
-\textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço,\break $dp[j] = f(i-1,j)$, $\forall j \leq n$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
+\textbf{Manutenção da Invariante 1}: Suponha que, antes de uma iteração do laço, se $j \leq n$, então $dp[j] = f(i-1,j)$. Para provar que o mesmo vale antes da iteração seguinte, enunciamos uma segunda invariante.
 
-\textbf{Invariante 2}: No início de cada iteração do laço \textbf{para} das linhas 3--8:
+\textbf{Invariante 2}: No início de cada iteração do laço \textbf{para} das Linhas 3--8:
 \begin{enumerate}
 	\item Se $k \leq j$, então $dp[k] = f(i-1,k)$.
 	\item Se $j < k \leq n$, então $dp[k] = f(i,k)$.
 \end{enumerate}
 
-\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que $dp[k] = f(i-1,k)$, $\forall k \leq n = j$. Portanto, o item 1 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois, $\forall k > j$, temos que $k > n$.
+\textbf{Inicialização da Invariante 2}: No início da primeira iteração do laço, temos que $j = n$. Pela hipótese de manutenção da Invariante 1, antes da primeira iteração do laço, temos que se $k \leq n = j$, então $dp[k] = f(i-1,k)$. Portanto, o item 1 da invariante vale. Além disso, o item 2 é satisfeito por vacuidade, pois se $k > j$, então $k > n$.
 
-\textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a linha 6 só será executada se $p(\phi,f(i-1,j-1) \cup \{\phi_i \}) < p(\phi,f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
+\textbf{Manutenção da Invariante 2}: Suponha que, antes de uma iteração do laço, os itens 1 e 2 da invariante sejam verdade. Neste caso, após a Linha 4, temos que\break $alt = dp[j-1] \cup \{\phi_i \} = f(i-1,j-1) \cup \{\phi_i \}$. Além disso, $dp[j] = f(i-1,j)$.\break Portanto, a Linha 6 só será executada se $p(\phi,f(i-1,j-1) \cup \{\phi_i \}) < p(\phi,f(i-1,j))$. Se isto ocorre, então $f(i,j) = f(i-1,j-1) \cup \{\phi_i \}$ e, após a Linha 7, $dp[j] = f(i,j)$. Se isto não ocorre, então $f(i,j) = f(i-1,j)$ e, após a Linha 7, $dp[j] = f(i,j)$. Portanto, sob qualquer hipótese, temos que $dp[j] = f(i,j)$ após a iteração do laço, o que prova que os itens 1 e 2 da invariante irão valer na iteração seguinte.
 
-\textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, em algum momento teremos $j = 0$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, $dp[k] = f(i,k), \forall k > j = 0$, ou seja,\break $dp[j] = f(i,j), \forall j$.
+\textbf{Terminação da Invariante 2}: A condição para que o laço termine é $j < 1$. Como cada iteração subtrai 1 de $j$, em algum momento teremos $j = 0$, ou seja, o laço termina. Além disso, mostramos que, neste ponto, se $k > j = 0$, então $dp[k] = f(i,k)$, ou seja,\break $dp[j] = f(i,j), \forall j$.
 
 A propriedade provada na terminação da Invariante 2 prova que, se a Invariante 1 vale antes de uma iteração, então ela também irá valer na iteração seguinte, o que conclui a manutenção da Invariante 1.
 
@@ -117,21 +121,13 @@ Note que o algoritmo computa não somente o renomeamento $f(n,n)$, mas também r
 
 \indent
 
-O custo de tempo do Algoritmo \ref{knapsack} é o custo das linhas 4--7 multiplicado por $n^2$. A linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A linha 5 custa o tempo de calcular o número de clásulas de duas transformações por renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
+O custo de tempo do Algoritmo \ref{knapsack} é o custo das Linhas 4--7 multiplicado por $n^2$. A Linha 4, que cria um conjunto de no máximo $n$ elementos e acrescenta a ele um novo elemento, custa $O(n)$ no pior caso. A Linha 5 custa o tempo de calcular o número de clásulas de duas transformações por renomeamento. É possível mostrar que este custo é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. A Linha 6 custa o tempo de copiar e destruir um conjunto com no máximo $n$ elementos, ou seja, $O(n)$ no pior caso. Por fim, temos que $n \leq |pos(\phi)|$. Portanto, o custo das Linhas 4--7 é $O(2n + 2|pos(\phi)|) = O(|pos(\phi)|)$ no pior caso; e o custo de tempo total do algoritmo é $O(n^2 |pos(\phi)|) = O(|pos(\phi)|^3)$ no pior caso.
 
 O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do arranjo $dp$, da variável $alt$ e do custo de espaço para calcular o número de clásulas de duas transformações por renomeamento. O arranjo $dp$ contém $n+1$ conjuntos de no máximo $n$ elementos, logo seu custo de espaço é $O(n^2)$ no pior caso. A variável $alt$ é um conjunto de no máximo $n$ elementos, logo seu custo é $O(n)$ no pior caso. É possível mostrar que o custo de espaço para calcular o número de clásulas de duas transformações por renomeamento é $O(|pos(\phi)|)$ no pior caso \cite{nonnengart2001computing}. Portanto, o custo de espaço total do algoritmo é\break $O(n^2 + n + |pos(\phi)|) = O(|pos(\phi)|^2)$ no pior caso.
 
 \section{Conjectura para árvores lineares}
 
 \indent
-
-\begin{definition}
-	Uma fórmula $\phi$ é dita uma \emph{árvore linear} se:
-	\begin{enumerate}
-		\item $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$; e
-		\item $\phi$ está na FNN.
-	\end{enumerate}
-\end{definition}
 
 \begin{conjecture}
 	Se $\phi$ é uma árvore linear e $SFP(\phi) = \{\phi_1,...,\phi_n \}$, então $f(n,n)$ é ótimo.
