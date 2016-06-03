@@ -269,7 +269,7 @@
 	{\endbreakbox\vskip.5\fboxsep%
 	\setlength{\fboxsep}{\old@fboxsep}}
 
-
+%\renewenvironment{definition}{\refstepcounter{definition}\noindent\textbf{\definitioname~\arabic{definition}.}\itshape}{}
 
 %novo ambiente affirmation
 \newcommand{\affirmationname}{Afirmação}
@@ -294,7 +294,7 @@
 	{\endbreakbox\vskip.5\fboxsep%
 	\setlength{\fboxsep}{\old@fboxsep}}
 
-
+\renewenvironment{example}{\refstepcounter{example}\noindent\textbf{\examplename~\arabic{example}.}\itshape}{}
 
 %novo ambiente theorem
 \newcommand{\theoremname}{Teorema}
@@ -306,7 +306,6 @@
 	\noindent\textbf{\theoremname~\arabic{theorem}\ \ }}
 	{\endbreakbox\vskip.5\fboxsep%
 	\setlength{\fboxsep}{\old@fboxsep}}
-
 
 
 %novo ambiente conjecture
@@ -335,6 +334,8 @@
 
 
 
+%nvo ambiente prova
+\newenvironment{prova}{\noindent{\bf Prova. }\itshape}{\hfill$\Box$\bigskip}
 
 %table figures automáticas no ambiente #1
 \newcommand{\SetTableFigures}[1]{

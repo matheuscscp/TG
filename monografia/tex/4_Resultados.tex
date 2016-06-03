@@ -3,7 +3,7 @@
 
 \indent
 
-Apresentamos neste capítulo a metodologia empregada e os resultados experimentais obtidos ao testar se fórmulas menores produzem respostas mais rápido e ao comparar algoritmos para escolha de renomeamento.
+Apresentamos neste capítulo a metodologia empregada e os resultados experimentais obtidos ao testar se fórmulas com menos cláusulas produzem respostas mais rápido e ao comparar algoritmos para escolha de renomeamento.
 
 \section{Metodologia}
 
@@ -73,7 +73,7 @@ As três formas de representação de fórmulas apresentadas nesta seção são 
 
 \indent
 
-Implementamos um programa, utilizando a linguagem de programação C++ versão 11, que recebe uma fórmula sob a forma de cadeia, realiza uma série de transformações e dá como saída uma fórmula resultante também sob a forma de cadeia, juntamente com três medidas desta última fórmula: seu tamanho, número de cláusulas e número de símbolos proposicionais. As transformações realizadas são detalhadas a seguir. Optamos por deixar flexível a execução ou não de algumas transformações, mas fixamos a ordem em que as transformações são realizadas.
+Implementamos um programa, utilizando a linguagem de programação C++ versão 11 \cite{cpp11}, que recebe uma fórmula sob a forma de cadeia, realiza uma série de transformações e dá como saída uma fórmula resultante também sob a forma de cadeia, juntamente com três medidas desta última fórmula: seu tamanho, número de cláusulas e número de símbolos proposicionais. As transformações realizadas são detalhadas a seguir. Optamos por deixar flexível a execução ou não de algumas transformações, mas fixamos a ordem em que as transformações são realizadas.
 
 \subsubsection{Análise sintática}
 
@@ -148,9 +148,9 @@ Escolhemos aplicar simplificação somente no final do programa, para que, justa
 
 \indent
 
-Para tentar responder as perguntas propostas, executamos o programa implementado para diversas combinações de transformações sobre um \textit{benchmark} tradicional de fórmulas intuicionistas \cite{raths07jar}. Optamos por utilizar este \emph{benchmark}, pois a maioria dos \emph{benchmarks} tradicionais apresentam fórmulas já na forma normal, ou possuem poucas fórmulas proposicionais, como o proposto por Sutcliffe \cite{sutcliffe09jar}. Em seguida, executamos sobre as fórmulas transformadas o provador de teoremas E, um decisor para VAL baseado em forma normal clausal \cite{Schulz:LPAR-2013}. Foram anotadas as medidas de cada fórmula fornecidas ao final da etapa de pré-processamento, os tempos de execução nas duas etapas e o resultado do decisor de validade.
+Para tentar responder as perguntas propostas, executamos o programa implementado para diversas combinações de transformações sobre um \textit{benchmark} tradicional de fórmulas intuicionistas \cite{raths07jar}. Optamos por utilizar este \emph{benchmark}, pois a maioria dos \emph{benchmarks} tradicionais apresentam fórmulas já em uma forma normal, ou possuem poucas fórmulas proposicionais, como o proposto por Sutcliffe \cite{sutcliffe09jar}. Portanto, com o \textit{benchmark} escolhido, pudemos testar nossas hipóteses de maneira mais exaustiva. Em seguida, executamos sobre as fórmulas transformadas o provador de teoremas E, um decisor para VAL baseado em forma normal clausal \cite{Schulz:LPAR-2013}. Foram anotadas as medidas de cada fórmula fornecidas ao final da etapa de pré-processamento, os tempos de execução nas duas etapas e o resultado do decisor de validade.
 
-As dez combinações de transformações testadas estão descritas na Tabela \ref{combinacoes}. Em cada combinação, executamos um subconjunto das transformações apresentadas na Seção \ref{impl}. Na tabela, a presença de um X indica que a transformação da respectiva linha foi executada na combinação da respectiva coluna. Uma célula vazia indica que a respectiva transformação não foi executada na respectiva combinação. Na linha de renomeamento, o número 1 indica que o algoritmo de renomeamento executado é o proposto por Boy de la Tour, enquanto o número 2 indica que o algoritmo executado é o que propomos neste trabalho. Finalmente, na linha de conversão para FNC, o número 1 indica que foi executada somente distribuição, enquanto o número 2 indica que foi executada distribuição com simplificação.
+As dez combinações de transformações testadas estão descritas na Tabela \ref{combinacoes}. Em cada combinação, executamos um subconjunto das transformações apresentadas na Seção \ref{impl}. Na tabela, a presença de um X indica que a transformação da respectiva linha foi executada na combinação da respectiva coluna. Uma célula vazia indica que a respectiva transformação não foi executada na respectiva combinação. Na linha de renomeamento, o número 1 indica que o algoritmo de renomeamento executado é o proposto por Boy de la Tour (Algoritmo \ref{boydelatour}), enquanto o número 2 indica que o algoritmo executado é o que propomos neste trabalho (Algoritmo \ref{knapsack}). Finalmente, na linha de conversão para FNC, o número 1 indica que foi executada somente distribuição, enquanto o número 2 indica que foi executada distribuição com simplificação.
 
 \tabela{Combinações de transformações executadas}{combinacoes}{l|cccccccccc}{
 	Combinação         & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\ \hline
@@ -162,19 +162,29 @@ As dez combinações de transformações testadas estão descritas na Tabela \re
 	Conversão para FNC & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2 
 }
 
-Os experimentos foram executados em um computador com sistema operacional\break Ubuntu 14.04 (GNU/Linux 3.19.0-30-generic x86\_64), processador Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered}\break Processor E5-2620 v3, que possui frequência de \textit{clock} 2.4GHz e 15M de memória\break \textit{cache}, e memória RAM de 64GiB. Cada combinação foi executada com um limite máximo de 4GB de memória virtual e tamanho ilimitado para o segmento de pilha.
+Os experimentos foram executados em um computador com sistema operacional\break Ubuntu 14.04 (GNU/Linux 3.19.0-30-generic x86\_64), processador Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered}\break Processor E5-2620 v3, que possui frequência de \textit{clock} 2.4GHz e 15M de memória\break \textit{cache}, e memória RAM de 64GiB. Cada combinação foi executada com um limite máximo de 4GB de memória virtual, tamanho ilimitado para o segmento de pilha e mil segundos de limite de tempo.
 
 \section{Resultados e análise}
 
+\indent
 
-- primeiro, foi feita uma análise exaustiva, da qual nós apresentaremos os principais pontos/destaques.
+Dos dados coletados, foi feita uma análise exaustiva. Apresentamos nesta seção os principais destaques.
+
+Primeiro, observamos os resultados das Combinações 1 e 2, onde não foi feito nenhum renomeamento e alternamos somente entre aplicar ou não simplificação durante a etapa de distribuição. Na Combinação 1, onde simplificação não foi aplicada, 73\% das fórmulas excederam o limite de memória na etapa de pré-processamento e o restante foi transformado com sucesso. Na Combinação 2, 67\% excedeu o limite de memória e 1\% excedeu o limite de tempo. Além disso, pelas medidas das transformações feitas com sucesso em ambas as combinações, nota-se que grande parte das fórmulas ficaram muito menores apenas com simplificação. Isto faz bastante sentido, pois se uma fórmula contém exatamente $n$ símbolos proposicionais distintos, então:
+\begin{enumerate}
+	\item Ao eliminar literais repetidos e tautologias, cada cláusula gerada pela fórmula pode conter no máximo $n$ literais.
+	\item Ao eliminar cláusulas repetidas, a fórmula pode gerar no máximo $3^n$ cláusulas distintas. Isto ocorre porque, para cada símbolo proposicional e uma cláusula fixa sem tautologias e literais repetidos, há somente três possibilidades: ou o símbolo não ocorre na cláusula, ou ele ocorre, ou ele ocorre negado.
+\end{enumerate}
+Em outras palavras, uma fórmula com as simplificações que aplicamos possui um tamanho máximo ao ser convertida para a FNC. No entanto, a observação principal é que apenas simplificação não é suficiente para obter bons resultados, já que mais da metade das fórmulas sequer pôde ser pré-processada com sucesso dentro das restrições de tempo e memória utilizadas. Portanto, as próximas comparações que apresentamos levam em conta somente combinações onde renomeamento foi aplicado.
+
+Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, verificamos uma amostra de correção da Conjectura \ref{conjectura}. Como dito na Seção \ref{impl} ao descrever a etapa de conversão para FNN, estas combinações simulam árvores lineares. Portanto, pela conjectura, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para as fórmulas que puderam ser transformadas com sucesso em ambas as combinações, pudemos constatar este fato.
+
+
+
 - DAG x Árvore: Gráficos lindinhos: boy (DxA), seu (DxA)
-- sem renomeamento: só mostrar essa vez, dizer que o resultado é realmente horrível, a gente não usa nos demais experimentos.
-sem renomeamento (simp/no simp):árvore, comentar em relação aos outros resultados com árvore.
 
 % DAG fez ficar mais rapido e produziu renomeamentos melhores para os dois algoritmos.
 
-- Árvore: optimalidade restrita.
 - simplificação, no simp: Boy(DAG) x seu (DAG)
 
 além dos resultados médios (a gente nao vê o que acontece dentro de cada família), conforme acima, algumas famílias específicas mostraram grande diferença de resultados, em particular: uma que ele é melhor, uma que você é melhor.

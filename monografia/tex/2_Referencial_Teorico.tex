@@ -54,8 +54,6 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
     \end{enumerate}
 \end{definition}
 
-No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{interpretação definida por $\mathbb{v}_0$}.
-
 \begin{example}
     Seja a interpretação $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,F),(r,V),(s,V)\}$ e considere a fórmula $\phi = \neg((p \vee (q \wedge r \wedge s)) \leftrightarrow (q \rightarrow \neg s))$. Temos que:
     \begin{enumerate}
@@ -67,6 +65,8 @@ No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{i
         \item $\mathbb{v}(\phi) = F$
     \end{enumerate}
 \end{example}
+
+No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{interpretação definida por $\mathbb{v}_0$}.
 
 \begin{definition}
 	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda, que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda, que $\phi$ é \emph{falsificável}.
@@ -129,7 +129,7 @@ Apresentamos nesta seção os principais problemas envolvendo a lógica proposic
 	Observe que $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é contradição} \}$.
 \end{definition}
 
-O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
+O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica} \cite{kleene68book}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
 
 Davis et al. apresentam um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{redutíveis} um ao outro, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
 
@@ -145,14 +145,20 @@ Mostramos agora que SAT e VAL são redutíveis um ao outro, reduzindo VAL a UNSA
 	\end{enumerate}
 \end{theorem}
 
+\begin{prova}
 Se $\phi$ é uma tautologia, então $\mathbb{v}(\phi) = V, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = F, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma contradição.
 
 Se $\phi$ é uma contradição, então $\mathbb{v}(\phi) = F, \forall \mathbb{v}$. Logo $\mathbb{v}(\neg \phi) = V, \forall \mathbb{v}$. Portanto, $\neg \phi$ é uma tautologia.
 
 Se $\phi$ é uma contingência, então existem interpretações $\mathbb{v}_1,\mathbb{v}_2$ tais que $\mathbb{v}_1(\phi) = V$ e $\mathbb{v}_2(\phi) = F$. Logo, $\mathbb{v}_1(\neg \phi) = F$ e $\mathbb{v}_2(\neg \phi) = V$. Portanto, $\neg \phi$ é uma contingência.
+\end{prova}
 
-Com isto, provamos o Teorema \ref{negacoes}.
+\begin{theorem}
+	\label{satval}
+	SAT e VAL são redutíveis um ao outro.
+\end{theorem}
 
+\begin{prova}
 Agora, seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
 
 Vamos examinar o comportamento de $R_1$ para todas as possibilidades, ou seja, $\forall \phi \in \mathcal{L}$.
@@ -172,6 +178,7 @@ Finalmente, quando $\phi$ é uma contradição, ou seja, quando $\phi \in \text{
 Mostramos então que $R_2$ decide UNSAT, ou seja, UNSAT é redutível a VAL.
 
 Com as \emph{reduções} $R_1$ e $R_2$ e com o fato de que SAT e UNSAT são redutíveis um ao outro, mostramos que VAL e SAT são também redutíveis um ao outro.
+\end{prova}
 
 \section{Formas normais}
 
@@ -446,7 +453,7 @@ Plaisted et al. provam o Teorema \ref{struct_preserving} \cite{plaisted1986struc
 	\label{exemplo_renaming}
     Considere $\phi = (p \leftrightarrow q) \leftrightarrow (p \leftrightarrow q)$ e $s = \{(p \leftrightarrow q, r) \}$. Então $$\mathcal{R}(\phi,s) = (r \leftrightarrow r) \wedge (r \leftrightarrow (p \leftrightarrow q))$$
     
-    Note que tanto $\phi$ quanto $\mathcal{R}(\phi,s)$ são satisfatíveis, mas que $\phi$ é uma tautologia da forma $\psi \leftrightarrow \psi$, enquanto $\mathcal{R}(\phi,s)$ é uma contingência, pois
+    Note que tanto $\phi$ quanto $\mathcal{R}(\phi,s)$ são satisfatíveis, mas que $\phi$ é uma tautologia da forma $\psi \leftrightarrow \psi$, enquanto $\mathcal{R}(\phi,s)$ é uma contingência, pois:
     \begin{enumerate}
     	\item Se $\mathbb{v}(r) = V$, $\mathbb{v}(p) = V$ e $\mathbb{v}(q) = V$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = V$.
     	\item Se $\mathbb{v}(r) = V$, $\mathbb{v}(p) = V$ e $\mathbb{v}(q) = F$, então $\mathbb{v}(\mathcal{R}(\phi,s)) = F$.
@@ -459,7 +466,7 @@ O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satis
 
 \indent
 
-Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter renomeamentos que geram fórmulas pequenas. Começamos pela definição mais básica deste tópico.
+Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter um renomeamento que reduz o número de cláusulas geradas por uma fórmula.
 
 \begin{definition}
 	Denotamos por $p(\phi)$ o \emph{número de cláusulas} da fórmula obtida por aplicar as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão na fórmula $\phi$. Denotamos ainda $p(\neg \phi)$ por $\overline{p}(\phi)$.
@@ -477,11 +484,11 @@ O número $p(\phi)$ pode ser calculado pela Tabela \ref{numerop} \cite{de1992opt
 	$\phi \in \mathcal{P}$            & $1$                                                             & $1$                                                            
 }
 
-Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R = D(s)$ é o renomeamento associado à substituição $s$.
-
 \begin{example}
 	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
 \end{example}
+
+Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R = D(s)$ é o renomeamento associado à substituição $s$.
 
 Agora, dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\phi,R)$ seja o menor possível.
 
@@ -497,9 +504,9 @@ O Algoritmo \ref{boydelatour}, apresentado por Boy de la Tour, encontra um renom
 
 Os coeficientes $a$ e $b$ que aparecem no algoritmo são exatamente os números de vezes que os números $p(\psi)$ e $\overline{p}(\psi)$, respectivamente, são somados ao valor de $p(\phi)$. Em outras palavras, o algoritmo utiliza a forma irredutível de $p(\phi)$ em função de $p(\psi)$ e $\overline{p}(\psi)$: $$p(\phi) = a_\psi^\phi p(\psi) + b_\psi^\phi \overline{p}(\psi) + c$$ onde $c$ não depende de $p(\psi)$ ou $\overline{p}(\psi)$.
 
-As escritas $\psi.p$ e $\psi.\overline{p}$ que aparecem no algoritmo representam inicialmente $p(\psi)$ e $\overline{p}(\psi)$, respectivamente. No entanto, se $\psi$ é incluída em $R$, sua contribuição para $p(\phi,R)$ muda. Para esta mudança ser refletida nos cálculos do algoritmo, os valores de $p(\psi)$ e $\overline{p}(\psi)$ são armazenados e atualizados em campos, para cada subfórmula. As notações $\psi.p$ e $\psi.\overline{p}$ indicam estes campos. Portanto, pode ocorrer em algum momento que $p(\psi) \neq \psi.p$ ou $\overline{p}(\psi) \neq \psi.\overline{p}$.
+As escritas $\psi.p$ e $\psi.\overline{p}$ que aparecem no algoritmo representam inicialmente $p(\psi)$ e $\overline{p}(\psi)$, respectivamente. No entanto, se $\psi$ é incluída em $R$, sua contribuição para $p(\phi,R)$ muda. Para esta mudança ser refletida nos cálculos do algoritmo, os valores de $p(\psi)$ e $\overline{p}(\psi)$ são armazenados em campos da respectiva subfórmula e atualizados conforme a execução do algoritmo. As notações $\psi.p$ e $\psi.\overline{p}$ indicam estes campos. Note então que pode ocorrer em algum momento que $p(\psi) \neq \psi.p$ ou $\overline{p}(\psi) \neq \psi.\overline{p}$.
 
-Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ calcula os números de cláusulas $p(\psi)$ e $\overline{p}(\psi)$ a partir de $\psi_i.p$ e $\psi_i.\overline{p}$.
+Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ retorna um par ordenado com os números de cláusulas de $\psi$ e $\neg \psi$, respectivamente. Este par ordenado é calculado a partir de $\psi_i.p$ e $\psi_i.\overline{p}$, ou seja, o estado atual do renomeamento é levado em consideração.
 
 \tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
 	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline

@@ -10,23 +10,23 @@ Apresentamos neste capítulo um algoritmo de renomeamento para reduzir o número
 	Seja $R \subseteq SFP(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e seja $\psi \in R$. Então, permitindo que só as subfórmulas em $SFP(\phi) - \{\psi \}$ sejam escolhidas, $R - \{\psi\}$ é um renomeamento ótimo entre os que contêm no máximo $j-1$ subfórmulas.
 \end{affirmation}
 
-\emph{Contraexemplo}: Seja $\phi = ((p_1 \wedge p_2 \wedge p_3 \wedge p_4) \vee (q_1 \wedge q_2)) \wedge ((r_1 \wedge r_2) \vee (s_1 \wedge ... \wedge s_{100}))$. Então $p(\phi) = 208$.
+\begin{prova}
+Seja $\phi = ((p_1 \wedge p_2 \wedge p_3 \wedge p_4) \vee (q_1 \wedge q_2)) \wedge ((r_1 \wedge r_2) \vee (s_1 \wedge ... \wedge s_{100}))$. Então $p(\phi) = 208$.
 
 Vamos calcular um renomeamento ótimo para $\phi$ que tenha no máximo 2 subfórmulas.
 
 Observe primeiro que se $\psi$ é da forma $\xi_1 \vee \xi_2$, onde $\xi_1$ e $\xi_2$ são conjunções de literais todos distintos entre si, então:
 \begin{enumerate}
-	\item $p(\psi) = p(\xi_1)p(\xi_2)$;
-	\item $p(\psi, \{\xi_1 \}) = p(\psi, \{\xi_2 \}) = p(\xi_1)+p(\xi_2)$; e
+	\item $p(\psi) = p(\xi_1)p(\xi_2)$
+	\item $p(\psi, \{\xi_1 \}) = p(\psi, \{\xi_2 \}) = p(\xi_1)+p(\xi_2)$
 	\item $p(\psi,\{\xi_1,\xi_2 \}) = 1+p(\xi_1)+p(\xi_2)$
 \end{enumerate}
 Ou seja, se $p(\xi_1),p(\xi_2) \geq 2$, então $\{\xi_1 \}$ e $\{\xi_2 \}$ são renomeamentos ótimos para $\psi$. Em outras palavras, em uma disjunção de duas conjunções de literais, basta renomear uma das conjunções para obter um renomeamento ótimo.
 
-Sejam então $\xi_1 = p_1 \wedge p_2 \wedge p_3 \wedge p_4$, $\xi_2 = q_1 \wedge q_2$, $\xi_3 = q_1 \wedge q_2$ e $\xi_4 = s_1 \wedge ... \wedge s_{100}$. Usando o fato acima, temos que $R = \{\xi_1,\xi_4 \}$ é ótimo e $|R| \leq 2$. No entanto, $$p(\phi,R - \{\xi_4 \}) = 206 > 110 = p(\phi,\{\xi_3 \})$$ Ou seja, $R' = R - \{\xi_4 \} = \{\xi_1 \}$ é tal que $\xi_4 \notin R'$ e $|R'| \leq 1$, mas $R'$ não é ótimo.
+Sejam então $\xi_1 = p_1 \wedge p_2 \wedge p_3 \wedge p_4$, $\xi_2 = q_1 \wedge q_2$, $\xi_3 = q_1 \wedge q_2$ e $\xi_4 = s_1 \wedge ... \wedge s_{100}$. Usando o fato acima, temos que $R = \{\xi_1,\xi_4 \}$ é ótimo e $|R| \leq 2$. No entanto, $$p(\phi,R - \{\xi_4 \}) = 206 > 110 = p(\phi,\{\xi_3 \})$$ Ou seja, $R' = R - \{\xi_4 \} = \{\xi_1 \}$ é tal que $\xi_4 \notin R'$ e $|R'| \leq 1$, mas $R'$ não é ótimo. Neste caso, $\phi$ é um contraexemplo para a Afirmação \ref{optimal_sub}.
+\end{prova}
 
-Com isto, provamos que a Afirmação \ref{optimal_sub} é falsa, até mesmo para fórmulas que satisfazem $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$, como a do contraexemplo.
-
-Se a Afirmação \ref{optimal_sub} fosse verdadeira, ela caracterizaria o que chamamos de uma\break \emph{subestrutura ótima} do problema de encontrar renomeamentos que geram o menor número possível de cláusulas. Ou seja, quando uma solução ótima para um problema é sempre feita de soluções ótimas para subproblemas, isto é, para versões menores do problema, dizemos que o problema exibe subestrutura ótima.
+Provamos que a Afirmação \ref{optimal_sub} é falsa, até mesmo para fórmulas que satisfazem\break $\pi_1 \neq \pi_2 \implies \phi|_{\pi_1} \neq \phi|_{\pi_2}$, como a do contraexemplo. Por outro lado, se a afirmação fosse verdadeira, ela caracterizaria o que chamamos de uma \emph{subestrutura ótima} do problema de encontrar renomeamentos que geram o menor número possível de cláusulas. Ou seja, quando uma solução ótima para um problema é sempre feita de soluções ótimas para subproblemas, isto é, para versões menores do problema, dizemos que o problema exibe subestrutura ótima.
 
 Propomos agora uma solução baseada na Afirmação \ref{optimal_sub} adaptada como uma heurística. A Afirmação \ref{optimal_sub} não é verdade. Ou seja, como vimos, $R - \{\psi \}$ não é necessariamente ótimo para a versão menor do problema. Mas a heurística é: $R - \{\psi \}$ pode não ser ótimo, mas é, em grande parte das vezes, ``muito bom''. Verificamos este fato experimentalmente, comparando o algoritmo aqui proposto com um outro, e apresentamos os resultados no Capítulo \ref{cap_resultados}.
 
@@ -130,7 +130,8 @@ O custo de espaço do Algoritmo \ref{knapsack} é dado pela soma dos custos do a
 \indent
 
 \begin{conjecture}
+	\label{conjectura}
 	Se $\phi$ é uma árvore linear e $SFP(\phi) = \{\phi_1,...,\phi_n \}$, então $f(n,n)$ é ótimo.
 \end{conjecture}
 
-Assim como ocorre com os algoritmos de Boy de la Tour \cite{de1992optimality} e Jackson et al. \cite{jackson2004clause}, afirmamos que nosso algoritmo encontra renomeamentos ótimos para árvores lineares. Não provamos esta afirmação analiticamente, mas apresentamos resultados experimentais no capítulo que vem a seguir que exemplificam este fato.
+Assim como ocorre com os algoritmos de Boy de la Tour \cite{de1992optimality} e Jackson et al. \cite{jackson2004clause}, afirmamos que nosso algoritmo também encontra renomeamentos ótimos para árvores lineares. Não provamos esta afirmação analiticamente, mas apresentamos resultados experimentais no Capítulo \ref{cap_resultados}, que vem a seguir, que exemplificam este fato.
