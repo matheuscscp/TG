@@ -193,7 +193,7 @@ A observação principal é que apenas simplificação não é suficiente para o
 
 \indent
 
-Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, obtemos uma amostra da correção da Conjectura \ref{conjectura}. Como discutido na Seção \ref{impl}, estas combinações \emph{simulam} árvores lineares e, portanto, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para todas as fórmulas que puderam ser transformadas com sucesso em ambas as combinações (49\%), pudemos constatar este fato.
+Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, obtemos uma amostra da correção da Conjectura \ref{conjectura}. Como discutido na Seção \ref{impl}, estas combinações \emph{simulam} árvores lineares e, portanto, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para todas as fórmulas que puderam ser transformadas com sucesso em ambas as combinações (49\%), constatamos esta propriedade. Além disso, nenhuma fórmula excedeu o limite de memória somente na Combinação 5. Estes dois fatos indicam fortemente que a Conjectura \ref{conjectura} provavelmente é um teorema.
 
 \subsection{Comparações entre árvores e DAGs}
 
@@ -208,27 +208,29 @@ O primeiro resultado observado, que é relativo ao número de cláusulas produzi
 \end{enumerate}
 O critério análogo obtido trocando cada ocorrência de $C_i$ por $C_{i+4}$ e vice-versa foi utilizado para determinar quando $C_{i+4}$ foi melhor que $C_i$.
 
-Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas na maior parte das vezes.
+Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas em grande parte das vezes.
 
-\tabela{Árvore versus DAG. Número de cláusulas}{dag_x_tree_info}{l|c|c|c|c|l}{
+\tabela{Árvore X DAG. Número de cláusulas}{dag_x_tree_info}{l|c|c|c|c|l}{
                 & $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
                 $C_i$ foi melhor em & 0     & 5     & 0     & 6      & fórmulas. \\
                 $C_{i+4}$ foi melhor em    & 15\%  & 15\%  & 31\%  & 30\%   & das fórmulas. \\
 }
 
-Em segundo lugar, observamos o tempo de execução da etapa de pré-processamento. Os resultados são apresentados na Tabela \ref{dag_x_tree_time}. Os critérios para determinar quando $C_i$ foi melhor que $C_{i+4}$ e vice-versa são análogos aos critérios da Tabela \ref{dag_x_tree_info}: 
+Em segundo lugar, observamos o tempo de execução da etapa de pré-processamento. Os resultados são apresentados no gráfico da Figura \ref{dag_x_tree_time}. Cada ponto sobre o eixo horizontal identifica uma das 1200 fórmulas do \textit{benchmark}. O eixo vertical é o tempo de $C_i$ menos o tempo de $C_{i+4}$, em segundos. Do gráfico, nota-se que a maior parte das diferenças é positiva e com um grande valor absoluto. Isto quer dizer que, na maior parte das vezes, DAGs obtiveram melhor desempenho durante a etapa de pré-processamento. O que não é surpresa, pois, mesmo que $C_{i+4}$ não gere menos cláusulas, os algoritmos de transformação executam mais rápido em representações mais compactas de fórmulas.
 
-\tabela{Árvore versus DAG. Tempo de execução do pré-processamento}{dag_x_tree_time}{l|c|c|c|c|l}{
-	& $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
-	$C_i$ foi melhor em & 8\%     & 26\%     & 0\%     & 0\%      & das fórmulas. \\
-	$C_{i+4}$ foi melhor em    & 26\%  & 6\%  & 70\%  & 70\%   & das fórmulas. \\
-}
+\figura[]{arvore_x_dag_time}{Árvore X DAG. Tempo de pré-processamento}{dag_x_tree_time}{}
+
+Por último, analisamos o tempo de execução na etapa de busca. O gráfico da Figura \ref{dag_x_tree_ptime}, que ilustra estes resultados, foi construído de maneira similar ao gráfico da Figura \ref{dag_x_tree_time}, ou seja, cada ponto no eixo horizontal representa uma fórmula e cada altura indica a diferença entre o tempo medido para $C_i$ e o tempo medido para $C_{i+4}$. Mais uma vez, notamos que a maior concentração de pontos está acima ou sobre o eixo horizontal de diferença igual a zero. E, novamente, isto indica que, em grande parte das vezes, DAGs obtiveram melhor desempenho, mas agora na etapa de busca.
+
+Com esta última observação, temos o primeiro indício de que, provavelmente, fórmulas com menos cláusulas produzem respostas mais rápido. Esta conclusão é bastante razoável, já que, como observamos antes, a principal diferença entre as fórmulas produzidas por cada um dos dois grupos de combinações é o número de cláusulas, que é menor para DAGs em grande parte das vezes.
+
+Com os resultados apresentados nesta seção, há um forte indício de que, independentemente dos resultados de optimalidade restrita dos algoritmos de renomeamento serem para árvores lineares, é melhor realizar conversão para DAG na grande maioria das vezes. Portanto, nas próximas seções, voltamos nossa atenção para comparações envolvendo somente combinações que realizam conversão para DAG.
+
+\figura[]{arvore_x_dag_ptime}{Árvore X DAG. Tempo de busca}{dag_x_tree_ptime}{}
 
 
 
-DAG mais rapido no pre-proc
 
-DAG mais rapido na busca
 
 
 
