@@ -15,11 +15,11 @@ Apresentamos nesta seção os detalhes necessários para reproduzir os experimen
 
 \indent
 
-A forma que utilizamos para representar fórmulas lógicas em textos teóricos, ou seja, cadeias da respectiva linguagem formal, mostra-se pouco prática para implementar transformações ou algoritmos de busca.
+A forma de representação de fórmulas lógicas utilizada em textos teóricos, ou seja, cadeias de uma determinada linguagem formal, complica bastante a tarefa de implementar transformações ou algoritmos de busca.
 
-Observe, no entanto, que definimos a linguagem formal da lógica proposicional como uma \emph{gramática livre-do-contexto} \cite{sipser2012introduction} e, portanto, é garantido que temos um algoritmo de custo de tempo polinomial determinístico para obter a \emph{árvore sintática}, ou simplesmente \emph{árvore}, de uma fórmula \cite{younger1967recognition}. Tal estrutura se mostra muito mais prática para a implementação de algoritmos de transformação e busca do que cadeias de linguagens formais.
+Observe, no entanto, que definimos a linguagem formal da lógica proposicional como uma \emph{gramática livre-do-contexto} \cite{sipser2012introduction} e, portanto, é garantido que existe um algoritmo de custo de tempo polinomial determinístico para obter a \emph{árvore sintática}, ou simplesmente \emph{árvore}, de uma fórmula \cite{younger1967recognition}. Tal estrutura se mostra muito mais prática para a implementação de algoritmos de transformação e busca do que cadeias de linguagens formais.
 
-Ainda melhor que árvores para representar fórmulas, são \emph{grafos acíclicos dirigidos}, ou simplesmente DAGs na sigla do inglês, onde os vértices que representam subfórmulas distintas compartilham arestas com o vértice de uma mesma subfórmula que ambas possuem em comum \cite{jackson2004clause}. Tais estruturas equivalem a representar o conjunto de subfórmulas de fato como um conjunto, ou seja, $|\{\psi \in SFP(\phi) : \psi = \xi \}| = 1$, para todas $\phi$ e $\xi \sqsubseteq \phi$. É então uma forma de representação que se contrapõe a de uma árvore, que representa o conjunto de subfórmulas como um multiconjunto, ou seja, é possível acontecer $|\{\psi \in SFP(\phi) : \psi = \xi \}| > 1$. Em outras palavras, árvores sempre representam fórmulas como se nunca houvesse repetição de subfórmulas, criando cópias distintas para as distintas posições em que uma mesma subfórmula ocorre. DAGs permitem uma representação mais fiel ao tratamento teórico dado neste trabalho, ou seja, repetições de subfórmulas podem ser consideradas e cada subfórmula é representada por um único objeto (vértice). Além disso, DAGs são exponencialmente menores que árvores no melhor caso, como mostra a Figura \ref{figura_DAG}, e, portanto, propícios a algoritmos de programação dinâmica \cite{bellman2015applied} exponencialmente mais rápidos no melhor caso.
+Ainda melhor que árvores para representar fórmulas, são \emph{grafos acíclicos dirigidos}, ou simplesmente DAGs na sigla do inglês. Em um DAG, qualquer subfórmula é representada por um único objeto \cite{jackson2004clause}, ou seja, mesmo que uma subfórmula ocorra em várias posições da fórmula principal, ela não é replicada para cada ocorrência. Tais estruturas equivalem a representar o conjunto de subfórmulas de fato como um conjunto, ou seja, $|\{\psi \in SFP(\phi) : \psi = \xi \}| = 1$, para todas $\phi$ e $\xi \sqsubseteq \phi$. É então uma forma de representação que se contrapõe a de uma árvore, que representa o conjunto de subfórmulas como um multiconjunto, ou seja, é possível acontecer $|\{\psi \in SFP(\phi) : \psi = \xi \}| > 1$. Em outras palavras, árvores sempre representam fórmulas como se nunca houvesse repetição de subfórmulas, criando cópias distintas para as distintas posições em que uma mesma subfórmula ocorre. Portanto, DAGs permitem uma representação mais fiel ao tratamento teórico dado neste trabalho, ou seja, múltiplas ocorrências de subfórmulas podem ser observadas na representação de uma fórmula. Além disso, DAGs são exponencialmente menores que árvores no melhor caso, como mostra a Figura \ref{figura_DAG}, e, portanto, propícios a algoritmos de programação dinâmica \cite{bellman2015applied} exponencialmente mais rápidos no melhor caso.
 
 \begin{figure}
 	\centering
@@ -79,13 +79,13 @@ Implementamos um programa, utilizando a linguagem de programação C++ versão 1
 
 \indent
 
-Convertemos uma fórmula sob a forma de cadeia para uma árvore sintática. Implementamos um algoritmo de pilha que faz uma única varredura na cadeia e produz a árvore. Esta transformação é sempre executada.
+Convertemos uma fórmula sob a forma de cadeia para uma árvore sintática. Implementamos um algoritmo de pilha \cite{sipser2012introduction,CLRS09}, que faz uma única varredura na cadeia e produz a árvore. Esta transformação é sempre executada.
 
 \subsubsection{Conversão para FNN}
 
 \indent
 
-A próxima transformação coloca a fórmula na forma normal negada. Realizamos esta transformação por dois motivos em particular:
+A próxima transformação coloca a fórmula na forma normal negada. Esta etapa é feita através de uma busca em profundidade \cite{CLRS09}, onde o vértice pai é processado antes dos filhos, ou seja, em ordem \emph{prefixada}. Realizamos esta transformação por dois motivos em particular:
 \begin{enumerate}
 	\item As versões dos algoritmos para escolha de renomeamento e do algoritmo de conversão para a FNC são extremamente mais simples para fórmulas na FNN;
 	\item Optando por não realizar a conversão para DAG mais adiante, a transformação que obtemos simula uma árvore linear. É claro que, em geral, as fórmulas não são necessariamente árvores lineares. No entanto, se for representada por uma árvore sintática, qualquer fórmula na FNN é considerada uma árvore linear pelos algoritmos de renomeamento, pois eles não conseguem identificar vértices distintos representando uma mesma subfórmula. Portanto, podemos testar casos em que os algoritmos não necessariamente escolhem renomeamentos ótimos, mas necessariamente escolhem renomeamentos que geram o mesmo número de cláusulas.
@@ -97,19 +97,19 @@ Esta transformação é necessária somente para a realização de renomeamento 
 
 \indent
 
-Aplicamos aplainamento à exaustão. Isto não é necessário para nenhuma outra transformação e portanto pode-se optar por não realizar aplainamento. No entanto, esta transformação faz com que apareçam mais situações em que é possível aplicar simplificação \cite{sebastiani2009automated}. E, ainda, no contexto de renomeamento, o exemplo a seguir evidencia como aplainamento pode ser proveitoso.
+Aplicamos aplainamento à exaustão, também através de busca em profundidade prefixada. Isto não é necessário para nenhuma outra transformação e portanto pode-se optar por não realizar aplainamento. No entanto, esta transformação faz com que apareçam mais situações em que é possível aplicar simplificação \cite{sebastiani2009automated}. E, ainda, no contexto de renomeamento, o exemplo a seguir evidencia como aplainamento pode ser proveitoso.
 
-Considere $\phi$ da forma $(p \wedge (q \wedge r)) \vee ... \vee ((p \wedge q) \wedge r)$. Na forma aplainada de $\phi$, $(p \wedge q \wedge r)$ pode ser renomeada por um único novo símbolo proposicional em suas duas ocorrências.
+Considere $\phi$ da forma $(p \wedge (q \wedge r)) \vee ... \vee ((p \wedge q) \wedge r)$. Na forma aplainada de $\phi$, $(p \wedge q \wedge r)$ pode ser renomeada por um único novo símbolo proposicional em suas duas ocorrências, se $\phi$ estiver representada por um DAG.
 
 \subsubsection{Conversão para DAG}
 
 \indent
 
-A conversão é feita através de um algoritmo ascendente, ou seja, construímos o DAG de baixo para cima, indo em direção à raiz da árvore. Esta transformação não é necessária para nenhuma transformação seguinte e é possível optar por não executá-la.
+A conversão é feita através de um algoritmo ascendente, ou seja, construímos o DAG de baixo para cima, indo das folhas até a raiz da árvore. Esta transformação não é necessária para nenhuma transformação seguinte e é possível optar por não executá-la.
 
 Vale observar ainda que optamos por executar a conversão para DAG somente após colocar a fórmula na FNN, dado que isto evita o seguinte problema.
 
-Suponha que $\psi$ ocorra em $\pi_1 \in pos(\phi)$ e em $\pi_2 \in pos(\phi)$ e suponha ainda que $pol(\phi,\pi_1) = 1 = -pol(\phi,\pi_2)$. Neste caso, é provável que $\psi$ deva ser transformada de duas maneiras distintas, uma em cada posição. Isto complicaria a conversão, caso a representação de $\phi$ fosse um DAG. Em uma árvore, no entanto, onde diferentes cópias de $\psi$ são criadas para diferentes posições em que $\psi$ ocorre, este problema é resolvido transparentemente.
+Suponha que $\psi$ ocorra em $\pi_1 \in pos(\phi)$ e em $\pi_2 \in pos(\phi)$ e suponha ainda que $pol(\phi,\pi_1) = 1 = -pol(\phi,\pi_2)$. Neste caso, é provável que, durante a conversão para FNN, $\psi$ deva ser transformada de duas maneiras distintas, uma em cada posição. Isto complicaria a conversão, caso a representação de $\phi$ fosse um DAG. Em uma árvore, no entanto, onde diferentes cópias de $\psi$ são criadas para diferentes posições em que $\psi$ ocorre, este problema é resolvido transparentemente.
 
 \subsubsection{Renomeamento}
 
@@ -122,15 +122,19 @@ Nesta etapa, há três opções:
 	\item Aplicar o renomeamento $f(n,n)$, que propomos e descrevemos no Capítulo \ref{cap_algoritmo}.
 \end{enumerate}
 
-Observamos agora alguns detalhes cruciais nas implementações dos algoritmos de renomeamento.
+Observamos a seguir os detalhes cruciais das implementações dos algoritmos de renomeamento.
 
-Como dito anteriormente, ambos os algoritmos de renomeamento são implementados para fórmulas na FNN, que satisfazem $pol(\phi,\pi) = 1, \forall \pi \in pos(\phi)$. Neste caso, temos que $b_\psi^\phi = 0, \forall \phi,\psi$. Isto reduz a condição da Linha 4 do Algoritmo \ref{boydelatour}: $$a \cdot \psi.p > a + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p})$$ Observe ainda que o valor de $r$, no Algoritmo \ref{boydelatour}, só deixa de ser 1 na Linha 11, quando $pol(\psi,i) \neq 1$. Portanto, a condição da Linha 4 é reduzida mais uma vez: $$a \cdot \psi.p > a + \psi.p$$ Como é garantido que $\psi.p > 1$ quando a Linha 4 é executada, esta última condição se reduz novamente: $$a > 2 \text{ ou } (a = 2 \text{ e } \psi.p > 2)$$
+Como dito anteriormente, ambos os algoritmos de renomeamento são implementados para fórmulas na FNN. Como na FNN só há negações na frente de símbolos proposicionais, temos que $$p(\psi) > 1 \implies b_\psi^\phi = 0, \forall \phi \in \mathcal{L} \text{ e } \psi \in SF(\phi)$$ Isto reduz a condição da Linha 4 do Algoritmo \ref{boydelatour}: $$a \cdot \psi.p > a + if\_pos(r,\psi.p) + if\_pos(-r,\psi.\overline{p})$$
 
-Este último resultado nos permite implementar o algoritmo de Boy de la Tour sem aritmética de precisão arbitrária, pois, como as únicas operações aritméticas realizadas para calcular os valores de $a$ e $p$ são a soma e a multiplicação, podemos simplesmente truncar valores grandes para evitar que transbordamento aritmético ocorra. Acontece, no entanto, que este truncamento nos leva a outro problema.
+Observe ainda que o valor de $r$, no Algoritmo \ref{boydelatour}, só deixa de ser 1 na Linha 11, quando $pol(\psi,i) \neq 1$. Mas, na FNN, ocorre que $$p(\phi|_\pi) > 1 \implies pol(\phi,\pi) = 1,\forall \phi \in \mathcal{L} \text{ e } \pi \in pos(\phi)$$ Logo, a condição da Linha 4 é reduzida mais uma vez: $$a \cdot \psi.p > a + \psi.p$$
 
-Há duas alternativas para implementar o Algoritmo \ref{boydelatour} em sua complexidade correta (quadrática). A mais simples é calcular o produto $a_{\psi_i}^\phi = a \prod_{j} \psi_j.p$, utilizado na Linha 11, uma única vez e dividí-lo por $\psi_i.p$ apropriadamente em cada iteração do laço da Linha 10. Como optamos por uma representação numérica que não permite divisão, utilizamos uma segunda alternativa. Calculamos previamente uma tabela $dp$ que satisfaz\break $dp[i] = \prod_{j=i+1}^{n} \psi_j.p$, $i = 1,2,...,n$, e atualizamos o valor de $a$ a cada iteração com\break $a \gets a \cdot \psi_i.p$. Desta forma, o produto é corretamente calculado a cada iteração por $a \cdot dp[i]$, onde nenhuma divisão é necessária.
+Por fim, como é garantido que $\psi.p > 1$ quando a Linha 4 é executada, esta última condição se reduz novamente: $$a > 2 \text{ ou } (a = 2 \text{ e } \psi.p > 2)$$
 
-Um detalhe adicional precisa ser considerado para a correção do método que utilizamos para calcular $a_{\psi_i}^\phi$. Observe que este valor precisa ser calculado a partir dos campos $\psi_j.p$. Acontece que, se a fórmula estiver representada por um DAG, o valor de $\psi_j.p$, para algum $j > i+1$, poderia mudar durante a execução da chamada recursiva para $\psi_i$, de modo que a tabela que calculamos previamente forneceria um valor incorreto para a iteração seguinte, quando $i$ passa a valer $i+1$. Evitamos este problema fazendo uma ordenação topológica nas arestas que saem de $\psi$, de modo que se $\psi_j \sqsubset \psi_k$, então $j < k$. Isto é de fato uma solução correta para o problema, porque qualquer DAG possui pelo menos uma ordenação topológica \cite{CLRS09}.
+Este último resultado nos permite implementar o algoritmo de Boy de la Tour sem aritmética de precisão arbitrária, pois, como as únicas operações aritméticas realizadas para calcular os valores de $a$ e $p$ são a adição e a multiplicação, podemos simplesmente truncar valores grandes para evitar que transbordamento aritmético ocorra. Acontece, no entanto, que este truncamento nos leva a outro problema.
+
+Há duas alternativas para implementar o Algoritmo \ref{boydelatour} em sua complexidade correta (quadrática). A mais simples é calcular o produto $a_{\psi_i}^\phi = a \prod_{j} \psi_j.p$, utilizado na Linha 11, uma única vez e dividí-lo por $\psi_i.p$ apropriadamente em cada iteração do laço da Linha 10. Como optamos por uma representação numérica que não permite divisão, utilizamos uma segunda alternativa. Calculamos previamente uma tabela $dp$ que satisfaz\break $dp[i] = \prod_{j=i+1}^{n} \psi_j.p$, $i = 1,2,...,n$, e atualizamos o valor de $a$ a cada iteração com\break $a \gets a \cdot \psi_i.p$. Desta forma, o produto é corretamente calculado a cada iteração pela expressão $a \cdot dp[i]$. Nesta alternativa, nenhuma divisão é necessária.
+
+Um detalhe adicional precisa ser considerado para a correção do método que utilizamos para calcular $a_{\psi_i}^\phi$. Observe que este valor precisa ser calculado a partir dos campos $\psi_j.p$. Acontece que, se a fórmula estiver representada por um DAG, o valor de $\psi_j.p$ poderia mudar durante a execução da chamada recursiva para $\psi_i$, para algum $j > i+1$, de modo que a tabela que calculamos previamente forneceria um valor incorreto para a iteração seguinte, quando $i$ passa a valer $i+1$. Evitamos este problema fazendo uma ordenação topológica nas arestas que saem de $\psi$, de modo que se $\psi_j \sqsubset \psi_k$, então $j < k$. Isto é de fato uma solução correta para o problema, porque qualquer DAG possui pelo menos uma ordenação topológica \cite{CLRS09}.
 
 Na implementação do Algoritmo \ref{knapsack}, por outro lado, não utilizar aritmética de precisão arbitrária no cálculo de $p(\phi)$ levaria a resultados possivelmente incorretos. Assim, para que os resultados fossem corretos, e portanto no mínimo fiéis à heurística, optamos por implementar e utilizar aritmética de precisão arbitrária.
 
@@ -140,15 +144,15 @@ Por fim, é válido mencionar que, para calcular $f(n,n)$ através do Algoritmo 
 
 \indent
 
-A última etapa do programa executa distribuição para colocar a fórmula na FNC e dá como saída a fórmula final sob a forma de cadeia. É possível ainda optar por não colocar a fórmula na FNC, ou realizar distribuição eliminando tautologias e literais e cláusulas repetidas.
+A última etapa do programa executa distribuição para colocar a fórmula na FNC e dá como saída a fórmula final sob a forma de cadeia. Esta etapa também é feita através de busca em profundidade prefixada. É possível ainda optar por não colocar a fórmula na FNC, ou ainda, durante a distribuição, aplicar as seguintes simplificações: eliminação de literais e cláusulas repetidas e eliminação de tautologias.
 
-Escolhemos aplicar simplificação somente no final do programa, para que, justamente optando por não aplicar, fosse possível obter melhores comparações dos algoritmos de renomeamento. Não obstante, apresentamos também resultados em que simplificação é aplicada.
+Escolhemos aplicar simplificação somente no final do programa, para que, justamente optando por não aplicar, fosse possível obter melhores comparações dos algoritmos de renomeamento. Não obstante, apresentamos resultados em que simplificação é aplicada.
 
 \subsection{Experimentos realizados}
 
 \indent
 
-Para tentar responder as perguntas propostas, executamos o programa implementado para diversas combinações de transformações sobre um \textit{benchmark} tradicional de fórmulas intuicionistas \cite{raths07jar}. Optamos por utilizar este \emph{benchmark}, pois a maioria dos \emph{benchmarks} tradicionais apresentam fórmulas já em uma forma normal, ou possuem poucas fórmulas proposicionais, como o proposto por Sutcliffe \cite{sutcliffe09jar}. Portanto, com o \textit{benchmark} escolhido, pudemos testar nossas hipóteses de maneira mais exaustiva. Em seguida, executamos sobre as fórmulas transformadas o provador de teoremas E, um decisor para VAL baseado em forma normal clausal \cite{Schulz:LPAR-2013}. Foram anotadas as medidas de cada fórmula fornecidas ao final da etapa de pré-processamento, os tempos de execução nas duas etapas e o resultado do decisor de validade.
+Para tentar responder as perguntas propostas, executamos o programa implementado para diversas combinações de transformações sobre um \textit{benchmark} tradicional de 1200 fórmulas intuicionistas \cite{raths07jar}. Optamos por utilizar este \emph{benchmark}, pois a maioria dos \emph{benchmarks} tradicionais apresentam fórmulas já em uma forma normal, ou possuem poucas fórmulas proposicionais, como o proposto por Sutcliffe \cite{sutcliffe09jar}. Portanto, com o \textit{benchmark} escolhido, pudemos testar nossas hipóteses de maneira mais exaustiva. Em seguida, executamos sobre as fórmulas transformadas o provador de teoremas E, um decisor para VAL baseado em forma normal clausal \cite{Schulz:LPAR-2013}. Foram anotadas as medidas de cada fórmula fornecidas ao final da etapa de pré-processamento, os tempos de execução nas duas etapas e o resultado do decisor de validade.
 
 As dez combinações de transformações testadas estão descritas na Tabela \ref{combinacoes}. Em cada combinação, executamos um subconjunto das transformações apresentadas na Seção \ref{impl}. Na tabela, a presença de um X indica que a transformação da respectiva linha foi executada na combinação da respectiva coluna. Uma célula vazia indica que a respectiva transformação não foi executada na respectiva combinação. Na linha de renomeamento, o número 1 indica que o algoritmo de renomeamento executado é o proposto por Boy de la Tour (Algoritmo \ref{boydelatour}), enquanto o número 2 indica que o algoritmo executado é o que propomos neste trabalho (Algoritmo \ref{knapsack}). Finalmente, na linha de conversão para FNC, o número 1 indica que foi executada somente distribuição, enquanto o número 2 indica que foi executada distribuição com simplificação.
 
@@ -159,7 +163,7 @@ As dez combinações de transformações testadas estão descritas na Tabela \re
 	Aplainamento       & X & X & X & X & X & X & X & X & X & X  \\
 	Conversão para DAG &   &   &   &   &   &   & X & X & X & X  \\
 	Renomeamento       &   &   & 1 & 1 & 2 & 2 & 1 & 1 & 2 & 2  \\
-	Conversão para FNC & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2 
+	Conversão para FNC & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2 & 1 & 2  \\
 }
 
 Os experimentos foram executados em um computador com sistema operacional\break Ubuntu 14.04 (GNU/Linux 3.19.0-30-generic x86\_64), processador Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered}\break Processor E5-2620 v3, que possui frequência de \textit{clock} 2.4GHz e 15M de memória\break \textit{cache}, e memória RAM de 64GiB. Cada combinação foi executada com um limite máximo de 4GB de memória virtual, tamanho ilimitado para o segmento de pilha e mil segundos de limite de tempo.
@@ -177,15 +181,26 @@ Primeiro, observamos os resultados das Combinações 1 e 2, onde não foi feito 
 \end{enumerate}
 Em outras palavras, uma fórmula com as simplificações que aplicamos possui um tamanho máximo ao ser convertida para a FNC. No entanto, a observação principal é que apenas simplificação não é suficiente para obter bons resultados, já que mais da metade das fórmulas sequer pôde ser pré-processada com sucesso dentro das restrições de tempo e memória utilizadas. Portanto, as próximas comparações que apresentamos levam em conta somente combinações onde renomeamento foi aplicado.
 
-Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, verificamos uma amostra de correção da Conjectura \ref{conjectura}. Como dito na Seção \ref{impl} ao descrever a etapa de conversão para FNN, estas combinações simulam árvores lineares. Portanto, pela conjectura, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para as fórmulas que puderam ser transformadas com sucesso em ambas as combinações, pudemos constatar este fato.
+Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, verificamos uma amostra de correção da Conjectura \ref{conjectura}. Como dito na Seção \ref{impl} ao descrever a etapa de conversão para FNN, estas combinações simulam árvores lineares. Portanto, pela conjectura, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para todas as fórmulas que puderam ser transformadas com sucesso em ambas as combinações, pudemos constatar este fato.
+
+Comparamos agora os resultados das Combinações de 3 a 6, onde a estrutura de representação utilizada foi árvore, com as Combinações de 7 a 10, onde a estrutura utilizada foi DAG, ou seja, comparamos cada combinação com sua igual, a menos do tipo de representação utilizada. Portanto, referindo-nos à Combinação $i$ abreviadamente por $C_i$, comparamos $C_i$ (árvore) com $C_{i+4}$ (DAG), para $i=3,4,5,6$.
+
+O primeiro resultado observado é apresentado na Tabela \ref{dag_x_tree_info}, relativo ao número de cláusulas produzido em cada combinação. As seguintes regras foram usadas para determinar quando cada representação foi melhor. Para uma fórmula fixa $\phi$, $C_i$ foi melhor que $C_{i+4}$ se, e somente se:
+\begin{enumerate}
+	\item ambas $C_i$ e $C_{i+4}$ transformaram $\phi$ com sucesso, isto é, não excederam os limites de tempo ou memória, e a transformação produzida por $C_i$ gera menos cláusulas que a transformação produzida por $C_{i+4}$; ou
+	\item $C_i$ transformou $\phi$ com sucesso e $C_{i+4}$ não.
+\end{enumerate}
+O critério análogo obtido trocando cada ocorrência de $C_i$ por $C_{i+4}$ e vice-versa foi utilizado para determinar quando $C_{i+4}$ foi melhor que $C_i$. Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$. Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas na maior parte das vezes.
+
+\tabela{Árvore versus DAG. Número de cláusulas}{dag_x_tree_info}{l|c|c|c|c|l}{
+                & $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
+                $C_i$ foi melhor em & 0     & 5     & 0     & 6      & fórmulas. \\
+                $C_{i+4}$ foi melhor em    & 15\%  & 15\%  & 31\%  & 30\%   & das fórmulas. \\
+}
 
 
+% DAG fez ficar mais rapido no pre e na busca
 
-- DAG x Árvore: Gráficos lindinhos: boy (DxA), seu (DxA)
-
-% DAG fez ficar mais rapido e produziu renomeamentos melhores para os dois algoritmos.
-
-- simplificação, no simp: Boy(DAG) x seu (DAG)
 
 além dos resultados médios (a gente nao vê o que acontece dentro de cada família), conforme acima, algumas famílias específicas mostraram grande diferença de resultados, em particular: uma que ele é melhor, uma que você é melhor.
 
