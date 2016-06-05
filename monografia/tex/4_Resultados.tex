@@ -180,7 +180,7 @@ Dos dados coletados, foi feita uma análise exaustiva. Apresentamos nesta seçã
 
 Primeiro, observamos os resultados das Combinações 1 e 2, onde não foi feito nenhum renomeamento e alternamos somente entre aplicar ou não simplificação durante a etapa de distribuição.
 
-Na Combinação 1, onde simplificação não foi aplicada, 73\% das fórmulas excederam o limite de memória na etapa de pré-processamento e o restante foi transformado com sucesso. Na Combinação 2, 67\% excedeu o limite de memória e 1\% excedeu o limite de tempo. Além disso, simplificação reduziu o tamanho de 26\% das fórmulas, considerando somente as que foram transformadas com sucesso em ambas as combinações. Isto faz bastante sentido, pois se uma fórmula contém exatamente $n$ símbolos proposicionais distintos, então:
+Na Combinação 1, onde simplificação não foi aplicada, 73\% das fórmulas excederam o limite de memória na etapa de pré-processamento e o restante foi transformado com sucesso. Na Combinação 2, 67\% excedeu o limite de memória e 1\% excedeu o limite de tempo. Além disso, dos 27\% em que todas as fórmulas foram transformadas com sucesso em ambas as combinações, 5 fórmulas (menos de 1\%) ficaram com o mesmo tamanho, enquanto todas as restantes ficaram menores ao aplicar simplificação. Isto faz bastante sentido, pois se uma fórmula contém exatamente $n$ símbolos proposicionais distintos, então:
 \begin{enumerate}
 	\item Ao eliminar literais repetidos e tautologias, cada cláusula gerada pela fórmula pode conter no máximo $n$ literais.
 	\item Ao eliminar cláusulas repetidas, a fórmula pode gerar no máximo $3^n$ cláusulas distintas. Isto ocorre porque, para cada símbolo proposicional e uma cláusula fixa sem tautologias e literais repetidos, há somente três possibilidades: ou o símbolo não ocorre na cláusula, ou ele ocorre, ou ele ocorre negado.
@@ -203,10 +203,12 @@ Comparamos agora os resultados das Combinações de 3 a 6, onde a estrutura de r
 
 O primeiro resultado observado, que é relativo ao número de cláusulas produzido em cada combinação, é apresentado na Tabela \ref{dag_x_tree_info}. As seguintes regras foram usadas para determinar quando cada representação foi melhor. Para uma fórmula fixa $\phi$, $C_i$ foi melhor que $C_{i+4}$ se, e somente se:
 \begin{enumerate}
-	\item ambas $C_i$ e $C_{i+4}$ transformaram $\phi$ com sucesso, isto é, não excederam os limites de tempo ou memória, e a transformação produzida por $C_i$ gera menos cláusulas que a transformação produzida por $C_{i+4}$; ou
+	\item ambas $C_i$ e $C_{i+4}$ transformaram $\phi$ com sucesso, isto é, não excederam o limite de tempo ou memória, e a transformação produzida por $C_i$ gera menos cláusulas que a transformação produzida por $C_{i+4}$; ou
 	\item $C_i$ transformou $\phi$ com sucesso e $C_{i+4}$ não.
 \end{enumerate}
-O critério análogo obtido trocando cada ocorrência de $C_i$ por $C_{i+4}$ e vice-versa foi utilizado para determinar quando $C_{i+4}$ foi melhor que $C_i$. Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e\break $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas na maior parte das vezes.
+O critério análogo obtido trocando cada ocorrência de $C_i$ por $C_{i+4}$ e vice-versa foi utilizado para determinar quando $C_{i+4}$ foi melhor que $C_i$.
+
+Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas na maior parte das vezes.
 
 \tabela{Árvore versus DAG. Número de cláusulas}{dag_x_tree_info}{l|c|c|c|c|l}{
                 & $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
