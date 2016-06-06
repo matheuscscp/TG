@@ -180,7 +180,7 @@ Dos dados coletados, foi feita uma análise exaustiva. Apresentamos nesta seçã
 
 Primeiro, observamos os resultados das Combinações 1 e 2, onde não foi feito nenhum renomeamento e alternamos somente entre aplicar ou não simplificação durante a etapa de distribuição.
 
-Na Combinação 1, onde simplificação não foi aplicada, 73\% das fórmulas excederam o limite de memória na etapa de pré-processamento e o restante foi transformado com sucesso. Na Combinação 2, 67\% excedeu o limite de memória e 1\% excedeu o limite de tempo. Além disso, dos 27\% em que todas as fórmulas foram transformadas com sucesso em ambas as combinações, 5 fórmulas (menos de 1\%) ficaram com o mesmo tamanho, enquanto todas as restantes ficaram menores ao aplicar simplificação. Isto faz bastante sentido, pois se uma fórmula contém exatamente $n$ símbolos proposicionais distintos, então:
+Na Combinação 1, onde simplificação não foi aplicada, 73\% das fórmulas excederam o limite de memória na etapa de pré-processamento e o restante foi transformado com sucesso. Na Combinação 2, 67\% excedeu o limite de memória e 1\% excedeu o limite de tempo. Além disso, dos 27\% em que todas as fórmulas foram transformadas com sucesso por ambas as combinações, 5 fórmulas (menos de 1\%) ficaram com o mesmo tamanho, enquanto todas as restantes ficaram menores ao aplicar simplificação. Isto faz bastante sentido, pois se uma fórmula contém exatamente $n$ símbolos proposicionais distintos, então:
 \begin{enumerate}
 	\item Ao eliminar literais repetidos e tautologias, cada cláusula gerada pela fórmula pode conter no máximo $n$ literais.
 	\item Ao eliminar cláusulas repetidas, a fórmula pode gerar no máximo $3^n$ cláusulas distintas. Isto ocorre porque, para cada símbolo proposicional e uma cláusula fixa sem tautologias e literais repetidos, há somente três possibilidades: ou o símbolo não ocorre na cláusula, ou ele ocorre, ou ele ocorre negado.
@@ -193,7 +193,7 @@ A observação principal é que apenas simplificação não é suficiente para o
 
 \indent
 
-Das Combinações 3 e 5, que aplicam em árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, obtemos uma amostra da correção da Conjectura \ref{conjectura}. Como discutido na Seção \ref{impl}, estas combinações \emph{simulam} árvores lineares e, portanto, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para todas as fórmulas que puderam ser transformadas com sucesso em ambas as combinações (49\%), constatamos esta propriedade. Além disso, nenhuma fórmula excedeu o limite de memória somente na Combinação 5. Estes dois fatos indicam fortemente que a Conjectura \ref{conjectura} provavelmente é um teorema.
+Das Combinações 3 e 5, que aplicam a árvores respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack} para escolha de renomeamento e não aplicam simplificação durante a etapa de distribuição, obtemos uma amostra da correção da Conjectura \ref{conjectura}. Como discutido na Seção \ref{impl}, estas combinações \emph{simulam} árvores lineares e, portanto, não necessariamente os Algoritmos \ref{boydelatour} e \ref{knapsack} devem encontrar renomeamentos que geram o menor número possível de cláusulas para uma fórmula fixa qualquer, mas ambos devem encontrar renomeamentos que geram exatamente o mesmo número de cláusulas para esta fórmula. Para todas as fórmulas que puderam ser transformadas com sucesso em ambas as combinações (49\%), constatamos esta propriedade. Além disso, nenhuma fórmula excedeu o limite de memória somente na Combinação 5. Estes dois fatos indicam fortemente que a Conjectura \ref{conjectura} provavelmente é um teorema.
 
 \subsection{Comparações entre árvores e DAGs}
 
@@ -208,13 +208,13 @@ O primeiro resultado observado, que é relativo ao número de cláusulas produzi
 \end{enumerate}
 O critério análogo obtido trocando cada ocorrência de $C_i$ por $C_{i+4}$ e vice-versa foi utilizado para determinar quando $C_{i+4}$ foi melhor que $C_i$.
 
-Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas em grande parte das vezes.
-
 \tabela{Árvore X DAG. Número de cláusulas}{dag_x_tree_info}{l|c|c|c|c|l}{
-                & $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
-                $C_i$ foi melhor em & 0     & 5     & 0     & 6      & fórmulas. \\
-                $C_{i+4}$ foi melhor em    & 15\%  & 15\%  & 31\%  & 30\%   & das fórmulas. \\
+	& $C_3$ X $C_7$ & $C_4$ X $C_8$ & $C_5$ X $C_9$ & $C_6$ X $C_{10}$ \\ \hline
+	$C_i$ foi melhor em & 0     & 5     & 0     & 6      & fórmulas. \\
+	$C_{i+4}$ foi melhor em    & 15\%  & 15\%  & 31\%  & 30\%   & das fórmulas. \\
 }
+
+Note que as combinações com representação por DAG, em geral, produziram fórmulas com menos cláusulas. Observe ainda que nos pares onde simplificação não é aplicada ($C_3$ X $C_7$ e $C_5$ X $C_8$), nenhuma fórmula gerou menos cláusulas na transformação por $C_i$ (árvore). Estes fatos fazem bastante sentido, pois, do ponto de vista de algoritmos de renomeamento, a única diferença entre as duas formas de representação é que DAGs permitem que todas as ocorrências de uma mesma subfórmula sejam renomeadas por um único novo símbolo proposicional. Note que mesmo aplicando simplificação ao final das transformações (pares $C_4$ X $C_8$ e $C_6$ X $C_{10}$), DAGs ainda geram menos cláusulas em grande parte das vezes.
 
 Em segundo lugar, observamos o tempo de execução da etapa de pré-processamento. Os resultados são apresentados no gráfico da Figura \ref{dag_x_tree_time}. Cada ponto sobre o eixo horizontal identifica uma das 1200 fórmulas do \textit{benchmark}. O eixo vertical é o tempo de $C_i$ menos o tempo de $C_{i+4}$, em segundos. Do gráfico, nota-se que a maior parte das diferenças é positiva e com um grande valor absoluto. Isto quer dizer que, na maior parte das vezes, DAGs obtiveram melhor desempenho durante a etapa de pré-processamento. O que não é surpresa, pois, mesmo que $C_{i+4}$ não gere menos cláusulas, os algoritmos de transformação executam mais rápido em representações mais compactas de fórmulas.
 
@@ -228,13 +228,13 @@ Com os resultados apresentados nesta seção, há um forte indício de que, inde
 
 \figura[]{arvore_x_dag_ptime}{Árvore X DAG. Tempo de busca}{dag_x_tree_ptime}{}
 
+\subsection{Comparações entre os algoritmos de renomeamento}
+
+\indent
+
+Primeiro observamos um resultado de grande interesse. Comparamos as Combinações 7 e 9, que aplicam a DAGs respectivamente os Algoritmos \ref{boydelatour} e \ref{knapsack}, sem aplicar simplificação ao final. No total, 73\% das fórmulas foram transformadas com sucesso por ambas as combinações. Ocorre ainda que 3\% das fórmulas foram transformadas com sucesso e a combinação com o algoritmo de Boy de la Tour produziu menos cláusulas, com diferença máxima de 3 cláusulas. Antes de mais nada, isto prova que o algoritmo que propomos não encontra renomeamentos ótimos para qualquer fórmula. Por outro lado, 8\% das fórmulas foram transformadas com sucesso e, além disso, a combinação com o algoritmo que propomos produziu menos cláusulas. Desta vez, a diferença máxima chegou a 1572786 cláusulas. Primeiro, isto prova que o algoritmo de Boy de la Tour também não encontra renomeamentos ótimos para qualquer fórmula. Mas este resultado também indica que o algoritmo que propomos, apesar de possuir a complexidade do algoritmo de Boy de la Tour multiplicada por um fator linear, pode produzir renomeamentos muito melhores para algumas fórmulas. Ambos os resultados ocorrem dentro de famílias de fórmulas específicas. O algoritmo de Boy de la Tour produziu menos cláusulas somente na família de fórmulas \emph{nishimura}. O algoritmo que propomos produziu menos cláusulas principalmente nas famílias \emph{SYJ205}, \emph{SYJ206} e \emph{SYJ212} e em algumas outras, mas com menos frequência. As diferenças mais discrepantes em favor do Algoritmo \ref{knapsack} ocorrem nas famílias \emph{SYJ206} e \emph{SYJ212}.
 
 
-
-
-
-
-além dos resultados médios (a gente nao vê o que acontece dentro de cada família), conforme acima, algumas famílias específicas mostraram grande diferença de resultados, em particular: uma que ele é melhor, uma que você é melhor. os resultados discrepantes entre os dois algoritmos, utilizando DAG, para as familias SYJ206 e SYJ212 mostram que o Algoritmo 1 carece mais de simplificacao para produzir bons resultados do que o Algoritmo 2
 
 
 
