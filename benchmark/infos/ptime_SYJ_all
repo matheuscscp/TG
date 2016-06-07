@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for file in nf*.info;
+do
+  ./ptime_SYJ $file >> ptime_SYJ.txt
+done
