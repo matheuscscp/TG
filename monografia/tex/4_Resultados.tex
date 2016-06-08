@@ -221,7 +221,7 @@ Da Tabela \ref{dag_x_tree_info}, note que as combinações com representação p
 
 Em segundo lugar, observamos o tempo de execução da etapa de pré-processamento. Os resultados são apresentados no gráfico da Figura \ref{dag_x_tree_time}. Cada ponto sobre o eixo horizontal identifica uma das 1200 fórmulas do \textit{benchmark}. O eixo vertical é o tempo de $C_i$ menos o tempo de $C_{i+4}$, em segundos. Do gráfico, nota-se que a maior parte das diferenças é positiva e com um grande valor absoluto. Isto quer dizer que, na maior parte das vezes, DAGs obtiveram melhor desempenho durante a etapa de pré-processamento. O que não é surpresa, pois, mesmo que $C_{i+4}$ não gere menos cláusulas, algoritmos de transformação executam mais rápido em representações mais compactas.
 
-\figura[]{arvore_x_dag_time}{Árvore X DAG. Tempo de pré-processamento}{dag_x_tree_time}{}
+\figura[]{arvore_x_dag_time}{Árvore $\times$ DAG. Tempo de pré-processamento}{dag_x_tree_time}{}
 
 Por último, analisamos o tempo de execução na etapa de busca, ou seja, o tempo de execução do provador E. O gráfico da Figura \ref{dag_x_tree_ptime}, que ilustra estes resultados, foi construído de maneira similar ao gráfico da Figura \ref{dag_x_tree_time}, ou seja, cada ponto no eixo horizontal representa uma fórmula e cada altura indica a diferença entre o tempo medido para $C_i$ e o tempo medido para $C_{i+4}$. Mais uma vez, notamos que a maior concentração de pontos está acima ou sobre o eixo horizontal de diferença igual a zero. E, novamente, isto indica que, em grande parte das vezes, DAGs obtiveram melhor desempenho, mas agora na etapa de busca.
 
@@ -229,7 +229,7 @@ Com esta última observação, temos o primeiro indício de que, muitas vezes, f
 
 Com os resultados apresentados nesta seção, há um forte indício de que, independentemente dos resultados de optimalidade restrita dos algoritmos de renomeamento serem para árvores lineares, é melhor realizar conversão para DAG na grande maioria das vezes. Portanto, a partir de agora, voltamos nossa atenção para comparações envolvendo somente combinações que realizam conversão para DAG.
 
-\figura[]{arvore_x_dag_ptime}{Árvore X DAG. Tempo de busca}{dag_x_tree_ptime}{}
+\figura[]{arvore_x_dag_ptime}{Árvore $\times$ DAG. Tempo de busca}{dag_x_tree_ptime}{}
 
 \subsection{Comparações entre os algoritmos de renomeamento}
 
@@ -239,7 +239,7 @@ O primeiro resultado que observamos é bastante surpreendente e animador. Compar
 
 Estes resultados ocorrem dentro de famílias de fórmulas específicas. O algoritmo de Boy de la Tour produziu menos cláusulas somente na família de fórmulas \emph{nishimura}. O algoritmo que propomos produziu menos cláusulas principalmente nas famílias \emph{SYJ205}, \emph{SYJ206} e \emph{SYJ212}. As diferenças mais discrepantes ocorrem nas famílias \emph{SYJ206} e \emph{SYJ212}, onde o algoritmo que propomos é capaz de encontrar subfórmulas em níveis mais altos para renomear, enquanto o algoritmo de Boy de la Tour não é. Observando ainda os resultados das combinações análogas que aplicam simplificação ao final, notamos que os resultados são semelhantes, apenas trocando as famílias em que as diferenças são pequenas e mantendo as famílias onde as diferenças são maiores.
 
-\figura[]{boy_x_knapsack_ptime}{Boy de la Tour X Algoritmo proposto. Tempo de busca}{boy_x_knapsack_ptime}{}
+\figura[]{boy_x_knapsack_ptime}{Boy de la Tour $\times$ Algoritmo proposto. Tempo de busca}{boy_x_knapsack_ptime}{}
 
 Por último, comparamos os desempenhos das transformações produzidas pelos algoritmos de renomeamento durante a etapa de busca.
 
