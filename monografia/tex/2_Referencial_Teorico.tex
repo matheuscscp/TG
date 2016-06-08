@@ -106,7 +106,7 @@ No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{i
 
 \indent
 
-Apresentamos nesta seção os principais problemas envolvendo a lógica proposicional, que são o alvo deste trabalho.
+Apresentamos nesta seção os principais problemas envolvendo a lógica proposicional, que são os alvos deste trabalho.
 
 \begin{definition}
 	Seja $L$ um conjunto de cadeias sobre um alfabeto. Se nos referimos a $L$ como um \emph{problema}, referimo-nos ao problema de decidir se uma dada cadeia $w$ pertence a $L$. Ou seja, referimo-nos a $L$ como um \emph{problema de decisão}.
@@ -125,11 +125,9 @@ Apresentamos nesta seção os principais problemas envolvendo a lógica proposic
 	Definimos $\text{SAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é satisfatível} \}$ como o problema da \emph{satisfatibilidade} e $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é insatisfatível} \} = \{\phi \in \mathcal{L} \mid \phi \notin \text{SAT} \} = \overline{SAT}$ como o problema da \emph{insatisfatibilidade}.
 	
 	Definimos ainda $\text{VAL} = \{\phi \in \mathcal{L} \mid \phi \text{ é tautologia} \}$ como o problema da \emph{validade}.
-	
-	Observe que $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é contradição} \}$.
 \end{definition}
 
-O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica} \cite{kleene68book}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
+O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica} \cite{kleene68book}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas \cite{kleene68book}. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
 
 Davis et al. apresentam um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{redutíveis} um ao outro, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
 
@@ -159,7 +157,7 @@ Se $\phi$ é uma contingência, então existem interpretações $\mathbb{v}_1,\m
 \end{theorem}
 
 \begin{prova}
-Agora, seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
+Seja $A_1$ um decisor para UNSAT e considere o seguinte algoritmo, que chamaremos de $R_1$: ``Sobre a entrada $\phi \in \mathcal{L}$, dê a resposta de $A_1$ sobre a entrada $\neg \phi$.''
 
 Vamos examinar o comportamento de $R_1$ para todas as possibilidades, ou seja, $\forall \phi \in \mathcal{L}$.
 
@@ -320,19 +318,21 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
 	Se uma regra de reescrita transforma $\phi$ em $\psi$, dizemos que esta regra:
 	\begin{enumerate}
 		\item \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\phi) = \mathbb{v}(\psi), \forall \mathbb{v}$, ou seja, $\phi \leftrightarrow \psi \in \text{VAL}$.
-		\item \emph{preserva satisfatibilidade} se, e somente se, $\phi \in \text{SAT} \iff \psi \in \text{SAT}$.
+		\item \emph{preserva satisfatibilidade} se, e somente se, $\phi,\psi \in \text{SAT}$ ou $\phi,\psi \notin \text{SAT}$.
 	\end{enumerate}
 \end{definition}
 
 \begin{theorem}
 	\label{teo_flattening}
-	Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_n$ e $\phi_1$ da forma $\psi_1 \wedge ... \wedge \psi_k$. Então a transformação $$\phi \longmapsto \psi_1 \wedge ... \wedge \psi_k \wedge \phi_2 \wedge ... \wedge \phi_n$$ que chamaremos de \emph{aplainamento}, preserva equivalência. O mesmo vale para disjunções.
+	Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_n$ e $\phi_1$ da forma $\psi_1 \wedge ... \wedge \psi_k$. Então a transformação $$\phi \longmapsto \psi_1 \wedge ... \wedge \psi_k \wedge \phi_2 \wedge ... \wedge \phi_n$$ que chamaremos de \emph{aplainamento}, preserva equivalência.
+	
+	A regra é análoga para disjunções.
 \end{theorem}
 
 O Teorema \ref{teo_flattening} é apenas uma formalização do fato que podemos considerar uma conjunção de conjunções como uma única conjunção, e que o mesmo vale para disjunções. Usaremos este fato mais adiante, no Capítulo \ref{cap_resultados}.
 
 \begin{definition}
-    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente em símbolos proposicionais.
+    Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente aplicadas a símbolos proposicionais.
 \end{definition}
 
 \begin{theorem}
@@ -396,7 +396,7 @@ A prova do Teorema \ref{fnc_theorem} segue por indução na estrutura de uma fó
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
         \end{split}
     \end{equation*}
-    Agora, o número de passos de transformação é menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
+    Observe que o número de passos de transformação é menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
     
     Por fim, note que os fatos ilustrados por este exemplo ocorrem para qualquer subfórmula da forma $\phi_1 \leftrightarrow \phi_2$ ocorrendo com polaridade negativa em qualquer posição de $\phi$, $\forall \phi,\phi_1,\phi_2 \in \mathcal{L}$.
 \end{example}
@@ -441,6 +441,8 @@ Nesta seção introduzimos a transformação feita com renomeamento, que utiliza
 	como a \emph{definição de $\psi$ em $\phi$ segundo $s$}.
 \end{definition}
 
+Note que, na definição acima, $rep(\psi,s-\{(\psi,p)\})$ representa a fórmula $\psi$ com todas as outras substituições definidas por $s-\{(\psi,p)\}$ já aplicadas.
+
 \begin{theorem}
 	\label{struct_preserving}
 	Seja $s = \{(\phi_1,p_1),...,(\phi_n,p_n) \}$ uma substituição de $R = \{\phi_1,...,\phi_n \}$ em $\phi$, onde $R$ é um renomeamento de $\phi$. Então, a transformação $$\phi \longmapsto \mathcal{R}(\phi,s)$$ onde $$\mathcal{R}(\phi,s) = rep(\phi,s) \wedge def(\phi,\phi_1,s) \wedge ... \wedge def(\phi,\phi_n,s)$$
@@ -466,7 +468,7 @@ O Exemplo \ref{exemplo_renaming} mostra que transformações que preservam satis
 
 \indent
 
-Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter um renomeamento que reduz o número de cláusulas geradas por uma fórmula.
+Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter um renomeamento que procura reduzir o número de cláusulas geradas por uma fórmula \cite{de1992optimality}.
 
 \begin{definition}
 	Denotamos por $p(\phi)$ o \emph{número de cláusulas} da fórmula obtida por aplicar as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão na fórmula $\phi$. Denotamos ainda $p(\neg \phi)$ por $\overline{p}(\phi)$.
@@ -488,7 +490,7 @@ O número $p(\phi)$ pode ser calculado pela Tabela \ref{numerop} \cite{de1992opt
 	Considere a fórmula $\phi = (r \leftrightarrow s) \leftrightarrow (r \leftrightarrow s)$. Primeiro, seja $\phi_1 = r \leftrightarrow s$. Então $$p(\phi_1) = \overline{p}(r)p(s) + \overline{p}(s)p(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ e $$\overline{p}(\phi_1) = p(r)p(s) + \overline{p}(s)\overline{p}(r) = 1 \cdot 1 + 1 \cdot 1 = 2$$ Agora, $$p(\phi) = \overline{p}(\phi_1)p(\phi_1) + \overline{p}(\phi_1)p(\phi_1) = 2 \cdot 2 + 2 \cdot 2 = 8$$
 \end{example}
 
-Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R = D(s)$ é o renomeamento associado à substituição $s$.
+Denotaremos ainda $p(\mathcal{R}(\phi,s))$ simplesmente por $p(\phi,R)$, onde $R = \text{Dom}(s)$ é o renomeamento associado à substituição $s$.
 
 Agora, dada uma fórmula $\phi$, queremos escolher um renomeamento $R$ de $\phi$ tal que o número $p(\phi,R)$ seja o menor possível.
 
