@@ -87,7 +87,7 @@ Convertemos uma fórmula sob a forma de cadeia para uma árvore sintática. Impl
 
 \indent
 
-A próxima transformação coloca a fórmula na forma normal negada. Esta etapa é feita através de uma busca em profundidade \cite{CLRS09}, onde o vértice pai é processado antes dos filhos, ou seja, em ordem \emph{prefixada}. Realizamos esta transformação por dois motivos em particular:
+A próxima transformação coloca a fórmula na forma normal negada. Esta etapa é feita através de uma busca em profundidade \cite{CLRS09}, onde o vértice pai é processado antes dos filhos, ou seja, em \emph{pré-ordem}. Realizamos esta transformação por dois motivos em particular:
 \begin{enumerate}
 	\item As versões dos algoritmos para escolha de renomeamento e do algoritmo de conversão para a FNC são extremamente mais simples para fórmulas na FNN;
 	\item Optando por não realizar a conversão para DAG mais adiante, a transformação que obtemos simula uma árvore linear. É claro que, em geral, as fórmulas não são necessariamente árvores lineares. No entanto, se for representada por uma árvore sintática, qualquer fórmula na FNN é considerada uma árvore linear pelos algoritmos de renomeamento, pois eles não conseguem identificar vértices distintos representando uma mesma subfórmula. Portanto, podemos testar casos em que os algoritmos não necessariamente escolhem renomeamentos ótimos, mas necessariamente escolhem renomeamentos que geram o mesmo número de cláusulas.
@@ -99,7 +99,7 @@ Esta transformação é necessária somente para a realização de renomeamento 
 
 \indent
 
-Aplicamos aplainamento à exaustão, também através de busca em profundidade prefixada. Isto não é necessário para nenhuma outra transformação e portanto pode-se optar por não realizar aplainamento. No entanto, esta transformação faz com que apareçam mais situações em que é possível aplicar simplificação \cite{sebastiani2009automated}. E, ainda, no contexto de renomeamento, o exemplo a seguir evidencia como aplainamento pode ser proveitoso.
+Aplicamos aplainamento à exaustão, também através de busca em profundidade pré-ordem. Isto não é necessário para nenhuma outra transformação e portanto pode-se optar por não realizar aplainamento. No entanto, esta transformação faz com que apareçam mais situações em que é possível aplicar simplificação \cite{sebastiani2009automated}. E, ainda, no contexto de renomeamento, o exemplo a seguir evidencia como aplainamento pode ser proveitoso.
 
 Considere $\phi$ da forma $(p \wedge (q \wedge r)) \vee ... \vee ((p \wedge q) \wedge r)$. Na forma aplainada de $\phi$, $(p \wedge q \wedge r)$ pode ser renomeada por um único novo símbolo proposicional em suas duas ocorrências, se $\phi$ estiver representada por um DAG.
 
@@ -146,7 +146,7 @@ Por fim, é importante mencionar que, para calcular $f(n,n)$ através do Algorit
 
 \indent
 
-A última etapa do programa executa distribuição para colocar a fórmula na FNC e dá como saída a fórmula final sob a forma de cadeia. Esta etapa também é feita através de busca em profundidade prefixada. É possível ainda optar por não colocar a fórmula na FNC, ou ainda, durante a distribuição, aplicar as seguintes simplificações: eliminação de literais e cláusulas repetidos e eliminação de tautologias.
+A última etapa do programa executa distribuição para colocar a fórmula na FNC e dá como saída a fórmula final sob a forma de cadeia. Esta etapa também é feita através de busca em profundidade pré-ordem. É possível ainda optar por não colocar a fórmula na FNC, ou ainda, durante a distribuição, aplicar as seguintes simplificações: eliminação de literais e cláusulas repetidos e eliminação de tautologias.
 
 Escolhemos aplicar simplificação somente no final do programa, para que, justamente optando por não aplicar, fosse possível obter melhores comparações dos algoritmos de renomeamento. Não obstante, apresentamos resultados em que simplificação é aplicada.
 
