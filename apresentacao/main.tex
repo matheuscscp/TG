@@ -8,6 +8,23 @@
 \usepackage[brazilian]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
+\usepackage{mathbbol}
+\usepackage{multicol}
+\usepackage{algorithmic}
+\usepackage{tikz}
+
+
+% Declaracoes em Português
+\renewcommand\algorithmicend{\textbf{fim}}
+\renewcommand\algorithmicdo{\textbf{faça}}
+\renewcommand\algorithmicwhile{\textbf{enquanto}}
+\renewcommand\algorithmicfor{\textbf{para}}
+\renewcommand\algorithmicif{\textbf{se}}
+\renewcommand\algorithmicthen{\textbf{então}}
+\renewcommand\algorithmicelse{\textbf{senão}}
+\renewcommand\algorithmicreturn{\textbf{retorne}}
+\renewcommand\algorithmicrequire{\textbf{Entrada:}}
+\renewcommand\algorithmicensure{\textbf{Variáveis:}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tema do beamer
@@ -71,35 +88,11 @@
   \tableofcontents
 \end{frame}
 
-\section{Introdução}
-
-\begin{frame}
-	content...
-\end{frame}
-
-\section{Referencial teórico}
-
-\begin{frame}
-	content...
-\end{frame}
-
-\section{O algoritmo}
-
-\begin{frame}
-	content...
-\end{frame}
-
-\section{Resultados experimentais}
-
-\begin{frame}
-	content...
-\end{frame}
-
-\section{Conclusão}
-
-\begin{frame}
-	content...
-\end{frame}
+\input{tex/1_Introducao}
+\input{tex/2_Referencial_teorico}
+\input{tex/3_O_algoritmo}
+\input{tex/4_Resultados_experimentais}
+\input{tex/5_Conclusao}
 
 \section{Referências}
 
