@@ -232,5 +232,292 @@
 \end{frame}
 
 \begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	$$\phi = (\neg p_1 \wedge p_2 \wedge p_3) \vee (\neg q_1 \wedge q_2 \wedge \neg q_3) \vee (r_1 \wedge r_2 \wedge \neg r_3)$$
 	
+	\pause
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$\wedge$};
+		\node[vertex]  (3) at (   0,    0) {$\wedge$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex]  (5) at (  -4,   -1) {$\neg p_1$};
+		\node[vertex]  (6) at (  -3,   -1) {$p_2$};
+		\node[vertex]  (7) at (  -2,   -1) {$p_3$};
+		\node[vertex]  (8) at (  -1,   -1) {$\neg q_1$};
+		\node[vertex]  (9) at (   0,   -1) {$q_2$};
+		\node[vertex] (10) at (   1,   -1) {$\neg q_3$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (2) to  (5);
+		\draw[edge] (2) to  (6);
+		\draw[edge] (2) to  (7);
+		\draw[edge] (3) to  (8);
+		\draw[edge] (3) to  (9);
+		\draw[edge] (3) to (10);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$\wedge$};
+		\node[vertex]  (3) at (   0,    0) {$\wedge$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex]  (5) at (  -4,   -1) {$\neg p_1$};
+		\node[vertex]  (6) at (  -3,   -1) {$p_2$};
+		\node[vertex]  (7) at (  -2,   -1) {$p_3$};
+		\node[vertex]  (8) at (  -1,   -1) {$\neg q_1$};
+		\node[vertex]  (9) at (   0,   -1) {$q_2$};
+		\node[vertex] (10) at (   1,   -1) {$\neg q_3$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 1, p(\psi) = 27$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (2) to  (5);
+		\draw[edge] (2) to  (6);
+		\draw[edge] (2) to  (7);
+		\draw[edge] (3) to  (8);
+		\draw[edge] (3) to  (9);
+		\draw[edge] (3) to (10);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (1);
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$\wedge$};
+		\node[vertex]  (3) at (   0,    0) {$\wedge$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex]  (5) at (  -4,   -1) {$\neg p_1$};
+		\node[vertex]  (6) at (  -3,   -1) {$p_2$};
+		\node[vertex]  (7) at (  -2,   -1) {$p_3$};
+		\node[vertex]  (8) at (  -1,   -1) {$\neg q_1$};
+		\node[vertex]  (9) at (   0,   -1) {$q_2$};
+		\node[vertex] (10) at (   1,   -1) {$\neg q_3$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 9, p(\psi) = 3$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (2) to  (5);
+		\draw[edge] (2) to  (6);
+		\draw[edge] (2) to  (7);
+		\draw[edge] (3) to  (8);
+		\draw[edge] (3) to  (9);
+		\draw[edge] (3) to (10);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (2);
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$a$};
+		\node[vertex]  (3) at (   0,    0) {$\wedge$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex]  (8) at (  -1,   -1) {$\neg q_1$};
+		\node[vertex]  (9) at (   0,   -1) {$q_2$};
+		\node[vertex] (10) at (   1,   -1) {$\neg q_3$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 9, p(\psi) = 1$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (3) to  (8);
+		\draw[edge] (3) to  (9);
+		\draw[edge] (3) to (10);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (2);
+		\end{tikzpicture}
+	\end{figure}
+	
+	$a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$a$};
+		\node[vertex]  (3) at (   0,    0) {$\wedge$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex]  (8) at (  -1,   -1) {$\neg q_1$};
+		\node[vertex]  (9) at (   0,   -1) {$q_2$};
+		\node[vertex] (10) at (   1,   -1) {$\neg q_3$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 3, p(\psi) = 3$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (3) to  (8);
+		\draw[edge] (3) to  (9);
+		\draw[edge] (3) to (10);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (3);
+		\end{tikzpicture}
+	\end{figure}
+	
+	$a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$a$};
+		\node[vertex]  (3) at (   0,    0) {$b$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 3, p(\psi) = 1$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (3);
+		\end{tikzpicture}
+	\end{figure}
+	
+	$a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)$\\
+	$b \rightarrow (\neg q_1 \wedge q_2 \wedge \neg q_3)$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	\begin{figure}
+		\centering
+		
+		\begin{tikzpicture}
+		\tikzset{vertex/.style = {}}
+		\tikzset{edge/.style = {->}}
+		
+		\node[vertex]  (1) at (   0,    1) {$\vee$};
+		\node[vertex]  (2) at (  -3,    0) {$a$};
+		\node[vertex]  (3) at (   0,    0) {$b$};
+		\node[vertex]  (4) at (   3,    0) {$\wedge$};
+		\node[vertex] (11) at (   2,   -1) {$r_1$};
+		\node[vertex] (12) at (   3,   -1) {$r_2$};
+		\node[vertex] (13) at (   4,   -1) {$\neg r_3$};
+		
+		\node[vertex] (14) at (  -4,    1) {$\psi$};
+		
+		\node[vertex] (15) at (   4,    1) {$a_\psi^\phi = 1, p(\psi) = 3$};
+		
+		\draw[edge] (1) to  (2);
+		\draw[edge] (1) to  (3);
+		\draw[edge] (1) to  (4);
+		\draw[edge] (4) to (11);
+		\draw[edge] (4) to (12);
+		\draw[edge] (4) to (13);
+		
+		\tikzset{edge/.style = {->,red}}
+		\draw[edge] (14) to (4);
+		\end{tikzpicture}
+	\end{figure}
+	
+	$a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)$\\
+	$b \rightarrow (\neg q_1 \wedge q_2 \wedge \neg q_3)$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	$$(a \vee b \vee (r_1 \wedge r_2 \wedge \neg r_3)) \wedge (a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)) \wedge (b \rightarrow (\neg q_1 \wedge q_2 \wedge \neg q_3))$$
+	
+	\pause Número de cláusulas: 9
 \end{frame}
