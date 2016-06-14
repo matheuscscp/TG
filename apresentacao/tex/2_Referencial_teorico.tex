@@ -1,0 +1,236 @@
+
+\section{Referencial teórico}
+
+\begin{frame}{Lógica proposicional}{Sintaxe}
+	\vspace{-.2cm}
+	\begin{footnotesize}
+	\begin{block}{Símbolos proposicionais}
+		$\mathcal{P} = \{a,b,...,a_1,a_2,...,b_1,b_2,... \}$ é dito o conjunto de \emph{símbolos proposicionais}.
+	\end{block}
+	\pause
+	\vspace{-.2cm}
+	\begin{block}{Fórmulas}
+		Se $\phi \in \mathcal{P}$, então $\phi$ é uma \emph{fórmula}. Além disso, se $\phi_1,...,\phi_n$, $n \in \mathbb{N} \cup \{0 \}$, são fórmulas, então também são:
+		\begin{enumerate}
+			\pause\item \emph{Negação}: $\neg \phi_1$
+			\pause\item \emph{Conjunção}: $\phi_1 \wedge ... \wedge \phi_n$
+			\pause\item \emph{Disjunção}: $\phi_1 \vee ... \vee \phi_n$
+			\pause\item \emph{Implicação}: $\phi_1 \rightarrow \phi_2$
+			\pause\item \emph{Equivalência}: $\phi_1 \leftrightarrow \phi_2$
+		\end{enumerate}
+		\pause Denotamos o conjunto de fórmulas por $\mathcal{L}$.
+	\end{block}
+	\end{footnotesize}
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Sintaxe -- Exemplos}
+	\begin{itemize}
+		\item $\phi = (p \rightarrow q) \rightarrow \neg s$
+		\pause\item $\psi = (p \vee q) \leftrightarrow (r \wedge s)$
+		\pause\item $\xi  = \neg(p \rightarrow q)$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Sintaxe}
+	\begin{block}{Subfórmulas imediatas}
+		Na definição anterior, as fórmulas $\phi_i$ são \emph{subfórmulas imediatas}.
+	\end{block}
+	
+	\pause
+	\begin{block}{Subfórmulas}
+		Dizemos que $\psi$ é subfórmula de $\phi$ se $\psi$ é subfórmula imediata de $\phi$, ou se $\psi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\phi$.
+		
+		\pause Notação: $\psi \sqsubset \phi$ e $\{\psi \mid \psi \sqsubset \phi \} = SF(\phi)$
+	\end{block}
+	
+	\pause Exemplo: $\phi = (p \wedge q \wedge (r \rightarrow s))$\\
+	\pause $p$, $q$ e $r \rightarrow s$ são subfórmulas imediatas de $\phi$.\\
+	\pause $SF(\phi) = \{p,q,r \rightarrow s,r,s \}$
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Semântica}
+	\vspace{-.3cm}
+	\begin{footnotesize}
+	\begin{block}{Valorações booleanas}
+		Dizemos que $\mathbb{v}_0$ é uma \emph{valoração booleana} se $\mathbb{v}_0 : \mathcal{P} \longmapsto \{V,F \}$.
+	\end{block}
+	\pause
+	\vspace{-.2cm}
+	\begin{block}{Interpretações}
+		Seja $\mathbb{v}_0$ é uma valoração booleana. Dizemos que $\mathbb{v} : \mathcal{L} \longmapsto \{V,F \}$ é uma \emph{interpretação definida por $\mathbb{v}_0$}, se:
+		\begin{enumerate}
+			\pause\item Se $\phi_1 \in \mathcal{P}$, então $\mathbb{v}(\phi_1) = \mathbb{v}_0(\phi_1)$.
+			\pause\item $\mathbb{v}(\neg \phi_1) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$.
+			\pause\item $\mathbb{v}(\phi_1 \wedge ... \wedge \phi_n) = V$ se, e somente se, $\mathbb{v}(\phi_i) = V$, para todo $i$.
+			\pause\item $\mathbb{v}(\phi_1 \vee ... \vee \phi_n) = V$ se, e somente se, $\mathbb{v}(\phi_i) = V$, para algum $i$.
+			\pause\item $\mathbb{v}(\phi_1 \rightarrow \phi_2) = V$ se, e somente se, $\mathbb{v}(\phi_1) = F$ ou $\mathbb{v}(\phi_2) = V$.
+			\pause\item $\mathbb{v}(\phi_1 \leftrightarrow \phi_2) = V$ se, e somente se, $\mathbb{v}(\phi_1) = \mathbb{v}(\phi_2)$.
+		\end{enumerate}
+	\end{block}
+	\end{footnotesize}
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Semântica -- Exemplos}
+	Seja $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,V),(r,F) \}$ e considere $\phi = (\neg p \wedge q) \rightarrow r$. Então:
+	\begin{enumerate}
+		\pause\item $\mathbb{v}(\neg p) = F$
+		\pause\item $\mathbb{v}(\neg p \wedge q) = F$
+		\pause\item $\mathbb{v}(\phi) = \mathbb{v}((\neg p \wedge q) \rightarrow r) = V$
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Semântica -- Algumas definições}
+	\begin{enumerate}
+		\item Se existe $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, dizemos que $\phi$ é \emph{satisfatível}.
+		\pause\item Se existe $\mathbb{v}$ tal que $\mathbb{v}(\phi) = F$, dizemos que $\phi$ é \emph{falsificável}.
+		\pause\item Se $\mathbb{v}(\phi) = V$ para toda $\mathbb{v}$, dizemos que $\phi$ é uma \emph{tautologia}.
+		\pause\item Se $\mathbb{v}(\phi) = F$ para toda $\mathbb{v}$, dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
+		\pause\item Se $\phi$ é satisfatível e falsificável, dizemos que $\phi$ é uma \emph{contingência}.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Lógica proposicional}{Semântica -- Exemplos}
+	Seja $\phi$ uma fórmula qualquer, $\psi_1$ uma tautologia, $\psi_2$ uma contradição e $\psi_3$ uma contingência. Então:
+	\begin{multicols}{2}
+	\pause São tautologias:
+	\begin{itemize}
+		\pause\item $\phi \vee \neg \phi$
+		\pause\item $\phi \rightarrow \phi$
+		\pause\item $\phi \leftrightarrow \phi$
+		\pause\item $\neg \psi_2$
+	\end{itemize}
+	\pause São contradições:
+	\begin{itemize}
+		\pause\item $\phi \wedge \neg \phi$
+		\pause\item $\phi \leftrightarrow \neg \phi$
+		\pause\item $\neg \psi_1$
+	\end{itemize}
+	\pause São contingências:
+	\begin{itemize}
+		\pause\item $p$
+		\pause\item $\neg p$
+		\pause\item $p \wedge q$
+		\pause\item $p \vee q$
+		\pause\item $p \rightarrow q$
+		\pause\item $p \leftrightarrow q$
+		\pause\item $\neg \psi_3$
+	\end{itemize}
+\end{multicols}
+\end{frame}
+
+\begin{frame}{Problemas da lógica proposicional}
+	Seja $L \subseteq \mathcal{L}$. Se nos referimos a $L$ como um \emph{problema}, referimo-nos ao problema de, dada $\phi$ qualquer, determinar se $\phi \in L$ ou se $\phi \notin L$.
+	\vspace{-.3cm}
+	\begin{enumerate}
+		\pause\item $\text{SAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é satisfatível} \}$
+		\pause\item $\text{UNSAT} = \{\phi \in \mathcal{L} \mid \phi \text{ é insatisfatível} \}\pause = \overline{\text{SAT}}$
+		\pause\item $\text{VAL} = \{\phi \in \mathcal{L} \mid \phi \text{ é tautologia} \}$
+	\end{enumerate}
+	
+	\vspace{.2cm}
+	\pause Observações:
+	\begin{enumerate}
+		\pause\item Há algoritmos para SAT \cite{davis1960computing,davis1962machine,biere2009conflict}.
+		\pause\item SAT e UNSAT são redutíveis um ao outro. \pause (claro!)
+		\pause\item SAT e VAL são redutíveis um ao outro.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Formas normais}{Regras de reescrita}
+	Uma \emph{regra de reescrita} que transforma $\phi$ em $\psi$, escrito $\phi \longmapsto \psi$,
+	\begin{enumerate}
+		\pause\item \emph{preserva equivalência} se, e somente se, $\mathbb{v}(\phi) = \mathbb{v}(\psi), \forall \mathbb{v}$.
+		\pause\item \emph{preserva satisfatibilidade} se, e somente se, $\phi,\psi \in \text{SAT}$ ou $\phi,\psi \notin \text{SAT}$.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Formas normais}{Forma normal negada (FNN)}
+	$$(p \wedge \neg q \wedge \neg r) \vee (x \wedge \neg y \wedge (r \vee s))$$
+	
+	\pause As transformações:
+	\begin{enumerate}
+		\pause\item $\neg \neg \phi_1 \longmapsto \phi_1$ \;\; (eliminação de dupla negação)
+		\pause\item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$ \;\; (De Morgan)
+		\pause\item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$ \;\; (De Morgan)
+		\pause\item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
+		\pause\item $\phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$
+	\end{enumerate}
+	\pause preservam equivalência!
+\end{frame}
+
+\begin{frame}{Formas normais}{Forma normal clausal (FNC)}
+	$$(p \vee \neg q \vee \neg r) \wedge (x \vee \neg y \vee r \vee s) \wedge (a \vee \neg b \vee c)$$
+	
+	\pause A transformação:
+	\begin{center}
+		$\phi \vee (\psi \wedge \xi) \longmapsto (\phi \vee \psi) \wedge (\phi \vee \xi)$ \;\; (distribuição)
+	\end{center}
+	\pause preserva equivalência!
+	
+	\pause Geralmente provoca crescimento exponencial.
+\end{frame}
+
+\begin{frame}{Renomeamento}
+	\begin{enumerate}
+		\item Escolhemos um conjunto de subfórmulas $R \subseteq SF(\phi)$.
+		\pause\item Para cada $\psi \in R$:
+		\begin{enumerate}
+			\pause\item Escolhemos um símbolo proposicional novo $s(\psi) \in \mathcal{P}$.
+			\pause\item Trocamos todas as ocorrências de $\psi$ por $s(\psi)$.
+			\pause\item Incluímos a definição $s(\psi) \rightarrow \psi$ em conjunção.
+		\end{enumerate}
+	\end{enumerate}
+	
+	\begin{small}
+	\pause Exemplo: $(\neg p_1 \wedge p_2 \wedge p_3) \vee (\neg q_1 \wedge q_2 \wedge \neg q_3) \vee (r_1 \wedge r_2 \wedge \neg r_3)$\\
+	\pause Seja $\phi_1 = \neg p_1 \wedge p_2 \wedge p_3$ e $\phi_2 = \neg q_1 \wedge q_2 \wedge \neg q_3$.\\
+	\pause Escolhendo $R = \{\phi_1,\phi_2 \}$, $s(\phi_1) = a$ e $s(\phi_2) = b$, temos\pause $$(a \vee b \vee (r_1 \wedge r_2 \wedge \neg r_3)) \wedge (a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)) \wedge (b \rightarrow (\neg q_1 \wedge q_2 \wedge \neg q_3))$$
+	
+	\pause Não preserva equivalência. \pause Mas preserva satisfatibilidade!
+	\end{small}
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Contando cláusulas}
+	Denotamos o \emph{número de cláusulas} geradas por $\phi$ ao ser colocada na FNC por $p(\phi)$.
+	\pause
+	\begin{center}
+	\begin{tabular}{c|c}
+		Forma de $\phi$                   & $p(\phi)$                                 \\ \hline
+		$\phi_1 \wedge ... \wedge \phi_n$ & $p(\phi_1) + ... + p(\phi_n)$                                  \\
+		$\phi_1 \vee ... \vee \phi_n$     & $p(\phi_1) \cdot ... \cdot p(\phi_n)$                       \\
+		$x \text{ ou } \neg x, x \in \mathcal{P}$            & $1$                                                             \\
+	\end{tabular}
+	\end{center}
+	
+	\pause Exemplo: $\phi = (\neg p_1 \wedge p_2 \wedge p_3) \vee (\neg q_1 \wedge q_2 \wedge \neg q_3) \vee (r_1 \wedge r_2 \wedge \neg r_3)$\\
+	\pause Temos que $$p(\phi) = (1 + 1 + 1)(1 + 1 + 1)(1 + 1 + 1) = 3^3 = 27$$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{O problema}
+	\begin{block}{Problema}
+		Escolher $R \subseteq SF(\phi)$ de modo que o número de cláusulas $p(\phi,R)$ da transformação por renomeamento seja mínimo.
+	\end{block}
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour}
+	\begin{block}{Árvores lineares}
+		Seja $\phi$ uma fórmula na FNN. Se cada subfórmula de $\phi$ ocorre somente uma vez, dizemos que $\phi$ é uma \emph{árvore linear}.
+	\end{block}
+	
+	\pause Se $\phi$ é uma árvore linear, o algoritmo de Boy de la Tour encontra um conjunto $R \subseteq SF(\phi)$ tal que $p(\phi,R)$ é ótimo (mínimo).
+	
+	\vspace{.1cm}
+	\pause Seu custo de tempo no pior caso é $O(|SF(\phi)|^2)$.
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour}
+	O algoritmo escreve o número de cláusulas na forma irredutível $$p(\phi) = c + a_\psi^\phi \cdot p(\psi)$$
+	
+	\pause Logo, se $R = \{\psi \}$, então $$p(\phi,R) = c + a_\psi^\phi + p(\psi)$$
+	
+	\pause Assim, é feita em $\phi$ uma busca em profundidade pré-ordem, incluindo cada $\psi \sqsubset \phi$ que satisfaz $$a_\psi^\phi \cdot p(\psi) > a_\psi^\phi + p(\psi)$$
+\end{frame}
+
+\begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}
+	
+\end{frame}

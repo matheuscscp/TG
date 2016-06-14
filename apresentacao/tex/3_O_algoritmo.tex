@@ -1,0 +1,60 @@
+
+\section{O algoritmo}
+
+\begin{frame}{Uma afirmação}
+	\begin{block}{Afirmação}
+		Seja $R \subseteq SF(\phi)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas. Então $R - \{\psi \}$ é ótimo entre os que não consideram $\psi$ e contêm no máximo $j-1$ subfórmulas.
+	\end{block}
+	
+	\pause Contraexemplo:\\
+	\pause$\xi_1 = p_1 \wedge p_2 \wedge p_3 \wedge p_4$, \pause$\xi_2 = q_1 \wedge q_2$, \pause$\xi_3 = r_1 \wedge r_2$, \pause$\xi_4 = s_1 \wedge ... \wedge s_{100}$ \pause e $\phi = (\xi_1 \vee \xi_2) \wedge (\xi_3 \vee \xi_4)$\\
+	\pause Então $p(\phi) = 208$ \pause e $R = \{\xi_1,\xi_4 \}$ é ótimo, com $p(\phi,R) = 108$.\\
+	\pause Mas $R' = R - \{\xi_4 \}$ não é ótimo, pois \pause $$p(\phi,R') \pause = p(\phi,\{\xi_1 \}) \pause = 206 \pause > 110 \pause = p(\phi,\{\xi_3 \})$$
+\end{frame}
+
+\begin{frame}{Uma afirmação}
+	\begin{center}
+		Logo, a afirmação não é verdadeira.
+		
+		\pause Mas a usaremos como heurística!
+	\end{center}
+\end{frame}
+
+\begin{frame}{Uma fórmula recursiva}
+	Seja $SF(\phi) = \{\phi_1,...,\phi_n \}$ e denote por $f(i,j)$ um renomeamento ótimo entre os que contêm no máximo $j$ subfórmulas e consideram somente as subfórmulas em $\{\phi_1,...,\phi_i \}$. \pause Então $$f(i,0) = f(0,j) = \emptyset, \forall i,j$$ \pause e
+	\begin{footnotesize}
+	\[
+	f(i,j) =
+	\begin{cases} 
+	\hfill f(i-1,j-1) \cup \{\phi_i \}   \hfill & \text{ se } p(\phi,f(i-1,j-1) \cup \{\phi_i \}) < p(\phi,f(i-1,j)) \\
+	\hfill f(i-1,j) \hfill & \text{ caso contrário} \\
+	\end{cases}
+	\]
+	\end{footnotesize}
+	
+	\pause Queremos $f(n,n)$!
+\end{frame}
+
+\begin{frame}{Uma implementação por computação ascendente}
+	\begin{algorithmic}[1]
+		\STATE seja $dp[0..n]$ um novo arranjo com $dp[j] = \emptyset$ para todo $j$
+		\FOR{$i \gets 1$ \textbf{até} $n$}
+			\FOR{$j \gets n$ \textbf{descendo até} $1$}
+				\STATE $alt \gets dp[j-1] \cup \{\phi_i\}$
+				\IF{$p(\phi,alt) < p(\phi,dp[j])$}
+					\STATE $dp[j] \gets alt$
+				\ENDIF
+			\ENDFOR
+		\ENDFOR
+	\end{algorithmic}
+	
+	\pause O custo de tempo no pior caso é $O(|SF(\phi)|^3)$.
+\end{frame}
+
+\begin{frame}{Conjectura para árvores lineares}
+	\begin{block}{Conjectura}
+		Se $\phi$ é uma árvore linear e $SF(\phi) = \{\phi_1,...,\phi_n \}$, então $f(n,n)$ é ótimo.
+	\end{block}
+	
+	\pause Apresentamos resultados experimentais para a conjectura na próxima seção.
+\end{frame}
