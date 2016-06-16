@@ -23,14 +23,6 @@
 	\end{footnotesize}
 \end{frame}
 
-\begin{frame}{Lógica proposicional}{Sintaxe -- Exemplos}
-	\begin{itemize}
-		\item $\phi = (p \rightarrow q) \rightarrow \neg s$
-		\pause\item $\psi = (p \vee q) \leftrightarrow (r \wedge s)$
-		\pause\item $\xi  = \neg(p \rightarrow q)$
-	\end{itemize}
-\end{frame}
-
 \begin{frame}{Lógica proposicional}{Sintaxe}
 	\begin{block}{Subfórmulas imediatas}
 		Na definição anterior, as fórmulas $\phi_i$ são \emph{subfórmulas imediatas}.
@@ -42,10 +34,6 @@
 		
 		\pause Notação: $\psi \sqsubset \phi$ e $\{\psi \mid \psi \sqsubset \phi \} = SF(\phi)$
 	\end{block}
-	
-	\pause Exemplo: $\phi = (p \wedge q \wedge (r \rightarrow s))$\\
-	\pause $p$, $q$ e $r \rightarrow s$ são subfórmulas imediatas de $\phi$.\\
-	\pause $SF(\phi) = \{p,q,r \rightarrow s,r,s \}$
 \end{frame}
 
 \begin{frame}{Lógica proposicional}{Semântica}
@@ -70,15 +58,6 @@
 	\end{footnotesize}
 \end{frame}
 
-\begin{frame}{Lógica proposicional}{Semântica -- Exemplos}
-	Seja $\mathbb{v}$ definida por $\mathbb{v}_0 = \{(p,V),(q,V),(r,F) \}$ e considere $\phi = (\neg p \wedge q) \rightarrow r$. Então:
-	\begin{enumerate}
-		\pause\item $\mathbb{v}(\neg p) = F$
-		\pause\item $\mathbb{v}(\neg p \wedge q) = F$
-		\pause\item $\mathbb{v}(\phi) = \mathbb{v}((\neg p \wedge q) \rightarrow r) = V$
-	\end{enumerate}
-\end{frame}
-
 \begin{frame}{Lógica proposicional}{Semântica -- Algumas definições}
 	\begin{enumerate}
 		\item Se existe $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, dizemos que $\phi$ é \emph{satisfatível}.
@@ -87,35 +66,6 @@
 		\pause\item Se $\mathbb{v}(\phi) = F$ para toda $\mathbb{v}$, dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
 		\pause\item Se $\phi$ é satisfatível e falsificável, dizemos que $\phi$ é uma \emph{contingência}.
 	\end{enumerate}
-\end{frame}
-
-\begin{frame}{Lógica proposicional}{Semântica -- Exemplos}
-	Seja $\phi$ uma fórmula qualquer, $\psi_1$ uma tautologia, $\psi_2$ uma contradição e $\psi_3$ uma contingência. Então:
-	\begin{multicols}{2}
-	\pause São tautologias:
-	\begin{itemize}
-		\pause\item $\phi \vee \neg \phi$
-		\pause\item $\phi \rightarrow \phi$
-		\pause\item $\phi \leftrightarrow \phi$
-		\pause\item $\neg \psi_2$
-	\end{itemize}
-	\pause São contradições:
-	\begin{itemize}
-		\pause\item $\phi \wedge \neg \phi$
-		\pause\item $\phi \leftrightarrow \neg \phi$
-		\pause\item $\neg \psi_1$
-	\end{itemize}
-	\pause São contingências:
-	\begin{itemize}
-		\pause\item $p$
-		\pause\item $\neg p$
-		\pause\item $p \wedge q$
-		\pause\item $p \vee q$
-		\pause\item $p \rightarrow q$
-		\pause\item $p \leftrightarrow q$
-		\pause\item $\neg \psi_3$
-	\end{itemize}
-\end{multicols}
 \end{frame}
 
 \begin{frame}{Problemas da lógica proposicional}
@@ -128,12 +78,7 @@
 	\end{enumerate}
 	
 	\vspace{.2cm}
-	\pause Observações:
-	\begin{enumerate}
-		\pause\item Há algoritmos para SAT \cite{davis1960computing,davis1962machine,biere2009conflict}.
-		\pause\item SAT e UNSAT são redutíveis um ao outro. \pause (claro!)
-		\pause\item SAT e VAL são redutíveis um ao outro.
-	\end{enumerate}
+	\pause $$\phi \in \text{VAL} \iff \neg \phi \in \text{UNSAT} \implies \phi \in \text{SAT}$$
 \end{frame}
 
 \begin{frame}{Formas normais}{Regras de reescrita}
@@ -149,11 +94,11 @@
 	
 	\pause As transformações:
 	\begin{enumerate}
-		\pause\item $\neg \neg \phi_1 \longmapsto \phi_1$ \;\; (eliminação de dupla negação)
-		\pause\item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$ \;\; (De Morgan)
-		\pause\item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$ \;\; (De Morgan)
-		\pause\item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
-		\pause\item $\phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$
+		\item $\neg \neg \phi_1 \longmapsto \phi_1$ \;\; (eliminação de dupla negação)
+		\item $\neg(\phi_1 \wedge ... \wedge \phi_n) \longmapsto \neg \phi_1 \vee ... \vee \neg \phi_n$ \;\; (De Morgan)
+		\item $\neg(\phi_1 \vee ... \vee \phi_n) \longmapsto \neg \phi_1 \wedge ... \wedge \neg \phi_n$ \;\; (De Morgan)
+		\item $\phi_1 \rightarrow \phi_2 \longmapsto \neg \phi_1 \vee \phi_2$
+		\item $\phi_1 \leftrightarrow \phi_2 \longmapsto (\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)$
 	\end{enumerate}
 	\pause preservam equivalência!
 \end{frame}
@@ -167,7 +112,8 @@
 	\end{center}
 	\pause preserva equivalência!
 	
-	\pause Geralmente provoca crescimento exponencial.
+	\vspace{.5cm}
+	\pause Geralmente provoca crescimento exponencial!
 \end{frame}
 
 \begin{frame}{Renomeamento}
@@ -182,9 +128,9 @@
 	\end{enumerate}
 	
 	\begin{small}
-	\pause Exemplo: $(\neg p_1 \wedge p_2 \wedge p_3) \vee (\neg q_1 \wedge q_2 \wedge \neg q_3) \vee (r_1 \wedge r_2 \wedge \neg r_3)$\\
-	\pause Seja $\phi_1 = \neg p_1 \wedge p_2 \wedge p_3$ e $\phi_2 = \neg q_1 \wedge q_2 \wedge \neg q_3$.\\
-	\pause Escolhendo $R = \{\phi_1,\phi_2 \}$, $s(\phi_1) = a$ e $s(\phi_2) = b$, temos\pause $$(a \vee b \vee (r_1 \wedge r_2 \wedge \neg r_3)) \wedge (a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3)) \wedge (b \rightarrow (\neg q_1 \wedge q_2 \wedge \neg q_3))$$
+	\pause Exemplo: $(\neg p_1 \wedge p_2 \wedge p_3) \vee (\neg q_1 \wedge q_2 \wedge \neg q_3)$\\
+	\pause Seja $\phi_1 = \neg p_1 \wedge p_2 \wedge p_3$.\\
+	\pause Escolhendo $R = \{\phi_1 \}$ e $s(\phi_1) = a$, temos\pause $$(a \vee (\neg q_1 \wedge q_2 \wedge \neg q_3)) \wedge (a \rightarrow (\neg p_1 \wedge p_2 \wedge p_3))$$
 	
 	\pause Não preserva equivalência. \pause Mas preserva satisfatibilidade!
 	\end{small}
