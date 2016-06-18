@@ -1,45 +1,16 @@
 
 \section{Introdução}
 
-\begin{frame}{Lógica}
+\begin{frame}{Motivação}
 	\begin{itemize}
-		\item Lógicas são utilizadas para representar e raciocinar sobre problemas computacionais.
-		\pause\item A representação se dá através de uma linguagem formal, de \emph{fórmulas}.
-		\pause\item Para atribuir um significado a cada fórmula, define-se para a lógica uma \emph{semântica}\pause, que possui diferentes \emph{interpretações}.
-		\pause\item Em lógicas clássicas, os significados possíveis são somente \emph{verdadeiro} ou \emph{falso}.
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{SAT}
-	\emph{Satisfatibilidade}: Determinar se existe uma interpretação sob a qual uma dada fórmula é verdadeira.
-	\begin{itemize}
-		\pause\item Possui grande interesse prático:
+		\item SAT é de grande interesse prático \pause e de interesse teórico fundamental.
+		\pause\item Conjectura-se que não exista solução polinomial.
+		\pause\item A maioria dos algoritmos se baseia em formas normais.
+		\pause\item Tais algoritmos precisam de pré-processamento\pause, que precisa:
 		\begin{itemize}
-			\pause\item Síntese \cite{bloem2014sat}, otimização \cite{nieuwenhuis2006sat} e verificação \cite{gupta2006sat} de \textit{hardware}.
-			\pause\item Raciocínio automático \cite{harrison2009handbook}.
-			\pause\item Biologia e medicina \cite{horvitz1992automated}.
+			\pause\item ser rápido\pause; e
+			\item produzir fórmulas ``pequenas''.
 		\end{itemize}
-		\pause\item Interesse teórico fundamental:
-		\begin{itemize}
-			\pause\item Primeiro problema NP-completo \cite{cook1971complexity}.
-			\pause\item Deu base para formalizar P \textit{versus} NP \cite{cook1971complexity}.
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\begin{frame}{VAL}
-	\emph{Validade}: Determinar se uma dada fórmula é verdadeira sob qualquer interpretação.
-	
-	\vspace{.5cm}
-	\pause SAT e VAL são redutíveis um ao outro!
-\end{frame}
-
-\begin{frame}{Algoritmos para SAT e VAL}
-	\begin{itemize}
-		\item Há diversos algoritmos de busca para SAT e VAL \cite{davis1960computing,davis1962machine,biere2009conflict}.
-		\pause\item Conjectura-se que todos são exponenciais \cite{cook1971complexity}.
-		\pause\item Muitos são baseados em \emph{formas normais}: subconjuntos de fórmulas.
-		\pause\item Algoritmos baseados em formas normais precisam de pré-processamento eficiente.
 	\end{itemize}
 \end{frame}
 
@@ -56,7 +27,7 @@
 \begin{frame}{O trabalho}
 	\begin{itemize}
 		\item Investigamos algoritmos baseados na \emph{forma normal clausal}.
-		\pause\item Tentamos obter fórmulas pequenas reduzindo o \emph{número de cláusulas}\pause, através de \emph{renomeamento}.
+		\pause\item Tentamos obter fórmulas pequenas reduzindo o \emph{número de cláusulas}\pause, através de \emph{renomeamento} \cite{plaisted1986structure}.
 		\pause\item Boy de la Tour \cite{de1992optimality} e Jackson et al. \cite{jackson2004clause} propõem algoritmos para este problema.
 		\pause\item Propomos um algoritmo baseado em programação dinâmica para este problema.
 		\pause\item Comparamos experimentalmente o algoritmo que propomos com o de Boy de la Tour.

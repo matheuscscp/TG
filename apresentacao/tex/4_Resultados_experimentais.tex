@@ -143,7 +143,7 @@
 	\begin{itemize}
 		\pause\item Na Combinação 1, 73\% excedeu limite de memória.
 		\pause\item Na Combinação 2, 67\% excedeu limite de memória e 1\% excedeu limite de tempo.
-		\pause\item Nos 27\% em que a transformação terminou em C1 e C2, 5 fórmulas (menos de 1\%) \emph{não} ficaram menores em C2.
+		\pause\item Nos 27\% em que a transformação terminou em C1 e C2, somente 5 fórmulas (menos de 1\% do \textit{benchmark}) mantiveram o tamanho em C2.
 	\end{itemize}
 	
 	\pause Simplificação é bom. \pause Mas não é suficiente!
@@ -211,8 +211,8 @@
 	\pause \begin{center}Comparando número de cláusulas.\end{center}
 	\begin{itemize}
 		\pause\item A transformação terminou em C7 e C9 para 73\% das fórmulas.
-		\pause\item Em 3\%, a transformação terminou em C7 e C9 e C7 produziu menos cláusulas, com $\max \{|C7-C9| \} = 3$.
-		\pause\item Em 8\%, a transformação terminou em C7 e C9 e C9 produziu menos cláusulas, com $\max \{|C7-C9| \} = 1.572.786$, onde C9 produziu 78 cláusulas.
+		\pause\item Em 3\% do \textit{benchmark}, C7 produziu menos cláusulas, com $\max \{|C7-C9| \} = 3$.
+		\pause\item Em 8\%, C9 produziu menos cláusulas, com $\max \{|C7-C9| \} = 1.572.786$, onde C9 produziu 78 cláusulas.
 	\end{itemize}
 \end{frame}
 

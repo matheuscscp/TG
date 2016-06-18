@@ -23,14 +23,14 @@
 	\end{footnotesize}
 \end{frame}
 
-\begin{frame}{Lógica proposicional}{Sintaxe}
+\begin{frame}{Lógica proposicional}{Sintaxe -- Subfórmulas}
 	\begin{block}{Subfórmulas imediatas}
 		Na definição anterior, as fórmulas $\phi_i$ são \emph{subfórmulas imediatas}.
 	\end{block}
 	
 	\pause
-	\begin{block}{Subfórmulas}
-		Dizemos que $\psi$ é subfórmula de $\phi$ se $\psi$ é subfórmula imediata de $\phi$, ou se $\psi$ é subfórmula de $\xi$ e $\xi$ é subfórmula imediata de $\phi$.
+	\begin{block}{Subfórmulas próprias}
+		Dizemos que $\psi$ é \emph{subfórmula própria de $\phi$} se $\psi$ é subfórmula imediata de $\phi$, ou se $\psi$ é subfórmula própria de $\xi$ e $\xi$ é subfórmula imediata de $\phi$.
 		
 		\pause Notação: $\psi \sqsubset \phi$ e $\{\psi \mid \psi \sqsubset \phi \} = SF(\phi)$
 	\end{block}
@@ -61,10 +61,8 @@
 \begin{frame}{Lógica proposicional}{Semântica -- Algumas definições}
 	\begin{enumerate}
 		\item Se existe $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, dizemos que $\phi$ é \emph{satisfatível}.
-		\pause\item Se existe $\mathbb{v}$ tal que $\mathbb{v}(\phi) = F$, dizemos que $\phi$ é \emph{falsificável}.
+		\pause\item Se $\mathbb{v}(\phi) = F$ para toda $\mathbb{v}$, dizemos que $\phi$ é \emph{insatisfatível}.
 		\pause\item Se $\mathbb{v}(\phi) = V$ para toda $\mathbb{v}$, dizemos que $\phi$ é uma \emph{tautologia}.
-		\pause\item Se $\mathbb{v}(\phi) = F$ para toda $\mathbb{v}$, dizemos que $\phi$ é uma \emph{contradição}, ou que $\phi$ é \emph{insatisfatível}.
-		\pause\item Se $\phi$ é satisfatível e falsificável, dizemos que $\phi$ é uma \emph{contingência}.
 	\end{enumerate}
 \end{frame}
 
@@ -78,7 +76,7 @@
 	\end{enumerate}
 	
 	\vspace{.2cm}
-	\pause $$\phi \in \text{VAL} \iff \neg \phi \in \text{UNSAT} \implies \phi \in \text{SAT}$$
+	\pause $$\phi \in \text{VAL} \iff \neg \phi \in \text{UNSAT} \iff \neg \phi \notin \text{SAT}$$
 \end{frame}
 
 \begin{frame}{Formas normais}{Regras de reescrita}
@@ -174,7 +172,7 @@
 	
 	\pause Logo, se $R = \{\psi \}$, então $$p(\phi,R) = c + a_\psi^\phi + p(\psi)$$
 	
-	\pause Assim, é feita em $\phi$ uma busca em profundidade pré-ordem, incluindo cada $\psi \sqsubset \phi$ que satisfaz $$a_\psi^\phi \cdot p(\psi) > a_\psi^\phi + p(\psi)$$
+	\pause Assim, é feita em $\phi$ uma busca em profundidade pré-ordem, incluindo em $R$ cada $\psi \sqsubset \phi$ que satisfaz $$a_\psi^\phi \cdot p(\psi) > a_\psi^\phi + p(\psi)$$
 \end{frame}
 
 \begin{frame}{Reduzindo o número de cláusulas}{Algoritmo de Boy de la Tour -- Exemplo}

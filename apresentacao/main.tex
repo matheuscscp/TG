@@ -97,8 +97,7 @@
 
 \section{Referências}
 
-\begin{frame}[allowframebreaks]
-	\frametitle{Referências}
+\begin{frame}{Referências}
 	\bibliographystyle{ieeetr}
 	\bibliography{referencias}
 \end{frame}
@@ -109,30 +108,6 @@
 	\begin{center}
 		Obrigado!\\
 		matheuscscp@gmail.com
-	\end{center}
-\end{frame}
-
-\begin{frame}{Problemas da lógica proposicional}
-	Seja $A_{\text{UNSAT}}$ um algoritmo para UNSAT e $R_{\text{VAL}} =$\break ``Sobre a entrada $\phi \in \mathcal{L}$: Dê a resposta de $A_{\text{UNSAT}}$ sobre $\neg \phi$.''
-	
-	\begin{center}
-		\begin{tabular}{c|c|c|c}
-			$\phi$       & $\neg \phi$  & $A_{\text{UNSAT}}(\neg \phi)$ & $R_{\text{VAL}}(\phi)$ \\ \hline
-			Tautologia   & Contradição  & Sim                            & Sim                          \\
-			Contradição  & Tautologia   & Não                            & Não                          \\
-			Contingência & Contingência & Não                            & Não                         
-		\end{tabular}
-	\end{center}
-	
-	\pause Seja $A_{\text{VAL}}$ um algoritmo para VAL e $R_{\text{UNSAT}} =$\break ``Sobre a entrada $\phi \in \mathcal{L}$: Dê a resposta de $A_{\text{VAL}}$ sobre $\neg \phi$.''
-	
-	\begin{center}
-		\begin{tabular}{c|c|c|c}
-			$\phi$       & $\neg \phi$  & $A_{\text{VAL}}(\neg \phi)$ & $R_{\text{UNSAT}}(\phi)$ \\ \hline
-			Tautologia   & Contradição  & Não                            & Não                          \\
-			Contradição  & Tautologia   & Sim                            & Sim                          \\
-			Contingência & Contingência & Não                            & Não                         
-		\end{tabular}
 	\end{center}
 \end{frame}
 
