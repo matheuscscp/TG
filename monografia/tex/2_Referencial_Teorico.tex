@@ -1,6 +1,10 @@
 
 \label{cap_referencial}
 
+\indent
+
+Apresentamos neste capítulo o referencial teórico necessário para compreensão do trabalho. Primeiro, apresentamos os conceitos básicos que definem a lógica proposicional e os problemas computacionais envolvidos. Em seguida, apresentamos as técnicas que utilizamos para reduzir o tamanho de fórmulas.
+
 \section{Lógica proposicional}
 
 \indent
@@ -66,7 +70,7 @@ Esta seção apresenta os conceitos básicos que definem a lógica proposicional
     \end{enumerate}
 \end{example}
 
-No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{interpretação definida por $\mathbb{v}_0$}.
+No que segue, usaremos tão somente \emph{interpretação}, ao invés de \emph{interpretação definida por $\mathbb{v}_0$}, e deve ficar claro que há uma valoração booleana implícita.
 
 \begin{definition}
 	Se existe uma interpretação $\mathbb{v}$ tal que $\mathbb{v}(\phi) = V$, então dizemos que $\mathbb{v}$ \emph{satisfaz} $\phi$, ou ainda, que $\phi$ é \emph{satisfatível}. De maneira análoga, se $\mathbb{v}$ é tal que $\mathbb{v}(\phi) = F$, então dizemos que $\mathbb{v}$ \emph{falsifica} $\phi$, ou ainda, que $\phi$ é \emph{falsificável}.
@@ -129,7 +133,7 @@ Apresentamos nesta seção os principais problemas envolvendo a lógica proposic
 
 O conceito de \emph{fórmula válida} é usualmente definido através do conceito de \emph{consequência\break lógica} \cite{kleene68book}. Como estes dois conceitos não são necessários para este trabalho, não incluímos suas definições neste texto. Entretanto, é possível mostrar que o conjunto das tautologias é igual ao conjunto das fórmulas válidas \cite{kleene68book}. Por esta razão e por ser o uso mais famoso, referimo-nos ao problema de decidir se uma fórmula é uma tautologia por \emph{problema da validade}.
 
-Davis et al. apresentam um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto é, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{redutíveis} um ao outro, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
+Davis et al. apresentam um algoritmo que decide SAT \cite{davis1960computing}. Além disso, é claro que se um problema é decidível, então o seu complemento também é. Isto significa que, com um algoritmo que decide SAT, é claro que temos um algoritmo para decidir UNSAT. De forma geral, podemos dizer que um problema decidível e seu complemento são \emph{redutíveis} um ao outro, ou seja, podemos construir um decisor para $\overline{L}$ usando um decisor para $L$ e vice-versa.
 
 Mostramos agora que SAT e VAL são redutíveis um ao outro, reduzindo VAL a UNSAT e vice-versa. O teorema que apresentamos a seguir é útil nesta tarefa.
 
@@ -238,7 +242,7 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
     Definimos o \emph{conjunto de posições} de uma fórmula $\phi$, $pos(\phi)$, da seguinte maneira:
     \begin{enumerate}
         \item Se $\phi \in \mathcal{P}$, então $pos(\phi) = \{\varepsilon\}$.
-        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_i \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$
+        \item Se $\phi$ é da forma $\neg \phi_1$, $\phi_1 \wedge ... \wedge \phi_n$, $\phi_1 \vee ... \vee \phi_n$, $\phi_1 \rightarrow \phi_2$, ou $\phi_1 \leftrightarrow \phi_2$, então $$pos(\phi) = \{\varepsilon\} \cup \left(\bigcup_{i=1}^{n} \; \{i.\pi \mid \pi \in pos(\phi_i)\}\right)$$
     \end{enumerate}
     
     Agora, definimos a \emph{subfórmula de} $\phi$ \emph{começando na posição} $\pi$, escrito $\phi|_\pi$, da seguinte forma:
@@ -324,12 +328,24 @@ Esta seção apresenta as definições e resultados que envolvem formas normais,
 
 \begin{theorem}
 	\label{teo_flattening}
-	Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_n$ e $\phi_1$ da forma $\psi_1 \wedge ... \wedge \psi_k$. Então a transformação $$\phi \longmapsto \psi_1 \wedge ... \wedge \psi_k \wedge \phi_2 \wedge ... \wedge \phi_n$$ que chamaremos de \emph{aplainamento}, preserva equivalência.
-	
-	A regra é análoga para disjunções.
+	Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_r \wedge ... \wedge \phi_n$ e $\phi_r$ da forma $\psi_1 \wedge ... \wedge \psi_k$. Então a transformação $$\phi \longmapsto \phi_1 \wedge ... \wedge \phi_{r-1} \wedge \psi_1 \wedge ... \wedge \psi_k \wedge \phi_{r+1} \wedge ... \wedge \phi_n$$ que chamaremos de \emph{aplainamento}, preserva equivalência. O mesmo vale se substituímos cada ocorrência de $\wedge$ por $\vee$, ou seja, o mesmo vale para disjunções.
 \end{theorem}
 
-O Teorema \ref{teo_flattening} é apenas uma formalização do fato que podemos considerar uma conjunção de conjunções como uma única conjunção, e que o mesmo vale para disjunções. Usaremos este fato mais adiante, no Capítulo \ref{cap_resultados}.
+\begin{prova}
+Seja $\phi$ da forma $\phi_1 \wedge ... \wedge \phi_r \wedge ... \wedge \phi_n$ e $\xi$ o resultado da transformação dada pela regra de reescrita.
+
+Suponha que $\mathbb{v}$ é uma interpretação tal que $\mathbb{v}(\phi) = V$. Neste caso, $\mathbb{v}(\phi_i) = V, \forall i$. Em particular, $\mathbb{v}(\phi_r) = V$. Neste caso, $\mathbb{v}(\psi_i) = V, \forall i$. Logo, $\mathbb{v}(\xi) = V$.
+
+Suponha que $\mathbb{v}$ é uma interpretação tal que $\mathbb{v}(\phi) = F$. Neste caso, $\mathbb{v}(\phi_i) = F$, para algum $i$. Se $i \neq r$, então $\mathbb{v}(\xi) = F$. Se $i = r$, então $\mathbb{v}(\psi_j) = F$, para algum $j$. Então $\mathbb{v}(\xi) = F$, como queríamos.
+
+Seja agora $\phi$ da forma $\phi_1 \vee ... \vee \phi_r \vee ... \vee \phi_n$ e $\xi$ o resultado da transformação dada pela regra de reescrita.
+
+Suponha que $\mathbb{v}$ é uma interpretação tal que $\mathbb{v}(\phi) = V$. Neste caso, $\mathbb{v}(\phi_i) = V$, para algum $i$. Se $i \neq r$, então $\mathbb{v}(\xi) = V$. Se $i = r$, então $\mathbb{v}(\psi_j) = V$, para algum $j$. Então $\mathbb{v}(\xi) = V$.
+
+Suponha que $\mathbb{v}$ é uma interpretação tal que $\mathbb{v}(\phi) = F$. Neste caso, $\mathbb{v}(\phi_i) = F, \forall i$. Em particular, $\mathbb{v}(\phi_r) = F$. Neste caso, $\mathbb{v}(\psi_i) = F, \forall i$. Logo, $\mathbb{v}(\xi) = F$.
+\end{prova}
+
+O Teorema \ref{teo_flattening} é apenas uma formalização do fato que podemos considerar uma conjunção de conjunções como uma única grande conjunção e que o mesmo vale para disjunções. Usaremos este fato mais adiante, no Capítulo \ref{cap_resultados}.
 
 \begin{definition}
     Dizemos que uma fórmula $\phi$ está na \emph{forma normal negada} (FNN) se, e somente se, $\phi$ não contém implicações, não contém equivalências e negações ocorrem somente aplicadas a símbolos proposicionais.
@@ -354,7 +370,7 @@ O Teorema \ref{teo_flattening} é apenas uma formalização do fato que podemos 
 
 A prova do Teorema \ref{fnn_theorem} segue por indução na estrutura de uma fórmula.
 
-A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o Exemplo \ref{exemplo_fnn_fnc}, dado por Nonnengart et al. \cite{nonnengart2001computing}. Observe que não é necessário considerar o caso em que a polaridade é zero, pois, para evitar este caso, basta transformar equivalências em posições mais curtas primeiro.
+A transformação de equivalências dependente de polaridade do Teorema \ref{fnn_theorem} evita que tautologias difíceis de detectar apareçam nas fórmulas transformadas, como mostra o Exemplo \ref{exemplo_fnn_fnc}, dado por Nonnengart et al. \cite{nonnengart2001computing}. Observe que posições com polaridade zero ocorrem somente dentro de equivalências. Neste caso, se aplicamos as transformações de cima para baixo, ou seja, sempre em posições mais curtas primeiro, nunca irão aparecer posições com polaridade zero ao atravessar a fórmula. Portanto, não é necessário considerar este valor na transformação dependente de polaridade.
 
 \begin{definition}
 	Dizemos que $\phi$ é um \emph{literal} se, e somente se, $\phi \in \mathcal{P}$, ou $\phi$ é da forma $\neg p$, onde $p \in \mathcal{P}$.
@@ -476,14 +492,15 @@ Apresentamos nesta seção o algoritmo proposto por Boy de la Tour para obter um
 
 O número $p(\phi)$ pode ser calculado pela Tabela \ref{numerop} \cite{de1992optimality}.
 
-\tabela{Número de cláusulas de uma fórmula}{numerop}{c|c|c}{
+\tabela{Número de cláusulas de uma fórmula}{numerop}{ccc}{
+	\hline
 	Forma de $\phi$                   & $p(\phi)$                                                       & $\overline{p}(\phi)$                                            \\ \hline
 	$\neg \phi_1$                     & $\overline{p}(\phi_1)$                                          & $p(\phi_1)$                                                     \\
 	$\phi_1 \wedge ... \wedge \phi_n$ & $\sum_{i=1}^n p(\phi_i)$                                        & $\prod_{i=1}^n \overline{p}(\phi_i)$                            \\
 	$\phi_1 \vee ... \vee \phi_n$     & $\prod_{i=1}^n p(\phi_i)$                                       & $\sum_{i=1}^n \overline{p}(\phi_i)$                             \\
 	$\phi_1 \rightarrow \phi_2$       & $\overline{p}(\phi_1)p(\phi_2)$                                 & $p(\phi_1)+\overline{p}(\phi_2)$                                \\
 	$\phi_1 \leftrightarrow \phi_2$   & $\overline{p}(\phi_1)p(\phi_2) + \overline{p}(\phi_2)p(\phi_1)$ & $p(\phi_1)p(\phi_2) + \overline{p}(\phi_1)\overline{p}(\phi_2)$ \\
-	$\phi \in \mathcal{P}$            & $1$                                                             & $1$                                                             \\
+	$\phi \in \mathcal{P}$            & $1$                                                             & $1$                                                             \\ \hline
 }
 
 \begin{example}
@@ -510,7 +527,8 @@ As escritas $\psi.p$ e $\psi.\overline{p}$ que aparecem no algoritmo representam
 
 Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s)}$ são computados a partir de $a = a_\psi^{\mathcal{R}(\phi,s)}$, $b = b_\psi^{\mathcal{R}(\phi,s)}$, $\psi_i.p$ e $\psi_i.\overline{p}$, seguindo as fórmulas da Tabela \ref{tabela_a_b}. A função $nbcl(\psi)$ retorna um par ordenado com os números de cláusulas de $\psi$ e $\neg \psi$, respectivamente. Este par ordenado é calculado a partir de $\psi_i.p$ e $\psi_i.\overline{p}$, ou seja, o estado atual do renomeamento é levado em consideração.
 
-\tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{c|c|c}{
+\tabela{Coeficientes $a$ e $b$ do Algoritmo \ref{boydelatour}}{tabela_a_b}{ccc}{
+	\hline
 	Forma de $\psi$                        & $a_{\psi_i}^\phi$                                          & $b_{\psi_i}^\phi$                                          \\ \hline
 	$\neg \psi_1$                          & $b_\psi^\phi$                                              & $a_\psi^\phi$                                              \\
 	$\psi_1 \wedge ... \wedge \psi_n$      & $a_\psi^\phi$                                              & $b_\psi^\phi \prod_{j\neq i} \overline{p}(\psi_j)$         \\
@@ -518,7 +536,7 @@ Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s
 	$\psi_1 \rightarrow \psi_2, i=1$       & $b_\psi^\phi$                                              & $a_\psi^\phi p(\psi_2)$                                    \\
 	$\psi_1 \rightarrow \psi_2, i=2$       & $a_\psi^\phi \overline{p}(\psi_1)$                         & $b_\psi^\phi$                                              \\
 	$\psi_1 \leftrightarrow \psi_2, j=3-i$ & $a_\psi^\phi \overline{p}(\psi_j) + b_\psi^\phi p(\psi_j)$ & $a_\psi^\phi p(\psi_j) + b_\psi^\phi \overline{p}(\psi_j)$ \\
-	$\psi_i = \phi$                        & $1$                                                        & $0$                                                        \\
+	$\psi_i = \phi$                        & $1$                                                        & $0$                                                        \\ \hline
 }
 
 \begin{algorithm}
@@ -565,11 +583,11 @@ Os números $a_{\psi_i}^{\mathcal{R}(\phi,s)}$ e $b_{\psi_i}^{\mathcal{R}(\phi,s
 	
 	De volta à segunda chamada, na Linha 7, os valores $\psi.p$ e $\psi.\overline{p}$ são atualizados. Isto encerra a segunda chamada recursiva.
 	
-	De volta à primeira chamada, a Linha 11 é agora executada com $R\_rec(\psi_2,1,0,1)$. No entanto, já vimos que uma chamada com estes parâmetros e $\psi$ da forma $y_1 \wedge y_2 \wedge y_3$ não modifica o conjunto $R$.
+	De volta à primeira chamada, a Linha 11 é agora executada com $R\_rec(\psi_2,1,0,1)$. No entanto, vimos anteriormente que uma chamada com estes parâmetros e $\psi_2$ da forma $y_1 \wedge y_2 \wedge y_3$, ou seja, uma conjunção de três literais, não modifica o conjunto $R$.
 	
 	O algoritmo termina então com $R = \{x_1 \wedge x_2 \wedge x_3 \}$.
 	
-	É fácil ver que $p(\phi,R) = 6$. Para ver que este resultado é ótimo, observe que basta considerar a inclusão das subfórmulas $\phi_1 = x_1 \wedge x_2 \wedge x_3$ e $\phi_2 = y_1 \wedge y_2 \wedge y_3$, pois qualquer outra subfórmula é um símbolo proposicional ou a própria $\phi$. Se incluímos ambas $\phi_1$ e $\phi_2$, a transformação gera 7 cláusulas. Se $R = \emptyset$, a fórmula permanece com 9 cláusulas. Se somente $\phi_1$, ou somente $\phi_2$ for incluída, a transformação gera 6 cláusulas. Logo, um renomeamento ótimo gera 6 cláusulas e o Algoritmo \ref{boydelatour} é capaz de encontrar um destes renomeamentos.
+	Pode-se ver que $p(\phi,R) = 6$. Para ver que este resultado é ótimo, observe que basta considerar a inclusão das subfórmulas $\phi_1 = x_1 \wedge x_2 \wedge x_3$ e $\phi_2 = y_1 \wedge y_2 \wedge y_3$, pois qualquer outra subfórmula é um símbolo proposicional ou a própria $\phi$. Se incluímos ambas $\phi_1$ e $\phi_2$, a transformação gera 7 cláusulas. Se $R = \emptyset$, a fórmula permanece com 9 cláusulas. Se somente $\phi_1$, ou somente $\phi_2$ for incluída, a transformação gera 6 cláusulas. Logo, um renomeamento ótimo gera 6 cláusulas e o Algoritmo \ref{boydelatour} é capaz de encontrar um destes renomeamentos.
 \end{example}
 
 Note que o algoritmo proposto por Boy de la Tour é um \emph{algoritmo guloso}, ou seja, um algoritmo que faz uma série de escolhas que são ótimas em contextos locais \cite{CLRS09}. Mas, como dito anteriormente, Boy de la Tour prova que se a fórmula de entrada for uma árvore linear, então as escolhas ótimas locais de seu algoritmo são também ótimas no contexto global.
