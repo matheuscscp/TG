@@ -404,14 +404,15 @@ A prova do Teorema \ref{fnc_theorem} segue por indução na estrutura de uma fó
     Se $\phi_1,\phi_2 \in \mathcal{P}$, então a última fórmula já está na FNC, de modo que é fácil identificar e remover as tautologias $\neg \phi_2 \vee \phi_2$ e $\phi_1 \vee \neg \phi_1$. Caso contrário, as transformações aplicadas à exaustão transformam $\neg \phi_i$ em uma fórmula $\psi \neq \neg \phi_i$, dificultando identificar e remover as tautologias mencionadas.
     
     Considere agora uma transformação que leva em conta polaridade, ou seja, desta vez começamos com a transformação do item 5.b do Teorema \ref{fnn_theorem}.
-    \begin{equation*}
-        \begin{split}
-            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) \\
-                 & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) \\
+    \[
+    \begin{array}{lll}
+            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) & [5a]\\
+                 & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) & [DM]\\
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\neg \neg \phi_1 \vee \neg \neg \phi_2) \\
                  & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
-        \end{split}
-    \end{equation*}
+    \end{array}
+    \]
+    
     Observe que o número de passos de transformação é menor, o tamanho da fórmula resultante é menor e as tautologias indesejadas não aparecem.
     
     Por fim, note que os fatos ilustrados por este exemplo ocorrem para qualquer subfórmula da forma $\phi_1 \leftrightarrow \phi_2$ ocorrendo com polaridade negativa em qualquer posição de $\phi$, $\forall \phi,\phi_1,\phi_2 \in \mathcal{L}$.
