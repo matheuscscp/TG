@@ -390,26 +390,26 @@ A prova do Teorema \ref{fnc_theorem} segue por indução na estrutura de uma fó
 \begin{example}
 	\label{exemplo_fnn_fnc}
     Considere $\phi$ da forma $\neg(\phi_1 \leftrightarrow \phi_2)$. Aplicando as transformações dos Teoremas \ref{fnn_theorem} e \ref{fnc_theorem} à exaustão, começando pela transformação do item 5.a do Teorema \ref{fnn_theorem} e então aplicando distribuição, temos:
-    \begin{equation*}
-        \begin{split}
-            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) \\
-                 & \longmapsto \neg((\neg \phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_1)) \\
-                 & \longmapsto \neg(\neg \phi_1 \vee \phi_2) \vee \neg(\neg \phi_2 \vee \phi_1) \\
-                 & \longmapsto (\neg \neg \phi_1 \wedge \neg \phi_2) \vee (\neg \neg \phi_2 \wedge \neg \phi_1) \\
-                 & \longmapsto (\phi_1 \wedge \neg \phi_2) \vee (\phi_2 \wedge \neg \phi_1) \\
-                 & \longmapsto ((\phi_1 \wedge \neg \phi_2) \vee \phi_2) \wedge ((\phi_1 \wedge \neg \phi_2) \vee \neg \phi_1) \\
-                 & \longmapsto (\phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_2) \wedge (\phi_1 \vee \neg \phi_1) \wedge (\neg \phi_2 \vee \neg \phi_1)
-        \end{split}
-    \end{equation*}
+    \[
+    \begin{array}{lll}
+            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \rightarrow \phi_2) \wedge (\phi_2 \rightarrow \phi_1)) & [T4, 5.a] \\
+                 & \longmapsto \neg((\neg \phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_1)) & [T4, 4] \\
+                 & \longmapsto \neg(\neg \phi_1 \vee \phi_2) \vee \neg(\neg \phi_2 \vee \phi_1) & [T4, DM] \\
+                 & \longmapsto (\neg \neg \phi_1 \wedge \neg \phi_2) \vee (\neg \neg \phi_2 \wedge \neg \phi_1) & [T4, DM] \\
+                 & \longmapsto (\phi_1 \wedge \neg \phi_2) \vee (\phi_2 \wedge \neg \phi_1) & [T4, 1] \\
+                 & \longmapsto ((\phi_1 \wedge \neg \phi_2) \vee \phi_2) \wedge ((\phi_1 \wedge \neg \phi_2) \vee \neg \phi_1) & [T5] \\
+                 & \longmapsto (\phi_1 \vee \phi_2) \wedge (\neg \phi_2 \vee \phi_2) \wedge (\phi_1 \vee \neg \phi_1) \wedge (\neg \phi_2 \vee \neg \phi_1) & [T5]\\
+    \end{array}
+    \]
     Se $\phi_1,\phi_2 \in \mathcal{P}$, então a última fórmula já está na FNC, de modo que é fácil identificar e remover as tautologias $\neg \phi_2 \vee \phi_2$ e $\phi_1 \vee \neg \phi_1$. Caso contrário, as transformações aplicadas à exaustão transformam $\neg \phi_i$ em uma fórmula $\psi \neq \neg \phi_i$, dificultando identificar e remover as tautologias mencionadas.
     
     Considere agora uma transformação que leva em conta polaridade, ou seja, desta vez começamos com a transformação do item 5.b do Teorema \ref{fnn_theorem}.
     \[
     \begin{array}{lll}
-            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) & [5a]\\
-                 & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) & [DM]\\
-                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\neg \neg \phi_1 \vee \neg \neg \phi_2) \\
-                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) \\
+            \neg(\phi_1 \leftrightarrow \phi_2) & \longmapsto \neg((\phi_1 \wedge \phi_2) \vee (\neg \phi_1 \wedge \neg \phi_2)) & [T4, 5.b] \\
+                 & \longmapsto \neg(\phi_1 \wedge \phi_2) \wedge \neg(\neg \phi_1 \wedge \neg \phi_2) & [T4, DM]\\
+                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\neg \neg \phi_1 \vee \neg \neg \phi_2) & [T4, DM]\\
+                 & \longmapsto (\neg \phi_1 \vee \neg \phi_2) \wedge (\phi_1 \vee \phi_2) & [T4, 1]\\
     \end{array}
     \]
     
